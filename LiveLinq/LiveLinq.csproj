@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.4</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Set\Extensions.Concat.cs" />
+    <Compile Remove="Set\Extensions.Select.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Set\Extensions.Concat.cs" />
+    <None Include="Set\Extensions.Select.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="GenericNumbers" Version="1.0.0-alpha1" />
+    <PackageReference Include="MoreCollections" Version="1.0.0-pre6" />
+    <PackageReference Include="System.Reactive" Version="3.1.1" />
+    <PackageReference Include="System.Runtime.Serialization.Primitives" Version="4.3.0" />
+    <PackageReference Include="UtilityDisposables" Version="1.0.0-alpha2" />
+  </ItemGroup>
+
+</Project>
