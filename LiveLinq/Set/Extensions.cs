@@ -1,14 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LiveLinq.Core;
+using LiveLinq.Dictionary;
 
 namespace LiveLinq.Set
 {
     public static partial class Extensions
     {
+        public static ISetChanges<T> SelectMany<TKey, TValue, T>(this IDictionaryChangesStrict<TKey, TValue> changes, Func<TKey, TValue, IEnumerable<T>> selector)
+        {
+            return changes.AsObservable().Select(change =>
+                    Utility.SetChange(change.Type, change.Items.SelectMany(kvp => selector(kvp.Key, kvp.Value))))
+                .ToLiveLinq();
+        }
+        
+        public static ISetChanges<T> Select<TKey, TValue, T>(this IDictionaryChangesStrict<TKey, TValue> changes, Func<TKey, TValue, T> selector)
+        {
+            return changes.AsObservable().Select(change =>
+                    Utility.SetChange(change.Type, change.Items.Select(kvp => selector(kvp.Key, kvp.Value))))
+                .ToLiveLinq();
+        }
+        
         public static IReadOnlyObservableSet<T> ToReadOnlySet<T>(this ISetChanges<T> source)
         {
             var result = new ObservableSet<T>();
