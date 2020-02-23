@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LiveLinq.Set
 {
-    public interface IReadOnlySet<out T> : IEnumerable<T>
+    public interface IReadOnlyObservableSet<out T> : IEnumerable<T>
     {
         ISetChanges<T> ToLiveLinq();
     }

@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard1.4</TargetFramework>
-    <PackageVersion>1.0.0-pre13</PackageVersion>
+    <PackageVersion>1.0.0-pre14</PackageVersion>
   </PropertyGroup>
 
   <ItemGroup>
