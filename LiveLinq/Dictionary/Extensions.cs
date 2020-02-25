@@ -68,6 +68,24 @@ namespace LiveLinq.Dictionary
         #endregion
 
         #region Strict
+
+        public static IReadOnlyObservableDictionary<TKey, TValue> ToReadOnlyObservableDictionary<TKey, TValue>(
+            this IDictionaryChangesStrict<TKey, TValue> changes)
+        {
+            var result = new SimpleObservableDictionary<TKey, TValue>();
+            result.AssociatedSubscription = changes.AsObservable().Subscribe(change =>
+            {
+                if (change.Type == CollectionChangeType.Add)
+                {
+                    result.AddRange(change.Items);
+                }
+                else if (change.Type == CollectionChangeType.Remove)
+                {
+                    result.RemoveRange(change.Items.Select(x => x.Key));
+                }
+            });
+            return result;
+        }
         
         /// <summary>
         /// Similar to the Dictionary.ContainsKey extension method, except this returns an event stream
