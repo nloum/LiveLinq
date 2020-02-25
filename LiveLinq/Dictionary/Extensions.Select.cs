@@ -23,6 +23,7 @@ namespace LiveLinq.Dictionary
         {
             return source.SelectMany((key, value) => Observable.Return(Utility.DictionaryAdd(KeyValuePair(keySelector(key), valueSelector(key, value)))).ToLiveLinq());
         }
+        
         public static IDictionaryChanges<TKeyResult, TValueResult> Select<TKeySource, TValueSource, TKeyResult, TValueResult>(
             this IDictionaryChanges<TKeySource, TValueSource> source,
             Func<TKeySource, TValueSource, TKeyResult> keySelector,
@@ -45,6 +46,13 @@ namespace LiveLinq.Dictionary
             return source.SelectMany((key, value) => Observable.Return(Utility.DictionaryAdd(selector(key, value))).ToLiveLinq());
         }
 
+        public static IDictionaryChanges<TKeyResult, TValueResult> Select<TKeySource, TValueSource, TKeyResult, TValueResult>(
+            this IDictionaryChanges<TKeySource, TValueSource> source,
+            Func<TKeySource, TValueSource, IObservable<IKeyValuePair<TKeyResult, TValueResult>>> selector)
+        {
+            return source.SelectMany((key, value) => selector(key, value).Select(newKeyValuePair => Utility.DictionaryAdd(newKeyValuePair)).ToLiveLinq());
+        }
+
         public static IDictionaryChanges<TKeySource, TValueResult> SelectValue<TKeySource, TValueSource, TValueResult>(
             this IDictionaryChanges<TKeySource, TValueSource> source,
             Func<TKeySource, TValueSource, TValueResult> selector)
@@ -59,6 +67,20 @@ namespace LiveLinq.Dictionary
             return source.SelectMany((key, value) => Observable.Return(Utility.DictionaryAdd(KeyValuePair(key, selector(value)))).ToLiveLinq());
         }
 
+        public static IDictionaryChanges<TKeySource, TValueResult> SelectValue<TKeySource, TValueSource, TValueResult>(
+            this IDictionaryChanges<TKeySource, TValueSource> source,
+            Func<TKeySource, TValueSource, IObservable<TValueResult>> selector)
+        {
+            return source.SelectMany((key, value) => selector(key, value).Select(newValue => Utility.DictionaryAdd(KeyValuePair(key, newValue))).ToLiveLinq());
+        }
+
+        public static IDictionaryChanges<TKeySource, TValueResult> SelectValue<TKeySource, TValueSource, TValueResult>(
+            this IDictionaryChanges<TKeySource, TValueSource> source,
+            Func<TValueSource, IObservable<TValueResult>> selector)
+        {
+            return source.SelectMany((key, value) => selector(value).Select(newValue => Utility.DictionaryAdd(KeyValuePair(key, newValue))).ToLiveLinq());
+        }
+
         public static IDictionaryChanges<TKeyResult, TValueSource> SelectKey<TKeySource, TValueSource, TKeyResult>(
             this IDictionaryChanges<TKeySource, TValueSource> source,
             Func<TKeySource, TValueSource, TKeyResult> selector)
@@ -71,6 +93,20 @@ namespace LiveLinq.Dictionary
             Func<TKeySource, TKeyResult> selector)
         {
             return source.SelectMany((key, value) => Observable.Return(Utility.DictionaryAdd(KeyValuePair(selector(key), value))).ToLiveLinq());
+        }
+        
+        public static IDictionaryChanges<TKeyResult, TValueSource> SelectKey<TKeySource, TValueSource, TKeyResult>(
+            this IDictionaryChanges<TKeySource, TValueSource> source,
+            Func<TKeySource, TValueSource, IObservable<TKeyResult>> selector)
+        {
+            return source.SelectMany((key, value) => selector(key, value).Select(newKey => Utility.DictionaryAdd(KeyValuePair(newKey, value))).ToLiveLinq());
+        }
+
+        public static IDictionaryChanges<TKeyResult, TValueSource> SelectKey<TKeySource, TValueSource, TKeyResult>(
+            this IDictionaryChanges<TKeySource, TValueSource> source,
+            Func<TKeySource, IObservable<TKeyResult>> selector)
+        {
+            return source.SelectMany((key, value) => selector(key).Select(newKey => Utility.DictionaryAdd(KeyValuePair(newKey, value))).ToLiveLinq());
         }
     }
 }
