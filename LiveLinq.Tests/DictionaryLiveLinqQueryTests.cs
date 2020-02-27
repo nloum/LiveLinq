@@ -19,7 +19,7 @@ namespace LiveLinq.Tests
         [TestMethod]
         public void ToDictionary_Get()
         {
-            var source = new ObservableDictionary<int, string>();
+            var source = new SimpleObservableDictionary<int, string>();
             var get2 = Nothing<string>();
             source.ToLiveLinq()[2].Subscribe(val => get2 = val);
             get2.Should().Be(Nothing<string>());
@@ -30,7 +30,7 @@ namespace LiveLinq.Tests
         [TestMethod]
         public void ToDictionary_Unset()
         {
-            var source = new ObservableDictionary<int, string>();
+            var source = new SimpleObservableDictionary<int, string>();
             var get2 = Nothing<string>();
             source.ToLiveLinq()[2].Subscribe(val => get2 = val);
             get2.Should().Be(Nothing<string>());
@@ -43,7 +43,7 @@ namespace LiveLinq.Tests
         [TestMethod]
         public void ToDictionary_Unset_Set()
         {
-            var source = new ObservableDictionary<int, string>();
+            var source = new SimpleObservableDictionary<int, string>();
             var get2 = Nothing<string>();
             source.ToLiveLinq()[2].Subscribe(val => get2 = val);
             get2.Should().Be(Nothing<string>());
