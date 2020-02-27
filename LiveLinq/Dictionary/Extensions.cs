@@ -24,7 +24,7 @@ namespace LiveLinq.Dictionary
         public static IReadOnlyObservableDictionary<TKey, TValue> ToReadOnlyObservableDictionary<TKey, TValue>(
             this IDictionaryChanges<TKey, TValue> changes)
         {
-            var result = new SimpleObservableDictionary<TKey, TValue>();
+            var result = new ObservableDictionary<TKey, TValue>();
             result.AssociatedSubscription = changes.AsObservable().Subscribe(change =>
             {
                 if (change.Type == CollectionChangeType.Add)
@@ -39,7 +39,7 @@ namespace LiveLinq.Dictionary
             return result;
         }
 
-        public static IReadOnlyBindableDictionary<TKey, TValue> ToReadOnlyBindableObservableDictionary<TKey, TValue>(
+        public static IReadOnlyBindableDictionary<TKey, TValue> ToReadOnlyBindableDictionary<TKey, TValue>(
             this IDictionaryChanges<TKey, TValue> changes)
         {
             var result = new ReadOnlyBindableDictionary<TKey, TValue>();

@@ -13,7 +13,7 @@ namespace LiveLinq.Dictionary
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    public class SimpleObservableDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IReadOnlyObservableDictionary<TKey, TValue>, IDisposable
+    public class ObservableDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IReadOnlyObservableDictionary<TKey, TValue>, IDisposable
     {
         internal IDisposable AssociatedSubscription { get; set; } = null;
         private readonly object _lock = new object();
