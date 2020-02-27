@@ -39,6 +39,24 @@ namespace LiveLinq.Dictionary
             return result;
         }
 
+        public static IReadOnlyBindableDictionary<TKey, TValue> ToReadOnlyBindableObservableDictionary<TKey, TValue>(
+            this IDictionaryChangesStrict<TKey, TValue> changes)
+        {
+            var result = new ReadOnlyBindableDictionary<TKey, TValue>();
+            result.AssociatedSubscription = changes.AsObservable().Subscribe(change =>
+            {
+                if (change.Type == CollectionChangeType.Add)
+                {
+                    result.AddRange(change.Items);
+                }
+                else if (change.Type == CollectionChangeType.Remove)
+                {
+                    result.RemoveRange(change.Items.Select(x => x.Key));
+                }
+            });
+            return result;
+        }
+
         #region ContainsKey
 
         #region Non-strict

@@ -25,7 +25,7 @@ namespace LiveLinq.Dictionary
         /// method is being called, because LiveLinq is analogous to LINQ, but the differences
         /// are very important.
         /// </summary>
-        public static IDictionaryChangesStrict<TKey, TValue> ToLiveLinq<TKey, TValue>(this ObservableDictionary<TKey, TValue> source)
+        public static IDictionaryChangesStrict<TKey, TValue> ToLiveLinq<TKey, TValue>(this BindableDictionary<TKey, TValue> source)
         {
             var enumerable = (IEnumerable<IKeyValuePair<TKey, TValue>>)source;
 
