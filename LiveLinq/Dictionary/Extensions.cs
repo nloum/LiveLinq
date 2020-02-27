@@ -22,7 +22,7 @@ namespace LiveLinq.Dictionary
     public static partial class Extensions
     {
         public static IReadOnlyObservableDictionary<TKey, TValue> ToReadOnlyObservableDictionary<TKey, TValue>(
-            this IDictionaryChangesStrict<TKey, TValue> changes)
+            this IDictionaryChanges<TKey, TValue> changes)
         {
             var result = new SimpleObservableDictionary<TKey, TValue>();
             result.AssociatedSubscription = changes.AsObservable().Subscribe(change =>
@@ -40,7 +40,7 @@ namespace LiveLinq.Dictionary
         }
 
         public static IReadOnlyBindableDictionary<TKey, TValue> ToReadOnlyBindableObservableDictionary<TKey, TValue>(
-            this IDictionaryChangesStrict<TKey, TValue> changes)
+            this IDictionaryChanges<TKey, TValue> changes)
         {
             var result = new ReadOnlyBindableDictionary<TKey, TValue>();
             result.AssociatedSubscription = changes.AsObservable().Subscribe(change =>
