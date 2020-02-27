@@ -12,7 +12,7 @@ namespace LiveLinq.List
             Func<TSource, TKey> keySelector)
         {
             return source.GroupBy(keySelector)
-                .MakeStrict()
+                .MakeStrictExpensively()
                 .OrderBy(kvp => kvp.Key)
                 .Select(kvp => kvp.Value.First())
                 .Where(m => m.HasValue)
@@ -24,7 +24,7 @@ namespace LiveLinq.List
             Func<TSource, IObservable<TKey>> keySelector)
         {
             return source.GroupBy(keySelector)
-                .MakeStrict()
+                .MakeStrictExpensively()
                 .OrderBy(kvp => kvp.Key)
                 .Select(kvp => kvp.Value.First())
                 .Where(m => m.HasValue)
@@ -36,7 +36,7 @@ namespace LiveLinq.List
             Func<TSource, IObservable<int>, IObservable<TKey>> keySelector)
         {
             return source.GroupBy(keySelector)
-                .MakeStrict()
+                .MakeStrictExpensively()
                 .OrderBy(kvp => kvp.Key)
                 .Select(kvp => kvp.Value.First())
                 .Where(m => m.HasValue)
@@ -48,7 +48,7 @@ namespace LiveLinq.List
             Func<TSource, IObservable<int>, TKey> keySelector)
         {
             return source.GroupBy(keySelector)
-                .MakeStrict()
+                .MakeStrictExpensively()
                 .OrderBy(kvp => kvp.Key)
                 .Select(kvp => kvp.Value.First())
                 .Where(m => m.HasValue)

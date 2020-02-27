@@ -149,7 +149,7 @@ namespace LiveLinq.Dictionary
 
         #endregion
 
-        public static IDictionaryChangesStrict<TKey, TValue> MakeStrict<TKey, TValue>(
+        public static IDictionaryChangesStrict<TKey, TValue> MakeStrictExpensively<TKey, TValue>(
             this IDictionaryChanges<TKey, TValue> source)
         {
             return source.ToObservableStateAndChange()

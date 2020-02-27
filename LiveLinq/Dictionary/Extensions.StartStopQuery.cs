@@ -104,7 +104,7 @@ namespace LiveLinq.Dictionary
             return source.Select(
                 element =>
                 keySelector(element).CombineLatest(valueSelector(element), KeyValuePair<TKey, TValue>))
-                .MakeStrict()
+                .MakeStrictExpensively()
                 .ToLiveLinq();
         }
 
@@ -119,7 +119,7 @@ namespace LiveLinq.Dictionary
             return source.Select(
                 element =>
                 valueSelector(element).Select(value => KeyValuePair<TKey, TValue>(keySelector(element), value)))
-                .MakeStrict()
+                .MakeStrictExpensively()
                 .ToLiveLinq();
         }
 
@@ -134,7 +134,7 @@ namespace LiveLinq.Dictionary
             return source.Select(
                 element =>
                 keySelector(element).Select(key => KeyValuePair<TKey, TValue>(key, valueSelector(element))))
-                .MakeStrict()
+                .MakeStrictExpensively()
                 .ToLiveLinq();
         }
 

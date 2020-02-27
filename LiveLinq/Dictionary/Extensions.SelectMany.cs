@@ -12,7 +12,7 @@ namespace LiveLinq.Dictionary
                     Func<TKeySource, TValueSource, IListChanges<TResult>> selector)
         {
             return source
-                .MakeStrict()
+                .MakeStrictExpensively()
                 .OrderBy(x => x.Key)
                 .SelectMany(kvp => selector(kvp.Key, kvp.Value));
         }

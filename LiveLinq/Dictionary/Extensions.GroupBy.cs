@@ -202,7 +202,7 @@ namespace LiveLinq.Dictionary
                         keysAndValues.Where(change => change.Values.First().Key.Equals(keyValuePair.Key)).Select(change => ListChange(change.Type, change.Range, change.Values.Select(kvp => kvp.Value))).ToLiveLinq()))
                 .Collect()
                 .Where(kvp => kvp.Value.Any())
-                .MakeStrict()
+                .MakeStrictExpensively()
                 .ToLiveLinq();
             
             return result;

@@ -29,7 +29,7 @@ namespace LiveLinq.List
         /// (but it will specify the indices of course), and it will still always specify the items that are
         /// being added.
         /// </summary>
-        public static IListChangesStrict<T> MakeStrict<T>(this IListChanges<T> source)
+        public static IListChangesStrict<T> MakeStrictExpensively<T>(this IListChanges<T> source)
         {
             if (source is IListChangesStrict<T>) return (IListChangesStrict<T>)source;
             return source.ToObservableStateAndChange().Select(sac => sac.MostRecentChange).ToLiveLinq();
