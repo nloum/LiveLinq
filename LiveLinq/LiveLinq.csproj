@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard1.4</TargetFramework>
-    <PackageVersion>1.0.0-pre19</PackageVersion>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageVersion>1.0.0-pre20</PackageVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,7 +18,7 @@
   <ItemGroup>
     <PackageReference Include="GenericNumbers" Version="1.0.0-alpha2" />
     <PackageReference Include="MoreCollections" Version="1.0.0-pre9" />
-    <PackageReference Include="System.Reactive" Version="3.1.1" />
+    <PackageReference Include="System.Reactive" Version="4.3.2" />
     <PackageReference Include="System.Runtime.Serialization.Primitives" Version="4.3.0" />
     <PackageReference Include="UtilityDisposables" Version="1.0.0-alpha2" />
   </ItemGroup>
