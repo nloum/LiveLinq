@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using System.Reactive.Linq;
-
+using System.Reflection;
 using SimpleMonads;
 using LiveLinq.Ordered;
 
@@ -16,6 +16,7 @@ using MoreCollections;
 using LiveLinq.Dictionary;
 using LiveLinq.Core;
 using LiveLinq.List;
+using LiveLinq.Set;
 
 namespace LiveLinq.Dictionary
 {
@@ -228,5 +229,84 @@ namespace LiveLinq.Dictionary
             }
         }
 
+        public static IDictionaryChangesStrict<TKey, TValue> ToDictionaryChanges<TItem, TKey, TValue>(
+            this ISetChanges<TItem> setChanges, Func<TItem, TKey> keySelector, Func<TItem, TValue> valueSelector)
+        {
+            return setChanges.AsObservable().Select(setChange =>
+            {
+                switch (setChange.Type)
+                {
+                    case CollectionChangeType.Add:
+                        return Utility.DictionaryAdd(setChange.Values.Select(item =>
+                            new KeyValuePair<TKey, TValue>(keySelector(item), valueSelector(item))));
+                    case CollectionChangeType.Remove:
+                        return Utility.DictionaryRemove(setChange.Values.Select(item =>
+                            new KeyValuePair<TKey, TValue>(keySelector(item), valueSelector(item))));
+                    default:
+                        throw new ArgumentException($"Unknown collection change type: {setChange.Type}");
+                }
+            }).ToLiveLinq();
+        }
+        
+        public static IDictionaryChanges<TKey, TValue> ToDictionaryChanges<TItem, TKey, TValue>(
+            this ISetChanges<TItem> setChanges, Func<TItem, IObservable<TKey>> keySelector, Func<TItem, TValue> valueSelector)
+        {
+            return setChanges.AsObservable().Select(setChange =>
+            {
+                switch (setChange.Type)
+                {
+                    case CollectionChangeType.Add:
+                        return Utility.DictionaryAdd(setChange.Values.Select(item =>
+                            new KeyValuePair<IObservable<TKey>, TValue>(keySelector(item), valueSelector(item))));
+                    case CollectionChangeType.Remove:
+                        return Utility.DictionaryRemove(setChange.Values.Select(item =>
+                            new KeyValuePair<IObservable<TKey>, TValue>(keySelector(item), valueSelector(item))));
+                    default:
+                        throw new ArgumentException($"Unknown collection change type: {setChange.Type}");
+                }
+            }).ToLiveLinq()
+                .SelectKey(key => key.AsObservable());
+        }
+        
+        public static IDictionaryChanges<TKey, TValue> ToDictionaryChanges<TItem, TKey, TValue>(
+            this ISetChanges<TItem> setChanges, Func<TItem, IObservable<TKey>> keySelector, Func<TItem, IObservable<TValue>> valueSelector)
+        {
+            return setChanges.AsObservable().Select(setChange =>
+                {
+                    switch (setChange.Type)
+                    {
+                        case CollectionChangeType.Add:
+                            return Utility.DictionaryAdd(setChange.Values.Select(item =>
+                                new KeyValuePair<IObservable<TKey>, IObservable<TValue>>(keySelector(item), valueSelector(item))));
+                        case CollectionChangeType.Remove:
+                            return Utility.DictionaryRemove(setChange.Values.Select(item =>
+                                new KeyValuePair<IObservable<TKey>, IObservable<TValue>>(keySelector(item), valueSelector(item))));
+                        default:
+                            throw new ArgumentException($"Unknown collection change type: {setChange.Type}");
+                    }
+                }).ToLiveLinq()
+                .SelectKey(key => key.AsObservable())
+                .SelectValue(value => value.AsObservable());
+        }
+        
+        public static IDictionaryChanges<TKey, TValue> ToDictionaryChanges<TItem, TKey, TValue>(
+            this ISetChanges<TItem> setChanges, Func<TItem, TKey> keySelector, Func<TItem, IObservable<TValue>> valueSelector)
+        {
+            return setChanges.AsObservable().Select(setChange =>
+                {
+                    switch (setChange.Type)
+                    {
+                        case CollectionChangeType.Add:
+                            return Utility.DictionaryAdd(setChange.Values.Select(item =>
+                                new KeyValuePair<TKey, IObservable<TValue>>(keySelector(item), valueSelector(item))));
+                        case CollectionChangeType.Remove:
+                            return Utility.DictionaryRemove(setChange.Values.Select(item =>
+                                new KeyValuePair<TKey, IObservable<TValue>>(keySelector(item), valueSelector(item))));
+                        default:
+                            throw new ArgumentException($"Unknown collection change type: {setChange.Type}");
+                    }
+                }).ToLiveLinq()
+                .SelectValue(value => value.AsObservable());
+        }
     }
 }
