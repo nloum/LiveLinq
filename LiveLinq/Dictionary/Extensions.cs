@@ -229,7 +229,7 @@ namespace LiveLinq.Dictionary
             }
         }
 
-        public static IDictionaryChangesStrict<TKey, TValue> ToDictionaryChanges<TItem, TKey, TValue>(
+        public static IDictionaryChangesStrict<TKey, TValue> ToDictionaryLiveLinq<TItem, TKey, TValue>(
             this ISetChanges<TItem> setChanges, Func<TItem, TKey> keySelector, Func<TItem, TValue> valueSelector)
         {
             return setChanges.AsObservable().Select(setChange =>
@@ -248,7 +248,7 @@ namespace LiveLinq.Dictionary
             }).ToLiveLinq();
         }
         
-        public static IDictionaryChanges<TKey, TValue> ToDictionaryChanges<TItem, TKey, TValue>(
+        public static IDictionaryChanges<TKey, TValue> ToDictionaryLiveLinq<TItem, TKey, TValue>(
             this ISetChanges<TItem> setChanges, Func<TItem, IObservable<TKey>> keySelector, Func<TItem, TValue> valueSelector)
         {
             return setChanges.AsObservable().Select(setChange =>
@@ -268,7 +268,7 @@ namespace LiveLinq.Dictionary
                 .SelectKey(key => key.AsObservable());
         }
         
-        public static IDictionaryChanges<TKey, TValue> ToDictionaryChanges<TItem, TKey, TValue>(
+        public static IDictionaryChanges<TKey, TValue> ToDictionaryLiveLinq<TItem, TKey, TValue>(
             this ISetChanges<TItem> setChanges, Func<TItem, IObservable<TKey>> keySelector, Func<TItem, IObservable<TValue>> valueSelector)
         {
             return setChanges.AsObservable().Select(setChange =>
@@ -289,7 +289,7 @@ namespace LiveLinq.Dictionary
                 .SelectValue(value => value.AsObservable());
         }
         
-        public static IDictionaryChanges<TKey, TValue> ToDictionaryChanges<TItem, TKey, TValue>(
+        public static IDictionaryChanges<TKey, TValue> ToDictionaryLiveLinq<TItem, TKey, TValue>(
             this ISetChanges<TItem> setChanges, Func<TItem, TKey> keySelector, Func<TItem, IObservable<TValue>> valueSelector)
         {
             return setChanges.AsObservable().Select(setChange =>

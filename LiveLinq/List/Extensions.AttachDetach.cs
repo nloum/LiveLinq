@@ -35,6 +35,12 @@ namespace LiveLinq.List
         /// The first event in a LiveLinq query is the initial state of the list; so, <see cref="attach"/> is called first
         /// for every item that was already in the query.
         /// </summary>
+        /// <remarks>
+        ///Note: when a list with 2 items has the first item removed, the only change event that is fired is the removal
+        /// of the first item. There is no change event explicitly indicating that the index of the second item changed from
+        /// 1 to 0, because supporting that feature would be extremely performance intensive. Therefore, the <see cref="IObservable{int}"/>
+        /// parameter to the attach and detach parameters should be used with caution.
+        /// </remarks>
         public static IDisposable AttachDetach<T>(
             this IListChangesStrict<T> source,
             Action<T, IObservable<int>> attach,
@@ -71,6 +77,12 @@ namespace LiveLinq.List
         /// The first event in a LiveLinq query is the initial state of the list; so, <see cref="attach"/> is called first
         /// for every item that was already in the query.
         /// </summary>
+        /// <remarks>
+        ///Note: when a list with 2 items has the first item removed, the only change event that is fired is the removal
+        /// of the first item. There is no change event explicitly indicating that the index of the second item changed from
+        /// 1 to 0, because supporting that feature would be extremely performance intensive. Therefore, the <see cref="IObservable{int}"/>
+        /// parameter to the attach and detach parameters should be used with caution.
+        /// </remarks>
         public static IDisposable AttachDetach<T, TState>(
             this IListChangesStrict<T> source,
             Func<T, IObservable<int>, TState> attach,
