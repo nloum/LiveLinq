@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="GenericNumbers" Version="1.0.0-alpha2" />
+    <PackageReference Include="GenericNumbers" Version="1.0.0-beta001" />
     <PackageReference Include="MoreCollections" Version="1.0.0-pre9" />
     <PackageReference Include="System.Reactive" Version="4.3.2" />
     <PackageReference Include="System.Runtime.Serialization.Primitives" Version="4.3.0" />
