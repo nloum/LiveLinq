@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reactive;
 using System.Reactive.Linq;
-
+using System.Threading;
 using SimpleMonads;
 using GenericNumbers;
 using MoreCollections;
@@ -220,31 +220,45 @@ namespace LiveLinq
         //    public bool IsGap { get; }
         //}
 
+        private class IndexAndCount
+        {
+            public IndexAndCount(int index, int count)
+            {
+                Index = index;
+                Count = count;
+            }
+
+            public int Index { get; }
+            public int Count { get; }
+        }
+
         /// <summary>
         /// Returns the item indices as the item is moved around, due to items being added or removed to the query
         /// with lower indices.
         /// </summary>
         public static IObservable<int> ItemIndices<T>(this IListChanges<T> source, int startIndex)
         {
-            return source.AsObservable().Materialize().Scan(Notification.CreateOnNext(startIndex),
+            return Observable.Return(startIndex).Concat(source.AsObservable().WithCount().Materialize()
+                .Scan(Notification.CreateOnNext(0),
                 (index, notification) =>
                 {
                     if (notification.Kind == NotificationKind.OnError) return Notification.CreateOnError<int>(notification.Exception);
                     if (notification.Kind == NotificationKind.OnCompleted) return Notification.CreateOnCompleted<int>();
-                    var change = notification.Value;
-                    if (change.Type == CollectionChangeType.Add)
+                    var changeAndCount = notification.Value;
+                    if (changeAndCount.Change.Type == CollectionChangeType.Add)
                     {
-                        if (change.Range.LowerBound.ChangeStrictness(true).Value < index.Value) return Notification.CreateOnNext(index.Value + change.Range.Size);
+                        if (changeAndCount.Change.Range.LowerBound.ChangeStrictness(false).Value <= index.Value) return Notification.CreateOnNext(index.Value + changeAndCount.Change.Range.Size);
                         return Notification.CreateOnNext(index.Value);
                     }
                     else
                     {
-                        if (change.Range.Includes(index.Value)) return Notification.CreateOnCompleted<int>();
-                        if (change.Range.LowerBound.ChangeStrictness(true).Value < index.Value) return Notification.CreateOnNext(index.Value - change.Range.Size);
+                        if (changeAndCount.Change.Range.Includes(index.Value)) return Notification.CreateOnCompleted<int>();
+                        if (changeAndCount.Change.Range.LowerBound.ChangeStrictness(false).Value <= index.Value) return Notification.CreateOnNext(index.Value - changeAndCount.Change.Range.Size);
                         return Notification.CreateOnNext(index.Value);
                     }
                 })
-                .Dematerialize();
+                .Dematerialize()
+                .DistinctUntilChanged());
         }
 
         /// <summary>

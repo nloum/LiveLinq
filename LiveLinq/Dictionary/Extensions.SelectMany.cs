@@ -38,7 +38,7 @@ namespace LiveLinq.Dictionary
             IObserver<IDictionaryChange<TKeyResult, TValueResult>> observer,
             Func<TKeySource, TValueSource, IDictionaryChanges<TKeyResult, TValueResult>> selector)
         {
-            return source.AttachDetach(
+            return source.Subscribe(
                 (key, value) => selector(key, value).AsObservable().Subscribe(observer.OnNext, observer.OnError),
                 (key, value, subscription) => subscription.Dispose());
         }
@@ -48,7 +48,7 @@ namespace LiveLinq.Dictionary
             IObserver<IDictionaryChangeStrict<TKeyResult, TValueResult>> observer,
             Func<TKeySource, TValueSource, IDictionaryChangesStrict<TKeyResult, TValueResult>> selector)
         {
-            return source.AttachDetach(
+            return source.Subscribe(
                 (key, value) => selector(key, value).AsObservable().Subscribe(observer.OnNext, observer.OnError),
                 (key, value, subscription) => subscription.Dispose());
         }

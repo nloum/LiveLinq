@@ -10,19 +10,19 @@ namespace LiveLinq.Dictionary
 {
     public static partial class Extensions
     {
-        public static IDisposable AttachDetach<TKey, TValue>(
+        public static IDisposable Subscribe<TKey, TValue>(
             this IDictionaryChanges<TKey, TValue> source,
             Action<TKey, TValue> attach,
             Action<TKey, TValue> detach)
         {
-            return source.AttachDetach((key, value) =>
+            return source.Subscribe((key, value) =>
             {
                 attach(key, value);
                 return Unit.Default;
             }, (key, value, _) => detach(key, value));
         }
 
-        public static IDisposable AttachDetach<TKey, TValue, TState>(
+        public static IDisposable Subscribe<TKey, TValue, TState>(
             this IDictionaryChanges<TKey, TValue> source,
             Func<TKey, TValue, TState> attach,
             Action<TKey, TValue, TState> detach)

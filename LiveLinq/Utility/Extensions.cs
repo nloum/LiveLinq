@@ -35,15 +35,25 @@ namespace LiveLinq.Utility
         public static IDisposable Subscribe<T>(this IObservable<T> source, Action<T> onNext, Action<Exception> onError,
             Action<IMaybe<T>> onComplete, Action<IMaybe<T>> onUnSubscribe)
         {
+            return source.Subscribe(onNext, (exception, last) => onError(exception), onComplete, onUnSubscribe);
+        }
+
+        /// <summary>
+        /// Like the normal Reactive Extensions Subscribe method, except the OnComplete callback will only be called if there was at least
+        /// one event, and its one parameter will be the last event.
+        /// </summary>
+        public static IDisposable Subscribe<T>(this IObservable<T> source, Action<T> onNext, Action<Exception, IMaybe<T>> onError,
+            Action<IMaybe<T>> onComplete, Action<IMaybe<T>> onUnSubscribe)
+        {
             var last = Nothing<T>();
 
             return source.Do(t =>
             {
                 last = Something(t);
                 onNext(t);
-            }, onError)
+            }, exception => onError(exception, last))
             .TakeLast(1)
-            .Subscribe(_ => { }, onError, () => onComplete(last))
+            .Subscribe(_ => { }, exception => onError(exception, last), () => onComplete(last))
             .DisposeWith(new AnonymousDisposable(() => onUnSubscribe(last)));
         }
 

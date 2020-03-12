@@ -18,6 +18,9 @@ namespace LiveLinq.List
     /// without having to maintain the entire state of the collection, which is what happens when you call .LiveLinq()
     /// on an ObservableCollection.
     /// </summary>
+    /// <remarks>
+    /// This class can be used for bindings, because it implements INotifyCollectionChanged.
+    /// </remarks>
     public class ObservableList<T> : ObservableListBase<T>
     {
         private ImmutableList<T> _internalList = ImmutableList<T>.Empty;
@@ -50,7 +53,13 @@ namespace LiveLinq.List
             lock (SyncRoot)
             {
                 if (Count > 0)
+                {
                     observer.OnNext(ListChangeStrict(CollectionChangeType.Add, 0, _internalList));
+                }
+                else
+                {
+                    observer.OnNext(Utility<T>.EmptyChange);
+                }
                 return _changes.Subscribe(observer);
             }
         }

@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Reactive.Linq;
 using System.Threading;
@@ -58,6 +60,119 @@ namespace LiveLinq.Tests
             result[0].Should().Be("test2");
         }
 
+        [TestMethod]
+        public void WhereVowels()
+        {
+            var collection1 = new ObservableList<string>()
+            {
+                "A",
+                "B",
+                "C",
+                "D",
+                "E"
+            };
+
+            var vowels = new ObservableList<string>()
+            {
+                "A",
+                "E",
+                "I",
+                "O",
+                "U"
+            };
+
+            var result = collection1.ToLiveLinq().Where(letter => vowels.Contains(letter)).ToReadOnlyObservableList();
+            result.Should().BeEquivalentTo("A", "E");
+        }
+        
+        [TestMethod]
+        public void WhereObservableVowels()
+        {
+            var collection1 = new ObservableList<string>()
+            {
+                "A",
+                "B",
+                "C",
+                "D",
+                "E"
+            };
+
+            var vowels = new ObservableList<string>()
+            {
+                "A",
+                "E",
+                "I",
+                "O",
+                "U"
+            };
+
+            var result = collection1.ToLiveLinq().Where(letter => Observable.Return(vowels.Contains(letter))).ToReadOnlyObservableList();
+            result.Should().BeEquivalentTo("A", "E");
+        }
+
+        [TestMethod]
+        public void InitialExcept()
+        {
+            var collection1 = new ObservableList<string>()
+            {
+                "A",
+                "B",
+                "C"
+            };
+
+            var collection2 = new ObservableList<string>()
+            {
+                "A"
+            };
+
+            var y = collection2.ToLiveLinq();
+            var result = collection1.ToLiveLinq().Where(item => 
+                y.Contains(item).Select(b =>
+                    !b)).ToReadOnlyObservableList();
+            result.Should().BeEquivalentTo("B", "C");
+        }
+        
+        [TestMethod]
+        public void InitialIntersect()
+        {
+            var collection1 = new ObservableList<string>()
+            {
+                "A",
+                "B",
+                "C"
+            };
+
+            var collection2 = new ObservableList<string>()
+            {
+                "A",
+                "G"
+            };
+
+            var result = collection1.ToLiveLinq().Intersect(collection2.ToLiveLinq()).ToReadOnlyObservableList();
+            result.Should().BeEquivalentTo("A");
+
+            collection2.Add("C");
+            result.Should().BeEquivalentTo("A", "C");
+        }
+        
+        [TestMethod]
+        public void Contains()
+        {
+            var collection1 = new ObservableList<string>()
+            {
+                "A",
+                "B",
+                "C"
+            };
+
+            var i = 0;
+            var x = collection1.ToLiveLinq().Contains("A")
+                .Do(x => i++)
+                .ToBehaviorSubject();
+            x.Value.Should().BeTrue();
+            i.Should().Be(2);
+        }
+        
         [TestMethod]
         public void SelectThenExcept()
         {

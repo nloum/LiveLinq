@@ -88,6 +88,23 @@ namespace LiveLinq.List
                 .ToLiveLinq();
         }
 
+        /// <remarks>
+        ///Note: when a list with 2 items has the first item removed, the only change event that is fired is the removal
+        /// of the first item. There is no change event explicitly indicating that the index of the second item changed from
+        /// 1 to 0, because supporting that feature would be extremely performance intensive. Therefore, the <see cref="IObservable{int}"/>
+        /// parameter to the selector should be used with caution.
+        /// </remarks>
+        public static IListChangesStrict<TResult> Select<TSource, TResult>(
+            this IListChangesStrict<TSource> source,
+            Func<TSource, int, TResult> selector)
+        {
+            return source
+                .SelectMany((src, index) => index.Select(idx => selector(src, idx)).Take(1).ToLiveLinq())
+                .AsObservable()
+                .Select(lc => ListChangeStrict(lc.Type, lc.Range, lc.Values))
+                .ToLiveLinq();
+        }
+
         #endregion
     }
 }

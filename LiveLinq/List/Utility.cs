@@ -15,11 +15,13 @@ namespace LiveLinq.List
 {
     internal static class Utility<T>
     {
-        public static IListChanges<T> Empty { get; }
+        public static IListChangesStrict<T> EmptyChanges { get; }
+        public static IListChangeStrict<T> EmptyChange { get; }
 
         static Utility()
         {
-            Empty = ImmutableList<T>.Empty.UnchangingLiveLinq();
+            EmptyChanges = ImmutableList<T>.Empty.UnchangingLiveLinq();
+            EmptyChange = Utility.ListChangeStrict<T>(CollectionChangeType.Add, 0);
         }
     }
 
@@ -102,7 +104,7 @@ namespace LiveLinq.List
         /// </summary>
         public static IListChanges<T> EmptyLiveLinqQuery<T>()
         {
-            return Utility<T>.Empty;
+            return Utility<T>.EmptyChanges;
         }
 
 

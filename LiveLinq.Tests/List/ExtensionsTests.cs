@@ -14,6 +14,7 @@ using LiveLinq.Ordered;
 using LiveLinq.Utility;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MoreCollections;
+using UtilityDisposables;
 
 namespace LiveLinq.Tests.List
 {
@@ -439,6 +440,7 @@ namespace LiveLinq.Tests.List
             var source1 = new ObservableCollection<string>(new[] { "test", string.Empty });
             var source2 = new ObservableCollection<string>(new[] { "test" });
             var synced = source1.ToLiveLinq().Except(source2.ToLiveLinq()).ToReadOnlyObservableList();
+            synced.Should().BeEquivalentTo(string.Empty);
             synced.Dispose();
             source1.Clear();
             synced.Should().BeEquivalentTo(string.Empty);
@@ -1165,16 +1167,16 @@ namespace LiveLinq.Tests.List
 
         #endregion
 
-        #region AttachDetach
+        #region Subscribe
         
         [TestMethod]
-        public void AttachDetach_Unsubscribe()
+        public void Subscribe_Unsubscribe()
         {
             var source = new ObservableCollection<BehaviorSubject<int>>();
             var output = new List<int>();
-            var mainDisposable = source.ToLiveLinq().AttachDetach(
-                (rp, i) => rp.Subscribe(output.Add),
-                (_, __, disp) => disp.Dispose());
+            var mainDisposable = source.ToLiveLinq().Subscribe(
+                (rp) => rp.Subscribe(output.Add),
+                (_, disp) => disp.Dispose());
             source.Add(new BehaviorSubject<int>(0));
             source[0].OnNext(1);
             var tmp = source[0];
@@ -1187,14 +1189,14 @@ namespace LiveLinq.Tests.List
         }
 
         [TestMethod]
-        public void AttachDetach_Clear()
+        public void Subscribe_Clear()
         {
             var source = new ObservableCollection<int>();
             var output = new List<int>();
 
-            using (source.ToLiveLinq().AttachDetach(
-                (val, i) => output.Add(val),
-                (val, __) => output.Remove(val)))
+            using (source.ToLiveLinq().Subscribe(
+                (val) => output.Add(val),
+                (val) => output.Remove(val)))
             {
                 source.Add(0);
                 source.Add(1);
@@ -1205,14 +1207,14 @@ namespace LiveLinq.Tests.List
         }
 
         [TestMethod]
-        public void AttachDetach_Remove()
+        public void Subscribe_Remove()
         {
             var source = new ObservableCollection<int>();
             var output = new List<int>();
 
-            using (source.ToLiveLinq().AttachDetach(
-                (val, i) => output.Add(val),
-                (val, __) => output.Remove(val)))
+            using (source.ToLiveLinq().Subscribe(
+                (val) => output.Add(val),
+                (val) => output.Remove(val)))
             {
                 source.Add(0);
                 source.Add(1);
@@ -1223,30 +1225,30 @@ namespace LiveLinq.Tests.List
         }
 
         [TestMethod]
-        public void AttachDetach_AddInitialState()
+        public void Subscribe_AddInitialState()
         {
             var source = new ObservableCollection<int>();
             var output = new List<int>();
             source.Add(0);
             source.Add(1);
 
-            using (source.ToLiveLinq().AttachDetach(
-                (val, i) => output.Add(val),
-                (val, __) => output.Remove(val)))
+            using (source.ToLiveLinq().Subscribe(
+                (val) => output.Add(val),
+                (val) => output.Remove(val)))
             {
                 output.Should().BeEquivalentTo(0, 1);
             }
         }
 
         [TestMethod]
-        public void AttachDetach_RemoveFinalState()
+        public void Subscribe_RemoveFinalState()
         {
             var source = new ObservableCollection<int>();
             var output = new List<int>();
 
-            using (source.ToLiveLinq().AttachDetach(
-                (val, i) => output.Add(val),
-                (val, __) => output.Remove(val)))
+            using (source.ToLiveLinq().Subscribe(
+                (val) => output.Add(val),
+                (val) => output.Remove(val)))
             {
                 source.Add(0);
                 source.Add(1);
@@ -1256,6 +1258,42 @@ namespace LiveLinq.Tests.List
             }
         }
 
+        [TestMethod]
+        public void Subscribe_AddIndicesShouldBeCorrect()
+        {
+            var source = new ObservableList<string>();
+            source.AddRange("a", "b", "c");
+
+            var result = new Dictionary<int, string>();
+            var items =
+                source.ToLiveLinq().Subscribe(
+                    (item, index) =>
+                    {
+                        result[index] = item;
+                    },
+                    (item, oldIndex, newIndex) =>
+                    {
+                        result[oldIndex].Should().Be(item);
+                        result.Remove(oldIndex);
+                        result.Add(newIndex, item);
+                    },
+                    (item, oldIndex, removalMove) =>
+                    {
+                        result[oldIndex].Should().Be(item);
+                        result.Remove(oldIndex);
+                    },
+                    true, true);
+            source.Add("d");
+            result.Count.Should().Be(4);
+            result[0].Should().Be("a");
+            result[1].Should().Be("b");
+            result[2].Should().Be("c");
+            result[3].Should().Be("d");
+            items.Dispose();
+
+            result.Should().BeEmpty();
+        }
+        
         #endregion
 
         #region Misc tests

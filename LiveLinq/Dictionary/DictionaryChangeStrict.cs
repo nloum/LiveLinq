@@ -30,7 +30,7 @@ namespace LiveLinq.Dictionary
             get
             {
                 if (_values == null)
-                    _values = new SelectReadOnlyList<IKeyValuePair<TKey, TValue>, TValue>(Items, x => x.Value);
+                    _values = new SelectReadOnlyList<IKeyValuePair<TKey, TValue>, TValue>(Items, (x, _) => x.Value);
                 return _values;
             }
         }
@@ -42,7 +42,7 @@ namespace LiveLinq.Dictionary
             get
             {
                 if (_keys == null)
-                    _keys = new SelectReadOnlyList<IKeyValuePair<TKey, TValue>, TKey>(Items, x => x.Key);
+                    _keys = new SelectReadOnlyList<IKeyValuePair<TKey, TValue>, TKey>(Items, (x, _) => x.Key);
                 return _keys;
             }
         }

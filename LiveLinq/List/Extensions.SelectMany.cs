@@ -68,11 +68,17 @@ namespace LiveLinq.List
                             change.Range,
                             change.Values.Select(
                                 (src, idx) =>
-                                selector(src, source.ItemIndices(change.Range.LowerBound.ChangeStrictness(false).Value + idx))));
+                                {
+                                    var startIndex = change.Range.LowerBound.ChangeStrictness(false).Value +
+                                                     idx;
+                                    return selector(src,
+                                        source.ItemIndices(startIndex));
+                                }));
                     return ListRemove<IListChanges<TResult>>(change.Range);
                 });
 
-            var result = Observable.Create((IObserver<IListChange<TResult>> observer) => SelectManySubscribe(results, observer));
+            var result = Observable.Create((IObserver<IListChange<TResult>> observer) =>
+                SelectManySubscribe(results, observer));
             return result.ToLiveLinq();
         }
 

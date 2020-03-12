@@ -29,7 +29,9 @@ namespace LiveLinq.List
         /// </summary>
         public static IObservable<bool> Contains<T>(this IListChanges<T> source, T item)
         {
-            return source.Where(t => t.Equals(item)).Count().Select(count => count > 0).DistinctUntilChanged();
+            return Observable.Return(false).Concat(source.Where(t =>
+                t.Equals(item)).Count().Select(count =>
+                    count > 0)).DistinctUntilChanged();
         }
 
         /// <summary>

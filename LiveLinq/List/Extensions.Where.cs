@@ -28,8 +28,8 @@ namespace LiveLinq.List
             this IListChanges<TSource> source,
             Func<TSource, bool> selector)
         {
-            return source.SelectMany(src => Observable.Return(selector(src)
-                    ? Something(src) : Nothing<TSource>()).ToLiveLinq());
+            return source.SelectMany(src =>
+                Observable.Return(selector(src) ? Something(src) : Nothing<TSource>()).ToLiveLinq());
         }
 
         public static IListChanges<TSource> Where<TSource>(
