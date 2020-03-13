@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using static LiveLinq.Utility;
 
 namespace LiveLinq.Set
 {
@@ -23,12 +21,12 @@ namespace LiveLinq.Set
 
         public ISetChanges<TTarget> Cast<TTarget>()
         {
-            return _source.Cast<ISetChange<TTarget>>().ToLiveLinq();
+            return _source.Select(x => SetChange(x.Type, x.Values.Cast<TTarget>())).ToLiveLinq();
         }
 
         public ISetChanges<TTarget> OfType<TTarget>()
         {
-            return _source.OfType<ISetChange<TTarget>>().ToLiveLinq();
+            return this.Where(x => x is TTarget).AsObservable().Select(x => SetChange(x.Type, x.Values.Cast<TTarget>())).ToLiveLinq();
         }
     }
 }
