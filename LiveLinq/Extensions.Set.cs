@@ -7,11 +7,58 @@ using System.Threading.Tasks;
 using LiveLinq.Core;
 using LiveLinq.Dictionary;
 using LiveLinq.Set;
+using static LiveLinq.Utility;
 
 namespace LiveLinq
 {
     public static partial class Extensions
     {
+        public static ISetChanges<T> UnchangingSetLiveLinq<T>(this IEnumerable<T> items)
+        {
+            return Observable.Return(SetChange(CollectionChangeType.Add, items)).ToLiveLinq();
+        }
+        
+        /// <summary>
+        /// Creates an observable event stream where each event is the new state of the LiveLinq query and
+        /// the most recent change.
+        /// </summary>
+        public static IObservable<SetStateAndChange<T>> ToObservableStateAndChange<T>(this ISetChanges<T> source)
+        {
+            return source.AsObservable().Scan(new SetStateAndChange<T>(), (state, change) => state.Mutate(change));
+        }
+
+        /// <summary>
+        /// Applies the Set change to the specified <see cref="ImmutableSet{T}"/>.
+        /// </summary>
+        public static SetStateAndChange<T> Mutate<T>(this SetStateAndChange<T> subject, ISetChange<T> change)
+        {
+            switch (change.Type)
+            {
+                case CollectionChangeType.Add:
+                {
+                    var newState = subject.State;
+                    foreach (var item in change.Values)
+                    {
+                        newState = newState.Add(item);
+                    }
+                    var result = new SetStateAndChange<T>(newState, change);
+                    return result;
+                }
+                case CollectionChangeType.Remove:
+                {
+                    var newState = subject.State;
+                    foreach (var item in change.Values)
+                    {
+                        newState = newState.Remove(item);
+                    }
+                    var result = new SetStateAndChange<T>(newState, change);
+                    return result;
+                }
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+        
         public static ISetChanges<TKey> Keys<TKey, TValue>(this IDictionaryChanges<TKey, TValue> dictionaryChanges)
         {
             return dictionaryChanges.AsObservable().Select(dictionaryChange =>

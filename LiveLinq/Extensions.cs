@@ -74,6 +74,19 @@ namespace LiveLinq
             return result;
         }
 
+        public static IObservableSubscriptionWithLatestValue<T> SubscribeWithLatestValue<T>(this IObservable<T> observable, Action<T> onNext)
+        {
+            var disposableCollector = new DisposableCollector();
+            var result = new ObservableSubscriptionWithLatestValue<T>(disposableCollector);
+            var subscription = observable.Subscribe(t =>
+            {
+                result.LatestValue = t.ToMaybe();
+                onNext(t);
+            });
+            disposableCollector.Disposes(subscription);
+            return result;
+        }
+
         public static IReadOnlyList<IKeyValuePair<TKey, TValue>> KeysAndValues<TKey, TValue>(
             this IKeyedCollectionChange<TKey, TValue> source)
         {

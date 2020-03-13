@@ -4,18 +4,18 @@ using MoreCollections;
 
 namespace LiveLinq.List
 {
-    public class StateAndChange<T>
+    public class ListStateAndChange<T>
     {
         public ImmutableList<T> State { get; }
         public IListChangeStrict<T> MostRecentChange { get; }
 
-        internal StateAndChange(ImmutableList<T> state, IListChangeStrict<T> mostRecentChange)
+        internal ListStateAndChange(ImmutableList<T> state, IListChangeStrict<T> mostRecentChange)
         {
             this.State = state;
             this.MostRecentChange = mostRecentChange;
         }
 
-        public StateAndChange()
+        public ListStateAndChange()
         {
             this.State = ImmutableList<T>.Empty;
         }

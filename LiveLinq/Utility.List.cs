@@ -21,7 +21,7 @@ namespace LiveLinq
 
         static Utility()
         {
-            EmptyChanges = ImmutableList<T>.Empty.UnchangingLiveLinq();
+            EmptyChanges = ImmutableList<T>.Empty.UnchangingListLiveLinq();
             EmptyChange = Utility.ListChangeStrict<T>(CollectionChangeType.Add, 0);
         }
     }

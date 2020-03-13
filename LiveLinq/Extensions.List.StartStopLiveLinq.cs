@@ -50,21 +50,21 @@ namespace LiveLinq
         /// Creates an observable event stream where each event is the new state of the LiveLinq query and
         /// the most recent change.
         /// </summary>
-        public static IObservable<StateAndChange<T>> ToObservableStateAndChange<T>(this IListChanges<T> source)
+        public static IObservable<ListStateAndChange<T>> ToObservableStateAndChange<T>(this IListChanges<T> source)
         {
-            return source.AsObservable().Scan(new StateAndChange<T>(), (state, change) => state.Mutate(change));
+            return source.AsObservable().Scan(new ListStateAndChange<T>(), (state, change) => state.Mutate(change));
         }
 
         /// <summary>
         /// Applies the list change to the specified <see cref="ImmutableList{T}"/>.
         /// </summary>
-        public static StateAndChange<T> Mutate<T>(this StateAndChange<T> subject, IListChange<T> change)
+        public static ListStateAndChange<T> Mutate<T>(this ListStateAndChange<T> subject, IListChange<T> change)
         {
             switch (change.Type)
             {
                 case CollectionChangeType.Add:
                     {
-                        var result = new StateAndChange<T>(subject.State.InsertRange(change.Range.LowerBound.Value, change.Values), ListChangeStrict(change.Type, change.Range, change.Values));
+                        var result = new ListStateAndChange<T>(subject.State.InsertRange(change.Range.LowerBound.Value, change.Values), ListChangeStrict(change.Type, change.Range, change.Values));
                         return result;
                     }
                 case CollectionChangeType.Remove:
@@ -72,7 +72,7 @@ namespace LiveLinq
                         IListChangeStrict<T> newChange;
                         if (!change.Values.Any()) newChange = ListChangeStrict(CollectionChangeType.Remove, change.Range, subject.State.GetRange(change.Range));
                         else newChange = ListChangeStrict(CollectionChangeType.Remove, change.Range, change.Values);
-                        var result = new StateAndChange<T>(subject.State.RemoveRange(change.Range), newChange);
+                        var result = new ListStateAndChange<T>(subject.State.RemoveRange(change.Range), newChange);
                         return result;
                     }
                 default:
@@ -317,7 +317,7 @@ namespace LiveLinq
         ///     are very important.
         ///     This extension method produces an IListChanges that never sends collection changed events.
         /// </summary>
-        public static IListChangesStrict<TElement> UnchangingLiveLinq<TElement>(this IEnumerable<TElement> source)
+        public static IListChangesStrict<TElement> UnchangingListLiveLinq<TElement>(this IEnumerable<TElement> source)
         {
             return Observable.Return(source).ToLiveLinq();
         }

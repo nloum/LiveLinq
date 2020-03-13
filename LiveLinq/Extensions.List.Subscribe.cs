@@ -165,7 +165,7 @@ namespace LiveLinq
             bool moveBeforeAdd, bool moveBeforeRemove)
         {
             return source
-                .AsObservable().Scan(new StateAndChange<Tuple<T, TState>>[0], (state, change) =>
+                .AsObservable().Scan(new ListStateAndChange<Tuple<T, TState>>[0], (state, change) =>
                 {
                     if (state.Length == 0)
                     {
@@ -183,7 +183,7 @@ namespace LiveLinq
 
                         return new[]
                         {
-                            new StateAndChange<Tuple<T, TState>>(values, modifiedChange)
+                            new ListStateAndChange<Tuple<T, TState>>(values, modifiedChange)
                         };
                     }
                     else
@@ -238,10 +238,10 @@ namespace LiveLinq
                             }
                         }
 
-                        return new StateAndChange<Tuple<T, TState>>[]
+                        return new ListStateAndChange<Tuple<T, TState>>[]
                         {
                             mostRecentState,
-                            new StateAndChange<Tuple<T, TState>>(newState, newChange),
+                            new ListStateAndChange<Tuple<T, TState>>(newState, newChange),
                         };
                     }
                 }).Subscribe(_ => { }, (exception, maybeData) =>
