@@ -49,14 +49,6 @@ namespace LiveLinq
             return source.Subscribe((t, index) => onAdd(t), (item, state, oldIndex, newIndex) => { }, (t, state, index, removalMode) => onRemove(t, state), true, true);
         }
 
-        public enum RemovalMode
-        {
-            Removal,
-            Unsubscribe,
-            Complete,
-            Error
-        }
-
         /// <summary>
         /// Utility method that calls <see cref="onAdd"/> when an item is added to the LiveLinq query. and <see cref="onRemove"/>
         /// when an item is removed from a LiveLinq query. The second parameter to the <see cref="onRemove"/> method is
@@ -80,6 +72,25 @@ namespace LiveLinq
                 (item, state, oldIndex, newIndex) => onMove(item, oldIndex, newIndex),
                 (item, state, oldIndex, removalMode) => onRemove(item, oldIndex, removalMode),
                 moveBeforeAdd, moveBeforeRemove);
+        }
+
+        /// <summary>
+        /// Utility method that calls <see cref="onAdd"/> when an item is added to the LiveLinq query. and <see cref="onRemove"/>
+        /// when an item is removed from a LiveLinq query. The second parameter to the <see cref="onRemove"/> method is
+        /// what was returned by <see cref="onAdd"/> when the item was added.
+        /// The first event in a LiveLinq query is the initial state of the list; so, <see cref="onAdd"/> is called first
+        /// for every item that was already in the query.
+        /// </summary>
+        public static IDisposable Subscribe<T, TState>(
+            this IListChangesStrict<T> source,
+            Func<T, int, TState> onAdd,
+            Action<T, TState, int, int> onMove,
+            Action<T, TState, int> onRemove,
+            bool moveBeforeAdd, bool moveBeforeRemove)
+        {
+            return source.Subscribe(onAdd, onMove,
+                (item, state, oldIndex, removalMode) => onRemove(item, state, oldIndex), moveBeforeAdd,
+                moveBeforeRemove);
         }
         
         /// <summary>
@@ -120,6 +131,23 @@ namespace LiveLinq
                     }
                 },
                 moveBeforeAdd, moveBeforeRemove);
+        }
+
+        /// <summary>
+        /// Utility method that calls <see cref="onAdd"/> when an item is added to the LiveLinq query. and <see cref="onRemove"/>
+        /// when an item is removed from a LiveLinq query. The second parameter to the <see cref="onRemove"/> method is
+        /// what was returned by <see cref="onAdd"/> when the item was added.
+        /// The first event in a LiveLinq query is the initial state of the list; so, <see cref="onAdd"/> is called first
+        /// for every item that was already in the query.
+        /// </summary>
+        public static IDisposable Subscribe<T, TState>(
+            this IListChangesStrict<T> source,
+            Func<IReadOnlyList<T>, INumberRange<int>, ImmutableList<Tuple<T, TState>>> onAdd,
+            Action<IReadOnlyList<Tuple<T, TState>>, INumberRange<int>, INumberRange<int>> onMove,
+            Action<IReadOnlyList<Tuple<T, TState>>, INumberRange<int>> onRemove,
+            bool moveBeforeAdd, bool moveBeforeRemove)
+        {
+            return source.Subscribe(onAdd, onMove,(items, oldRange, removalMode) => onRemove(items, oldRange), moveBeforeAdd, moveBeforeRemove);
         }
         
         /// <summary>

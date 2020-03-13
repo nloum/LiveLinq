@@ -9,6 +9,7 @@ using GenericNumbers;
 using MoreCollections;
 using LiveLinq.Core;
 using LiveLinq.List;
+using UtilityDisposables;
 using static MoreCollections.Utility;
 
 namespace LiveLinq
@@ -17,6 +18,62 @@ namespace LiveLinq
     {
         #region Misc
         
+        private class ObservableSubscriptionWithLatestValue<T> : IObservableSubscriptionWithLatestValue<T>
+        {
+            private readonly IDisposable _disposable;
+
+            public ObservableSubscriptionWithLatestValue(IDisposable disposable)
+            {
+                _disposable = disposable;
+            }
+
+            public IMaybe<T> LatestValue { get; set; }
+
+            public void Dispose()
+            {
+                _disposable.Dispose();
+            }
+        }
+
+        public static IObservableSubscriptionWithLatestValue<T> SubscribeWithLatestValue<T>(this IObservable<T> observable, Action<T> onNext, Action<Exception> onError, Action onComplete)
+        {
+            var disposableCollector = new DisposableCollector();
+            var result = new ObservableSubscriptionWithLatestValue<T>(disposableCollector);
+            var subscription = observable.Subscribe(t =>
+            {
+                result.LatestValue = t.ToMaybe();
+                onNext(t);
+            }, onError, onComplete);
+            disposableCollector.Disposes(subscription);
+            return result;
+        }
+        
+        public static IObservableSubscriptionWithLatestValue<T> SubscribeWithLatestValue<T>(this IObservable<T> observable, Action<T> onNext, Action<Exception> onError)
+        {
+            var disposableCollector = new DisposableCollector();
+            var result = new ObservableSubscriptionWithLatestValue<T>(disposableCollector);
+            var subscription = observable.Subscribe(t =>
+            {
+                result.LatestValue = t.ToMaybe();
+                onNext(t);
+            }, onError);
+            disposableCollector.Disposes(subscription);
+            return result;
+        }
+
+        public static IObservableSubscriptionWithLatestValue<T> SubscribeWithLatestValue<T>(this IObservable<T> observable, Action<T> onNext, Action onComplete)
+        {
+            var disposableCollector = new DisposableCollector();
+            var result = new ObservableSubscriptionWithLatestValue<T>(disposableCollector);
+            var subscription = observable.Subscribe(t =>
+            {
+                result.LatestValue = t.ToMaybe();
+                onNext(t);
+            }, onComplete);
+            disposableCollector.Disposes(subscription);
+            return result;
+        }
+
         public static IReadOnlyList<IKeyValuePair<TKey, TValue>> KeysAndValues<TKey, TValue>(
             this IKeyedCollectionChange<TKey, TValue> source)
         {
