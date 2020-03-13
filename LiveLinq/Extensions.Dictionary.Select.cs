@@ -1,10 +1,10 @@
 using System;
 using System.Reactive.Linq;
-
+using LiveLinq.Dictionary;
 using MoreCollections;
 using static MoreCollections.Utility;
 
-namespace LiveLinq.Dictionary
+namespace LiveLinq
 {
     public static partial class Extensions
     {

@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Reactive.Linq;
+using LiveLinq.List;
 
-namespace LiveLinq.List
+namespace LiveLinq
 {
     public static partial class Extensions
     {

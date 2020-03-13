@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Reactive.Linq;
+using LiveLinq.List;
 using static SimpleMonads.Utility;
 
-namespace LiveLinq.List
+namespace LiveLinq
 {
     public static partial class Extensions
     {

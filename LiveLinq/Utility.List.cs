@@ -8,12 +8,13 @@ using SimpleMonads;
 using GenericNumbers;
 using MoreCollections;
 using LiveLinq.Core;
+using LiveLinq.List;
 using static MoreCollections.Utility;
 using static GenericNumbers.NumbersUtility;
 
-namespace LiveLinq.List
+namespace LiveLinq
 {
-    internal static class Utility<T>
+    internal static partial class Utility<T>
     {
         public static IListChangesStrict<T> EmptyChanges { get; }
         public static IListChangeStrict<T> EmptyChange { get; }
@@ -25,7 +26,7 @@ namespace LiveLinq.List
         }
     }
 
-    public static class Utility
+    public static partial class Utility
     {
         /// <summary>
         /// This function is analogous to the indexing method of <see cref="List{T}"/>, except it returns

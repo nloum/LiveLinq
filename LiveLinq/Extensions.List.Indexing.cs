@@ -4,10 +4,10 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using LiveLinq.List;
 using SimpleMonads;
 
-namespace LiveLinq.List
+namespace LiveLinq
 {
     public static partial class Extensions
     {

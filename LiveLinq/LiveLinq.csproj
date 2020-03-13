@@ -6,16 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Set\Extensions.Concat.cs" />
-    <Compile Remove="Set\Extensions.Select.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="Set\Extensions.Concat.cs" />
-    <None Include="Set\Extensions.Select.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="GenericNumbers" Version="1.0.0-beta002" />
     <PackageReference Include="MoreCollections" Version="1.0.0-beta003" />
     <PackageReference Include="System.Reactive" Version="4.3.2" />

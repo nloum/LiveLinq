@@ -2,16 +2,13 @@ using System;
 using System.Linq;
 using System.Reactive.Linq;
 using UtilityDisposables;
-
-
 using GenericNumbers;
 using static GenericNumbers.NumbersUtility;
-
-using MoreCollections;
 using LiveLinq.Core;
-using static LiveLinq.List.Utility;
+using LiveLinq.List;
+using static LiveLinq.Utility;
 
-namespace LiveLinq.List
+namespace LiveLinq
 {
     public static partial class Extensions
     {

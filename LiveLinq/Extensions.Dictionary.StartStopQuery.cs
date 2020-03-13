@@ -5,13 +5,13 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using LiveLinq.Dictionary;
 using SimpleMonads;
 using MoreCollections;
 using LiveLinq.List;
 using static MoreCollections.Utility;
 
-namespace LiveLinq.Dictionary
+namespace LiveLinq
 {
     public static partial class Extensions
     {

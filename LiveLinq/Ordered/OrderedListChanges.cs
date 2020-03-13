@@ -49,8 +49,8 @@ namespace LiveLinq.Ordered
             });
         }
 
-        IObservable<IMaybe<T>> IListChanges<T>.this[int index] => List.Utility.GetAtIndex(this, index);
+        IObservable<IMaybe<T>> IListChanges<T>.this[int index] => Utility.GetAtIndex(this, index);
 
-        IObservable<IMaybe<T>> IListChanges<T>.this[IObservable<int> index] => List.Utility.GetAtIndex(this, index);
+        IObservable<IMaybe<T>> IListChanges<T>.this[IObservable<int> index] => Utility.GetAtIndex(this, index);
     }
 }

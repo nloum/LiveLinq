@@ -3,11 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Collections.Specialized;
-using System.Linq;
 using System.Reactive.Subjects;
-using MoreCollections;
 using LiveLinq.Core;
-using static LiveLinq.List.Utility;
+using static LiveLinq.Utility;
 
 namespace LiveLinq.List
 {

@@ -1,18 +1,14 @@
 ﻿using System;
-using System.Collections.Immutable;
 using System.Linq;
 using System.Reactive.Linq;
-
-using SimpleMonads;
-using LiveLinq.Ordered;
-
 using MoreCollections;
 using LiveLinq.Core;
+using LiveLinq.Dictionary;
 using LiveLinq.List;
 using static MoreCollections.Utility;
-using static LiveLinq.List.Utility;
+using static LiveLinq.Utility;
 
-namespace LiveLinq.Dictionary
+namespace LiveLinq
 {
     public static partial class Extensions
     {

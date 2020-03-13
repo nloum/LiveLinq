@@ -1,21 +1,17 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Reactive.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using SimpleMonads;
-using GenericNumbers;
 using MoreCollections;
 using LiveLinq.Core;
-using static LiveLinq.List.Utility;
+using LiveLinq.List;
+using static LiveLinq.Utility;
 
-namespace LiveLinq.List
+namespace LiveLinq
 {
     public static partial class Extensions
     {

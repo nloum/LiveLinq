@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Reactive.Linq;
 using System.Reactive.Subjects;
-
-using SimpleMonads;
 using GenericNumbers.Relational;
 using MoreCollections;
 using LiveLinq.Core;
 using LiveLinq.List;
-using static LiveLinq.List.Utility;
+using static LiveLinq.Utility;
 using static MoreCollections.Utility;
 
 namespace LiveLinq.Dictionary

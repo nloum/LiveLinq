@@ -8,11 +8,12 @@ using LiveLinq.List;
 
 using MoreCollections;
 using LiveLinq.Core;
+using LiveLinq.Dictionary;
 using static SimpleMonads.Utility;
 
-namespace LiveLinq.Dictionary
+namespace LiveLinq
 {
-    public class Utility
+    public partial class Utility
     {
         /// <summary>
         /// This function is analogous to the indexing method of <see cref="List{T}"/>, except it returns

@@ -1,8 +1,7 @@
 using System.Collections.Immutable;
 using System.Linq;
-using MoreCollections;
 using LiveLinq.Core;
-using static LiveLinq.Dictionary.Utility;
+using static LiveLinq.Utility;
 
 namespace LiveLinq.Dictionary
 {

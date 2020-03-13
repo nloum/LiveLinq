@@ -5,13 +5,12 @@ using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using GenericNumbers;
-using UtilityDisposables;
-using MoreCollections;
 using LiveLinq.Core;
-using LiveLinq.Utility;
+using LiveLinq.List;
+using MoreCollections;
 using SimpleMonads;
 
-namespace LiveLinq.List
+namespace LiveLinq
 {
     /// <summary>
     /// Static class that contains core extension methods for LiveLinq

@@ -8,9 +8,9 @@ using MoreCollections;
 
 using static SimpleMonads.Utility;
 
-namespace LiveLinq.Utility
+namespace LiveLinq
 {
-    public static class Extensions
+    public static partial class Extensions
     {
         /// <summary>
         /// Like the normal Reactive Extensions Subscribe method, except the OnCompleteOrUnsubscribe callback will be called when the event stream is unsubscribed from

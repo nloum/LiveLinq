@@ -7,14 +7,9 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading;
 using FluentAssertions;
-
 using LiveLinq.List;
-using LiveLinq.Dictionary;
-using LiveLinq.Ordered;
-using LiveLinq.Utility;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MoreCollections;
-using UtilityDisposables;
 
 namespace LiveLinq.Tests.List
 {

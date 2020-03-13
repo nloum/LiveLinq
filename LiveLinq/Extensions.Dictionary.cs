@@ -18,7 +18,7 @@ using LiveLinq.Core;
 using LiveLinq.List;
 using LiveLinq.Set;
 
-namespace LiveLinq.Dictionary
+namespace LiveLinq
 {
     public static partial class Extensions
     {

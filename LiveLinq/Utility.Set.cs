@@ -5,10 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LiveLinq.Core;
+using LiveLinq.Set;
 
-namespace LiveLinq.Set
+namespace LiveLinq
 {
-    public static class Utility
+    public static partial class Utility
     {
         public static ISetChange<T> SetChange<T>(CollectionChangeType type, params T[] elements)
         {

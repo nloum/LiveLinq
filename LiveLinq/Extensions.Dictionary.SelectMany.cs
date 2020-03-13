@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Reactive.Linq;
+using LiveLinq.Dictionary;
 using LiveLinq.Ordered;
 using LiveLinq.List;
 
-namespace LiveLinq.Dictionary
+namespace LiveLinq
 {
     public partial class Extensions
     {

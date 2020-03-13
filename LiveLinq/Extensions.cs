@@ -13,7 +13,7 @@ using static MoreCollections.Utility;
 
 namespace LiveLinq
 {
-    public static class Extensions
+    public static partial class Extensions
     {
         #region Misc
         
@@ -274,7 +274,7 @@ namespace LiveLinq
         /// </summary>
         public static IListChanges<T> OtherwiseEmpty<T>(this IMaybe<IListChanges<T>> source)
         {
-            return source.Otherwise(List.Utility.EmptyLiveLinqQuery<T>());
+            return source.Otherwise(Utility.EmptyLiveLinqQuery<T>());
         }
 
         #region Sync to a list that is readable and writeable and doesn't have change notifications

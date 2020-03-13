@@ -1,12 +1,8 @@
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Reactive.Linq;
 using System.Threading;
 using FluentAssertions;
-
 using LiveLinq.List;
-using LiveLinq.Utility;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace LiveLinq.Tests

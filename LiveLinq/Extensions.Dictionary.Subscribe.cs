@@ -2,11 +2,10 @@ using System;
 using System.Collections.Immutable;
 using System.Reactive;
 using System.Reactive.Linq;
-using LiveLinq.Utility;
-using MoreCollections;
 using LiveLinq.Core;
+using LiveLinq.Dictionary;
 
-namespace LiveLinq.Dictionary
+namespace LiveLinq
 {
     public static partial class Extensions
     {

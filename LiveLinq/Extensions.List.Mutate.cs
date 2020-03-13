@@ -4,8 +4,9 @@ using System.Collections.Immutable;
 using GenericNumbers;
 using MoreCollections;
 using LiveLinq.Core;
+using LiveLinq.List;
 
-namespace LiveLinq.List
+namespace LiveLinq
 {
     public static partial class Extensions
     {

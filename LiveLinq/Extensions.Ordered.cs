@@ -2,21 +2,19 @@
 using System.Collections.Immutable;
 using System.Linq;
 using System.Reactive.Linq;
-using System.Reactive.Subjects;
 using MoreCollections;
-using static LiveLinq.List.Utility;
-
+using static LiveLinq.Utility;
 using GenericNumbers.Relational;
 using LiveLinq.Core;
 using LiveLinq.Dictionary;
 using LiveLinq.List;
+using LiveLinq.Ordered;
 using LiveLinq.Set;
 using static MoreCollections.Utility;
-using static LiveLinq.Dictionary.Utility;
 
-namespace LiveLinq.Ordered
+namespace LiveLinq
 {
-    public static class Extensions
+    public static partial class Extensions
     {
         #region List
 
@@ -263,30 +261,18 @@ namespace LiveLinq.Ordered
             }
         }
 
-        private static IObservable<IKeyValuePair<TKey, TValue>> CombineLatestKeysAndValues<T, TKey, TValue>(
-            T t,
-            IObservable<int> idx,
-            Func<T, IObservable<int>, IObservable<TKey>> keySelector,
-            Func<T, IObservable<int>, IObservable<TValue>> valueSelector)
-        {
-            return Observable.CombineLatest(
-                keySelector(t, idx),
-                valueSelector(t, idx),
-                (key, value) => KeyValuePair(key, value));
-        }
-
         #endregion
 
         private static IOrderedListChanges<TSource> Sort<TSource>(this IObservable<IListChangeStrict<TSource>> source, Func<TSource, TSource, int> comparer)
         {
             return new OrderedListChanges<TSource>(source.AsObservable().Scan(
-                new StateAndChange<TSource>(),
+                new OrderedStateAndChange<TSource>(),
                 (state, change) => state.SortedMutate(change, comparer))
                 .Select(sac => sac.MostRecentChanges.ToObservable()).Concat(),
                 comparer);
         }
 
-        private class StateAndChange<TSource>
+        private class OrderedStateAndChange<TSource>
         {
             public ImmutableList<TSource> Items { get; }
             public ImmutableList<IListChangeStrict<TSource>> MostRecentChanges { get; }
@@ -296,14 +282,14 @@ namespace LiveLinq.Ordered
             /// </summary>
             public ImmutableDictionary<int, int> IndexMap { get; }
 
-            public StateAndChange()
+            public OrderedStateAndChange()
             {
                 Items = ImmutableList<TSource>.Empty;
                 this.IndexMap = ImmutableDictionary<int, int>.Empty;
                 this.MostRecentChanges = ImmutableList<IListChangeStrict<TSource>>.Empty;
             }
 
-            public StateAndChange(ImmutableList<TSource> items, ImmutableDictionary<int, int> indexMap, ImmutableList<IListChangeStrict<TSource>> mostRecentChanges)
+            public OrderedStateAndChange(ImmutableList<TSource> items, ImmutableDictionary<int, int> indexMap, ImmutableList<IListChangeStrict<TSource>> mostRecentChanges)
             {
                 this.Items = items;
                 this.IndexMap = indexMap;
@@ -311,7 +297,7 @@ namespace LiveLinq.Ordered
             }
         }
 
-        private static StateAndChange<TSource> SortedMutate<TSource>(this StateAndChange<TSource> subject, IListChangeStrict<TSource> change, Func<TSource, TSource, int> comparer)
+        private static OrderedStateAndChange<TSource> SortedMutate<TSource>(this OrderedStateAndChange<TSource> subject, IListChangeStrict<TSource> change, Func<TSource, TSource, int> comparer)
         {
             switch (change.Type)
             {
@@ -331,7 +317,7 @@ namespace LiveLinq.Ordered
                             indexMap = indexMap.Add(originalIndex, index);
                             originalIndex++;
                         }
-                        return new StateAndChange<TSource>(newItems, indexMap, newChanges);
+                        return new OrderedStateAndChange<TSource>(newItems, indexMap, newChanges);
                     }
                 case CollectionChangeType.Remove:
                     {
@@ -349,7 +335,7 @@ namespace LiveLinq.Ordered
                             indexMap = indexMap.Remove(originalIndex);
                             originalIndex++;
                         }
-                        return new StateAndChange<TSource>(newItems.ToImmutableList(), indexMap, newChanges.ToImmutableList());
+                        return new OrderedStateAndChange<TSource>(newItems.ToImmutableList(), indexMap, newChanges.ToImmutableList());
                     }
                 default:
                     throw new NotImplementedException();

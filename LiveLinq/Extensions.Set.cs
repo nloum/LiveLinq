@@ -6,8 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using LiveLinq.Core;
 using LiveLinq.Dictionary;
+using LiveLinq.Set;
 
-namespace LiveLinq.Set
+namespace LiveLinq
 {
     public static partial class Extensions
     {
