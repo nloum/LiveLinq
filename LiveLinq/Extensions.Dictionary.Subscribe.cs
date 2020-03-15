@@ -11,20 +11,20 @@ namespace LiveLinq
     {
         public static IDisposable Subscribe<TKey, TValue>(
             this IDictionaryChanges<TKey, TValue> source,
-            Action<TKey, TValue> attach,
-            Action<TKey, TValue> detach)
+            Action<TKey, TValue> onAdd,
+            Action<TKey, TValue> onRemove)
         {
             return source.Subscribe((key, value) =>
             {
-                attach(key, value);
+                onAdd(key, value);
                 return Unit.Default;
-            }, (key, value, _) => detach(key, value));
+            }, (key, value, _) => onRemove(key, value));
         }
 
         public static IDisposable Subscribe<TKey, TValue, TState>(
             this IDictionaryChanges<TKey, TValue> source,
-            Func<TKey, TValue, TState> attach,
-            Action<TKey, TValue, TState> detach)
+            Func<TKey, TValue, TState> onAdd,
+            Action<TKey, TValue, TState> onRemove)
         {
             return source.AsObservable()
                 .Select(change => change.Itemize().ToObservable())
@@ -36,11 +36,11 @@ namespace LiveLinq
                         if (change.Type == CollectionChangeType.Add)
                         {
                             var value = change.Items[0].Value;
-                            return state.Add(key, Tuple.Create(value, attach(key, value)));
+                            return state.Add(key, Tuple.Create(value, onAdd(key, value)));
                         }
                         else
                         {
-                            detach(key, state[key].Item1, state[key].Item2);
+                            onRemove(key, state[key].Item1, state[key].Item2);
                             return state.Remove(key);
                         }
                         throw new NotImplementedException($"Unknown collection change type: {change.Type}");
@@ -51,7 +51,7 @@ namespace LiveLinq
                     {
                         foreach (var item in last)
                         {
-                            detach(item.Key, item.Value.Item1, item.Value.Item2);
+                            onRemove(item.Key, item.Value.Item1, item.Value.Item2);
                         }
                     }
                 });

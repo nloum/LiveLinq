@@ -33,9 +33,9 @@ namespace LiveLinq
         /// one event, and its one parameter will be the last event.
         /// </summary>
         public static IDisposable Subscribe<T>(this IObservable<T> source, Action<T> onNext, Action<Exception> onError,
-            Action<IMaybe<T>> onComplete, Action<IMaybe<T>> onUnSubscribe)
+            Action<IMaybe<T>> onComplete, Action<IMaybe<T>> onUnsubscribe)
         {
-            return source.Subscribe(onNext, (exception, last) => onError(exception), onComplete, onUnSubscribe);
+            return source.Subscribe(onNext, (exception, last) => onError(exception), onComplete, onUnsubscribe);
         }
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace LiveLinq
         /// one event, and its one parameter will be the last event.
         /// </summary>
         public static IDisposable Subscribe<T>(this IObservable<T> source, Action<T> onNext, Action<Exception, IMaybe<T>> onError,
-            Action<IMaybe<T>> onComplete, Action<IMaybe<T>> onUnSubscribe)
+            Action<IMaybe<T>> onComplete, Action<IMaybe<T>> onUnsubscribe)
         {
             var last = Nothing<T>();
 
@@ -54,7 +54,7 @@ namespace LiveLinq
             }, exception => onError(exception, last))
             .TakeLast(1)
             .Subscribe(_ => { }, exception => onError(exception, last), () => onComplete(last))
-            .DisposeWith(new AnonymousDisposable(() => onUnSubscribe(last)));
+            .DisposeWith(new AnonymousDisposable(() => onUnsubscribe(last)));
         }
 
         public static IObservable<T> OnUnsubscribe<T>(this IObservable<T> source, Action<IMaybe<T>> onUnsubscribe)
