@@ -11,6 +11,11 @@ namespace LiveLinq
 {
     public static partial class Utility
     {
+        public static ISetChange<T> EmptySetChange<T>(CollectionChangeType type = CollectionChangeType.Add)
+        {
+            return new SetChange<T>(type, ImmutableList<T>.Empty);
+        }
+        
         public static ISetChange<T> SetChange<T>(CollectionChangeType type, params T[] elements)
         {
             return new SetChange<T>(type, elements.ToImmutableList());

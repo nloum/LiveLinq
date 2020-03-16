@@ -33,7 +33,7 @@ namespace LiveLinq.Set
             var elementsList = elements.ToImmutableArray();
             foreach (var item in elementsList)
             {
-                _source.Add(item);
+                _source.Remove(item);
             }
             _setChanges.OnNext(Utility.SetChange<T>(Core.CollectionChangeType.Remove, elementsList));
         }

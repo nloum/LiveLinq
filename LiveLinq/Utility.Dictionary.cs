@@ -59,6 +59,42 @@ namespace LiveLinq
 
         #region Dictionary changes
 
+        #region Add or remove
+        
+        /// <summary>
+        /// Create a <see cref="IDictionaryChange{TKey,TValue}"/> object that represents adding items to a dictionary.
+        /// </summary>
+        public static IDictionaryChangeStrict<TKey, TValue> DictionaryChange<TKey, TValue>(CollectionChangeType type, IEnumerable<IKeyValuePair<TKey, TValue>> keysAndValues)
+        {
+            return new DictionaryChangeStrict<TKey, TValue>(type, keysAndValues.ToImmutableDictionary(kvp => kvp.Key, kvp => kvp.Value));
+        }
+
+        /// <summary>
+        /// Create a <see cref="IDictionaryChange{TKey,TValue}"/> object that represents adding items to a dictionary.
+        /// </summary>
+        public static IDictionaryChangeStrict<TKey, TValue> DictionaryChange<TKey, TValue>(CollectionChangeType type, params IKeyValuePair<TKey, TValue>[] keysAndValues)
+        {
+            return new DictionaryChangeStrict<TKey, TValue>(type, keysAndValues.ToImmutableDictionary(kvp => kvp.Key, kvp => kvp.Value));
+        }
+
+        /// <summary>
+        /// Create a <see cref="IDictionaryChange{TKey,TValue}"/> object that represents adding items to a dictionary.
+        /// </summary>
+        public static IDictionaryChangeStrict<TKey, TValue> DictionaryChange<TKey, TValue>(CollectionChangeType type, IEnumerable<KeyValuePair<TKey, TValue>> keysAndValues)
+        {
+            return new DictionaryChangeStrict<TKey, TValue>(type, keysAndValues.ToImmutableDictionary(kvp => kvp.Key, kvp => kvp.Value));
+        }
+
+        /// <summary>
+        /// Create a <see cref="IDictionaryChange{TKey,TValue}"/> object that represents adding items to a dictionary.
+        /// </summary>
+        public static IDictionaryChangeStrict<TKey, TValue> DictionaryChange<TKey, TValue>(CollectionChangeType type, params KeyValuePair<TKey, TValue>[] keysAndValues)
+        {
+            return new DictionaryChangeStrict<TKey, TValue>(type, keysAndValues.ToImmutableDictionary(kvp => kvp.Key, kvp => kvp.Value));
+        }
+
+        #endregion
+        
         #region Remove
 
         #region Non-strict

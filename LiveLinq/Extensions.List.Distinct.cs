@@ -8,6 +8,7 @@ namespace LiveLinq
 {
     public static partial class Extensions
     {
+        [Obsolete("This isn't working yet. Convert the dictionary to ISetChanges and use then use that GroupBy extension method.", true)]
         public static IListChanges<TSource> Distinct<TSource, TKey>(
             this IListChanges<TSource> source,
             Func<TSource, TKey> keySelector)
@@ -20,6 +21,7 @@ namespace LiveLinq
                 .Select(m => m.Value);
         }
 
+        [Obsolete("This isn't working yet. Convert the dictionary to ISetChanges and use then use that GroupBy extension method.", true)]
         public static IListChanges<TSource> Distinct<TSource, TKey>(
             this IListChanges<TSource> source,
             Func<TSource, IObservable<TKey>> keySelector)
@@ -32,6 +34,7 @@ namespace LiveLinq
                 .Select(m => m.Value);
         }
 
+        [Obsolete("This isn't working yet. Convert the dictionary to ISetChanges and use then use that GroupBy extension method.", true)]
         public static IListChanges<TSource> Distinct<TSource, TKey>(
             this IListChanges<TSource> source,
             Func<TSource, IObservable<int>, IObservable<TKey>> keySelector)
@@ -44,6 +47,7 @@ namespace LiveLinq
                 .Select(m => m.Value);
         }
 
+        [Obsolete("This isn't working yet. Convert the dictionary to ISetChanges and use then use that GroupBy extension method.", true)]
         public static IListChanges<TSource> Distinct<TSource, TKey>(
             this IListChanges<TSource> source,
             Func<TSource, IObservable<int>, TKey> keySelector)
