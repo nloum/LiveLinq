@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System;
+using FluentAssertions;
 
 using LiveLinq.Dictionary;
 using LiveLinq.List;
@@ -10,6 +11,7 @@ namespace LiveLinq.Tests.Dictionary
     public partial class ExtensionsTests
     {
         [TestMethod]
+        [Obsolete("This isn't working yet. Convert the dictionary to ISetChanges and use then use that GroupBy extension method.", true)]
         public void GroupBy()
         {
             var source = new ObservableList<string>();

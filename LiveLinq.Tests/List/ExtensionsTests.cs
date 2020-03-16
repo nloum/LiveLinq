@@ -39,6 +39,7 @@ namespace LiveLinq.Tests.List
         #region GroupBy tests
 
         [TestMethod]
+        [Obsolete("This isn't working yet. Convert the dictionary to ISetChanges and use then use that GroupBy extension method.", true)]
         public void GroupBy_SelectMany()
         {
             var source = new ObservableCollection<int>();
@@ -51,6 +52,7 @@ namespace LiveLinq.Tests.List
         }
 
         [TestMethod]
+        [Obsolete("This isn't working yet. Convert the dictionary to ISetChanges and use then use that GroupBy extension method.", true)]
         public void GroupBy_InitialState()
         {
             var source = new ObservableCollection<int>();
@@ -63,6 +65,7 @@ namespace LiveLinq.Tests.List
         }
 
         [TestMethod]
+        [Obsolete("This isn't working yet. Convert the dictionary to ISetChanges and use then use that GroupBy extension method.", true)]
         public void GroupBy_SubsequentChanges()
         {
             var source = new ObservableCollection<int>();
@@ -80,6 +83,7 @@ namespace LiveLinq.Tests.List
         }
 
         [TestMethod]
+        [Obsolete("This isn't working yet. Convert the dictionary to ISetChanges and use then use that GroupBy extension method.", true)]
         public void GroupBy_SubsequentClear()
         {
             var source = new ObservableCollection<int>();
@@ -96,6 +100,7 @@ namespace LiveLinq.Tests.List
         }
 
         [TestMethod]
+        [Obsolete("This isn't working yet. Convert the dictionary to ISetChanges and use then use that GroupBy extension method.", true)]
         public void GroupBy_ObservableKey()
         {
             var source = new ObservableCollection<BehaviorSubject<int>>();
@@ -118,6 +123,7 @@ namespace LiveLinq.Tests.List
         }
 
         [TestMethod]
+        [Obsolete("This isn't working yet. Convert the dictionary to ISetChanges and use then use that GroupBy extension method.", true)]
         public void GroupBy_GetByKey()
         {
             var source = new ObservableCollection<int>();
