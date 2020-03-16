@@ -161,7 +161,7 @@ namespace LiveLinq
         /// <summary>
         /// A LiveLinq query of keys from the dictionary. Analogous to the Keys property of a Dictionary.
         /// </summary>
-        public static IListChanges<TKey> Keys<TKey, TValue>(
+        public static IListChanges<TKey> KeysAsList<TKey, TValue>(
             this IDictionaryChangesStrict<TKey, TValue> source)
         {
             return source.OrderBy(kvp => kvp.Key).Select(kvp => kvp.Key);
@@ -170,10 +170,30 @@ namespace LiveLinq
         /// <summary>
         /// A LiveLinq query of values from the dictionary. Analogous to the Values property of a Dictionary.
         /// </summary>
-        public static IListChanges<TValue> Values<TKey, TValue>(
+        public static IListChanges<TValue> ValuesAsList<TKey, TValue>(
             this IDictionaryChangesStrict<TKey, TValue> source)
         {
             return source.OrderBy(kvp => kvp.Key).Select(kvp => kvp.Value);
+        }
+
+        public static ISetChanges<TKey> KeysAsSet<TKey, TValue>(this IDictionaryChanges<TKey, TValue> dictionaryChanges)
+        {
+            return dictionaryChanges.AsObservable().Select(dictionaryChange =>
+            {
+                return Utility.SetChange(dictionaryChange.Type, dictionaryChange.Items.Select(x => x.Key));
+            }).ToLiveLinq();
+        }
+        
+        /// <summary>
+        /// Selects the values of the dictionary. Warning: if there are duplicate values anywhere in the dictionary, they will
+        /// be reduced to a single distinct value.
+        /// </summary>
+        public static ISetChanges<TValue> ValuesAsSet<TKey, TValue>(this IDictionaryChanges<TKey, TValue> dictionaryChanges)
+        {
+            return dictionaryChanges.AsObservable().Select(dictionaryChange =>
+            {
+                return Utility.SetChange(dictionaryChange.Type, dictionaryChange.Items.Select(x => x.Value));
+            }).ToLiveLinq();
         }
 
         /// <summary>

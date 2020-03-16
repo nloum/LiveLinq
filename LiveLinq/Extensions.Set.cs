@@ -59,14 +59,6 @@ namespace LiveLinq
             }
         }
         
-        public static ISetChanges<TKey> Keys<TKey, TValue>(this IDictionaryChanges<TKey, TValue> dictionaryChanges)
-        {
-            return dictionaryChanges.AsObservable().Select(dictionaryChange =>
-            {
-                return Utility.SetChange(dictionaryChange.Type, dictionaryChange.Items.Select(x => x.Key));
-            }).ToLiveLinq();
-        }
-        
         public static ISetChanges<T> SelectMany<TKey, TValue, T>(this IDictionaryChangesStrict<TKey, TValue> changes, Func<TKey, TValue, IEnumerable<T>> selector)
         {
             return changes.AsObservable().Select(change =>

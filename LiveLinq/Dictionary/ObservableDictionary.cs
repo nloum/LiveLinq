@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using MoreCollections;
 
@@ -37,12 +38,6 @@ namespace LiveLinq.Dictionary
             return _dictionary.TryGetValue(key, out value);
         }
 
-        public TValue this[TKey key]
-        {
-            get => _dictionary[key];
-            set { throw new System.NotImplementedException(); }
-        }
-
         ICollection<TKey> IDictionary<TKey, TValue>.Keys => Keys.ToList();
 
         ICollection<TValue> IDictionary<TKey, TValue>.Values => Values.ToList();
@@ -74,6 +69,11 @@ namespace LiveLinq.Dictionary
 
         public IDictionaryChangesStrict<TKey, TValue> ToLiveLinq()
         {
+            if (Count > 0)
+            {
+                return Observable.Return(Utility.DictionaryAdd(this)).Concat(_subject).ToLiveLinq();
+            }
+            
             return _subject.ToLiveLinq();
         }
 
@@ -84,6 +84,24 @@ namespace LiveLinq.Dictionary
 
         #region Methods responsible for mutation AND sending livelinq events
         
+        public TValue this[TKey key]
+        {
+            get => _dictionary[key];
+            set
+            {
+                lock (_lock)
+                {
+                    if (TryGetValue(key, out var existingValue))
+                    {
+                        _subject.OnNext(Utility.DictionaryRemove(MoreCollections.Utility.KeyValuePair(key, existingValue)));
+                    }
+
+                    _dictionary = _dictionary.SetItem(key, value);
+                    _subject.OnNext(Utility.DictionaryAdd(new KeyValuePair<TKey, TValue>(key, value)));
+                }
+            }
+        }
+
         public void Add(KeyValuePair<TKey, TValue> item)
         {
             lock (_lock)

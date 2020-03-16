@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Collections.Immutable;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using MoreCollections;
 using LiveLinq.Core;
 using LiveLinq.Dictionary;
 using LiveLinq.List;
+using LiveLinq.Set;
 using static MoreCollections.Utility;
 using static LiveLinq.Utility;
 
@@ -217,7 +221,7 @@ namespace LiveLinq
             
             return result;
         }
-
+        
         private static IObservable<IKeyValuePair<TKey, TValue>> CombineLatestKeysAndValues<T, TKey, TValue>(
             T t,
             IObservable<int> idx,
