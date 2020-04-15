@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Immutable;
 using System.Reactive.Linq;
 using LiveLinq.Dictionary;
 using LiveLinq.Ordered;
@@ -40,8 +41,22 @@ namespace LiveLinq
             Func<TKeySource, TValueSource, IDictionaryChanges<TKeyResult, TValueResult>> selector)
         {
             return source.Subscribe(
-                (key, value) => selector(key, value).AsObservable().Subscribe(observer.OnNext, observer.OnError),
-                (key, value, subscription) => subscription.Dispose());
+                (key, value) =>
+                {
+                    var result = new CachedState<TKeyResult, TValueResult>();
+                    result.Disposable = selector(key, value).ToObservableStateAndChange()
+                        .Subscribe(x =>
+                        {
+                            result.State = x.State;
+                            observer.OnNext(x.MostRecentChange);
+                        }, observer.OnError);
+                    return result;
+                },
+                (key, value, cachedState) =>
+                {
+                    cachedState.Disposable.Dispose();
+                    observer.OnNext(Utility.DictionaryRemove(cachedState.State));
+                });
         }
 
         private static IDisposable SelectManySubscribe<TKeySource, TValueSource, TKeyResult, TValueResult>(
@@ -50,8 +65,29 @@ namespace LiveLinq
             Func<TKeySource, TValueSource, IDictionaryChangesStrict<TKeyResult, TValueResult>> selector)
         {
             return source.Subscribe(
-                (key, value) => selector(key, value).AsObservable().Subscribe(observer.OnNext, observer.OnError),
-                (key, value, subscription) => subscription.Dispose());
+                (key, value) =>
+                {
+                    var result = new CachedState<TKeyResult, TValueResult>();
+                    result.Disposable = selector(key, value).ToObservableStateAndChange()
+                        .Subscribe(x =>
+                        {
+                            result.State = x.State;
+                            observer.OnNext(x.MostRecentChange);
+                        }, observer.OnError);
+                    return result;
+                },
+                (key, value, cachedState) =>
+                {
+                    cachedState.Disposable.Dispose();
+                    observer.OnNext(Utility.DictionaryRemove(cachedState.State));
+                });
+        }
+
+        private class CachedState<TKey, TValue>
+        {
+            public ImmutableDictionary<TKey, TValue> State { get; set; }
+            public IDisposable Disposable { get; set; }
+
         }
     }
 }
