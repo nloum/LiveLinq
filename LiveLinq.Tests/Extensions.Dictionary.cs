@@ -1,4 +1,5 @@
 using System;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using FluentAssertions;
 using LiveLinq.Dictionary;
@@ -62,6 +63,40 @@ namespace LiveLinq.Tests
             result.Values.Should().BeEmpty();
         }
         
+        [TestMethod]
+        public void UnendingWhereObservableOnDifferentThreadShouldBeIgnoredIfItemIsRemoved()
+        {
+            var uut = new ObservableDictionary<int, string>();
+
+            var timer = Observable.Interval(TimeSpan.FromSeconds(1)).Select(x => true)
+                .ObserveOn(NewThreadScheduler.Default)
+                .SubscribeOn(NewThreadScheduler.Default)
+                .Publish();
+
+            using (timer.Connect())
+            {
+                var result = uut.ToLiveLinq().Where((key, value) => key == 1 ? timer : Observable.Return(true))
+                    .ToReadOnlyObservableDictionary();
+
+                result.Values.Should().BeEmpty();
+                
+                uut[2] = "a";
+                result.Values.Should().BeEquivalentTo("a");
+                uut.Remove(2);
+                result.Values.Should().BeEmpty();
+
+                uut[1] = "a";
+                result.Values.Should().BeEmpty();
+                uut.Remove(1);
+                result.Values.Should().BeEmpty();
+
+                uut[2] = "a";
+                result.Values.Should().BeEquivalentTo("a");
+                uut.Remove(2);
+                result.Values.Should().BeEmpty();
+            }
+        }
+
         [TestMethod]
         public void UnendingWhereObservableShouldBeIgnoredIfItemIsRemoved()
         {

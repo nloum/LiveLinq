@@ -29,7 +29,7 @@ namespace LiveLinq.Dictionary
         public DictionaryStateAndChange<TKey, TValue> Accumulate(IDictionaryChange<TKey, TValue> change)
         {
             var strictChange = change.Type == CollectionChangeType.Add
-                ? DictionaryAdd(change.Items)
+                ? DictionaryAdd(change.KeyValuePairs)
                 : DictionaryRemove(change.Keys.ToDictionary(key => key, key => State[key]));
             return new DictionaryStateAndChange<TKey, TValue>(State.Mutate(strictChange), strictChange);
         }

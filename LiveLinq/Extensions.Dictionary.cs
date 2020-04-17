@@ -30,11 +30,11 @@ namespace LiveLinq
             {
                 if (change.Type == CollectionChangeType.Add)
                 {
-                    result.AddRange(change.Items);
+                    result.AddRange(change.KeyValuePairs);
                 }
                 else if (change.Type == CollectionChangeType.Remove)
                 {
-                    result.RemoveRange(change.Items.Select(x => x.Key));
+                    result.RemoveRange(change.KeyValuePairs.Select(x => x.Key));
                 }
             });
             return result;
@@ -48,11 +48,11 @@ namespace LiveLinq
             {
                 if (change.Type == CollectionChangeType.Add)
                 {
-                    result.AddRange(change.Items);
+                    result.AddRange(change.KeyValuePairs);
                 }
                 else if (change.Type == CollectionChangeType.Remove)
                 {
-                    result.RemoveRange(change.Items.Select(x => x.Key));
+                    result.RemoveRange(change.KeyValuePairs.Select(x => x.Key));
                 }
             });
             return result;
@@ -180,7 +180,7 @@ namespace LiveLinq
         {
             return dictionaryChanges.AsObservable().Select(dictionaryChange =>
             {
-                return Utility.SetChange(dictionaryChange.Type, dictionaryChange.Items.Select(x => x.Key));
+                return Utility.SetChange(dictionaryChange.Type, dictionaryChange.KeyValuePairs.Select(x => x.Key));
             }).ToLiveLinq();
         }
         
@@ -192,7 +192,7 @@ namespace LiveLinq
         {
             return dictionaryChanges.AsObservable().Select(dictionaryChange =>
             {
-                return Utility.SetChange(dictionaryChange.Type, dictionaryChange.Items.Select(x => x.Value));
+                return Utility.SetChange(dictionaryChange.Type, dictionaryChange.KeyValuePairs.Select(x => x.Value));
             }).ToLiveLinq();
         }
 
@@ -218,7 +218,7 @@ namespace LiveLinq
             {
                 case CollectionChangeType.Add:
                     {
-                        var result = subject.AddRange(change.Items.Select(kvp => new KeyValuePair<TKey, TValue>(kvp.Key, kvp.Value)));
+                        var result = subject.AddRange(change.KeyValuePairs.Select(kvp => new KeyValuePair<TKey, TValue>(kvp.Key, kvp.Value)));
                         return result;
                     }
                 case CollectionChangeType.Remove:
@@ -239,7 +239,7 @@ namespace LiveLinq
             switch (change.Type)
             {
                 case CollectionChangeType.Add:
-                    subject.AddRange(change.Items.Select(kvp => new KeyValuePair<TKey, TValue>(kvp.Key, kvp.Value)));
+                    subject.AddRange(change.KeyValuePairs.Select(kvp => new KeyValuePair<TKey, TValue>(kvp.Key, kvp.Value)));
                     break;
                 case CollectionChangeType.Remove:
                     subject.RemoveRange(change.Keys);

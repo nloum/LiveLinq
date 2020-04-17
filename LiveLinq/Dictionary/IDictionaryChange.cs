@@ -10,7 +10,7 @@ namespace LiveLinq.Dictionary
         /// <summary>
         /// Represents the key/value pairs being added or removed
         /// </summary>
-        IReadOnlyList<IKeyValuePair<TKey, TValue>> Items { get; }
+        IReadOnlyList<IKeyValuePair<TKey, TValue>> KeyValuePairs { get; }
 
         /// <summary>
         /// Get the value at the specified index.

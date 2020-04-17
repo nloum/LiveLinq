@@ -62,14 +62,14 @@ namespace LiveLinq
         public static ISetChanges<T> SelectMany<TKey, TValue, T>(this IDictionaryChangesStrict<TKey, TValue> changes, Func<TKey, TValue, IEnumerable<T>> selector)
         {
             return changes.AsObservable().Select(change =>
-                    Utility.SetChange(change.Type, change.Items.SelectMany(kvp => selector(kvp.Key, kvp.Value))))
+                    Utility.SetChange(change.Type, change.KeyValuePairs.SelectMany(kvp => selector(kvp.Key, kvp.Value))))
                 .ToLiveLinq();
         }
         
         public static ISetChanges<T> Select<TKey, TValue, T>(this IDictionaryChangesStrict<TKey, TValue> changes, Func<TKey, TValue, T> selector)
         {
             return changes.AsObservable().Select(change =>
-                    Utility.SetChange(change.Type, change.Items.Select(kvp => selector(kvp.Key, kvp.Value))))
+                    Utility.SetChange(change.Type, change.KeyValuePairs.Select(kvp => selector(kvp.Key, kvp.Value))))
                 .ToLiveLinq();
         }
         

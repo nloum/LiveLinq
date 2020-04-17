@@ -22,7 +22,7 @@ namespace LiveLinq
         {
             return source.SelectMany((key, value) => selector(key, value)
                     .DistinctUntilChanged()
-                    .Select(included => included ? Something(KeyValuePair<TKey, TValue>(key, value)) : Nothing<IKeyValuePair<TKey, TValue>>())
+                    .Select(included => included ? Something(KeyValuePair(key, value)) : Nothing<IKeyValuePair<TKey, TValue>>())
                 .ToLiveLinq());
         }
         

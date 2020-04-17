@@ -2,7 +2,6 @@ using System;
 using System.Collections.Immutable;
 using System.Reactive;
 using System.Reactive.Linq;
-using System.Reflection;
 using LiveLinq.Core;
 using LiveLinq.Dictionary;
 
@@ -18,14 +17,14 @@ namespace LiveLinq
                 {
                     if (change.Type == CollectionChangeType.Add)
                     {
-                        foreach (var item in change.Items)
+                        foreach (var item in change.KeyValuePairs)
                         {
                             onAdd(item.Key, item.Value);
                         }
                     }
                     else if (change.Type == CollectionChangeType.Remove)
                     {
-                        foreach (var item in change.Items)
+                        foreach (var item in change.KeyValuePairs)
                         {
                             onRemove(item.Key, item.Value);
                         }
@@ -56,10 +55,10 @@ namespace LiveLinq
                 .Scan(ImmutableDictionary<TKey, Tuple<TValue, TState>>.Empty,
                     (state, change) =>
                     {
-                        var key = change.Items[0].Key;
+                        var key = change.KeyValuePairs[0].Key;
                         if (change.Type == CollectionChangeType.Add)
                         {
-                            var value = change.Items[0].Value;
+                            var value = change.KeyValuePairs[0].Value;
                             return state.Add(key, Tuple.Create(value, onAdd(key, value)));
                         }
                         else

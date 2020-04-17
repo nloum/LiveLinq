@@ -16,7 +16,7 @@ namespace LiveLinq.Dictionary
         [DataMember]
         public IReadOnlyList<TKey> Keys { get; set; }
         public IReadOnlyList<TValue> Values => ImmutableList<TValue>.Empty;
-        public IReadOnlyList<IKeyValuePair<TKey, TValue>> Items => ImmutableList<IKeyValuePair<TKey, TValue>>.Empty;
+        public IReadOnlyList<IKeyValuePair<TKey, TValue>> KeyValuePairs => ImmutableList<IKeyValuePair<TKey, TValue>>.Empty;
 
         public bool IsEffectivelyStrict => false;
 
@@ -35,7 +35,7 @@ namespace LiveLinq.Dictionary
 
         public IEnumerable<IDictionaryChange<TKey, TValue>> Itemize()
         {
-            foreach (var item in Items)
+            foreach (var item in KeyValuePairs)
             {
                 yield return new DictionaryChangeNonStrict<TKey, TValue>(Type, ImmutableList<TKey>.Empty.Add(item.Key));
             }

@@ -555,12 +555,12 @@ namespace LiveLinq
                     {
                         if (change.Type == CollectionChangeType.Add)
                         {
-                            var index = state.List.GetIndexOfSortedInsert(kvp => kvp.Key.CompareTo(change.Items[0].Key));
-                            return new { List = state.List.Insert(index, change.Items[0]), Change = ListChangeStrict(CollectionChangeType.Add, index, change.Items.ToArray()) };
+                            var index = state.List.GetIndexOfSortedInsert(kvp => kvp.Key.CompareTo(change.KeyValuePairs[0].Key));
+                            return new { List = state.List.Insert(index, change.KeyValuePairs[0]), Change = ListChangeStrict(CollectionChangeType.Add, index, change.KeyValuePairs.ToArray()) };
                         }
                         else
                         {
-                            var index = state.List.BinarySearch(kvp => kvp.Key.CompareTo(change.Items[0].Key));
+                            var index = state.List.BinarySearch(kvp => kvp.Key.CompareTo(change.KeyValuePairs[0].Key));
                             var item = state.List[index];
                             return new { List = state.List.RemoveAt(index), Change = ListChangeStrict(CollectionChangeType.Remove, index, item) };
                         }

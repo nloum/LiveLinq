@@ -15,7 +15,7 @@ namespace LiveLinq.Dictionary
     {
         private IReadOnlyList<TKey> _keys;
         private IReadOnlyList<TValue> _values;
-        private IReadOnlyList<IKeyValuePair<TKey, TValue>> _items;
+        private IReadOnlyList<IKeyValuePair<TKey, TValue>> _keyValuePairs;
 
         public DictionaryChangeStrict(CollectionChangeType type, ImmutableDictionary<TKey, TValue> items)
         {
@@ -30,7 +30,7 @@ namespace LiveLinq.Dictionary
             get
             {
                 if (_values == null)
-                    _values = new SelectReadOnlyList<IKeyValuePair<TKey, TValue>, TValue>(Items, (x, _) => x.Value);
+                    _values = new SelectReadOnlyList<IKeyValuePair<TKey, TValue>, TValue>(KeyValuePairs, (x, _) => x.Value);
                 return _values;
             }
         }
@@ -42,7 +42,7 @@ namespace LiveLinq.Dictionary
             get
             {
                 if (_keys == null)
-                    _keys = new SelectReadOnlyList<IKeyValuePair<TKey, TValue>, TKey>(Items, (x, _) => x.Key);
+                    _keys = new SelectReadOnlyList<IKeyValuePair<TKey, TValue>, TKey>(KeyValuePairs, (x, _) => x.Key);
                 return _keys;
             }
         }
@@ -52,13 +52,13 @@ namespace LiveLinq.Dictionary
             return Dictionary.ContainsKey(key);
         }
 
-        public IReadOnlyList<IKeyValuePair<TKey, TValue>> Items
+        public IReadOnlyList<IKeyValuePair<TKey, TValue>> KeyValuePairs
         {
             get
             {
-                if (_items == null)
-                    _items = Dictionary.Select(x => KeyValuePair<TKey, TValue>(x.Key, x.Value)).ToImmutableList();
-                return _items;
+                if (_keyValuePairs == null)
+                    _keyValuePairs = Dictionary.Select(x => KeyValuePair<TKey, TValue>(x.Key, x.Value)).ToImmutableList();
+                return _keyValuePairs;
             }
         }
 
@@ -82,7 +82,7 @@ namespace LiveLinq.Dictionary
 
         public IEnumerable<IDictionaryChangeStrict<TKey, TValue>> Itemize()
         {
-            foreach (var item in Items)
+            foreach (var item in KeyValuePairs)
                 yield return new DictionaryChangeStrict<TKey, TValue>(Type,
                     ImmutableDictionary<TKey, TValue>.Empty.Add(item.Key, item.Value));
         }
