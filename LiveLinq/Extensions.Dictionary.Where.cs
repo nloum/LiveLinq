@@ -21,6 +21,7 @@ namespace LiveLinq
                   Func<TKey, TValue, IObservable<bool>> selector)
         {
             return source.SelectMany((key, value) => selector(key, value)
+                    .DistinctUntilChanged()
                     .Select(included => included ? Something(KeyValuePair<TKey, TValue>(key, value)) : Nothing<IKeyValuePair<TKey, TValue>>())
                 .ToLiveLinq());
         }

@@ -12,6 +12,7 @@ namespace LiveLinq
                Func<TSource, IObservable<bool>> selector)
         {
             return source.SelectMany(src => selector(src)
+                    .DistinctUntilChanged()
                     .Select(included => included ? Something(src) : Nothing<TSource>())
                 .ToLiveLinq());
         }
@@ -21,6 +22,7 @@ namespace LiveLinq
             Func<TSource, IObservable<int>, IObservable<bool>> selector)
         {
             return source.SelectMany((src, idx) => selector(src, idx)
+                    .DistinctUntilChanged()
                     .Select(included => included ? Something(src) : Nothing<TSource>())
                 .ToLiveLinq());
         }

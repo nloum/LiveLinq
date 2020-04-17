@@ -36,7 +36,7 @@ namespace LiveLinq
             return Observable.Create((IObserver<ISetChange<T>> observer) =>
             {
                 return source.Subscribe(item =>
-                        selector(item).SkipWhile(x => !x).SubscribeWithLatestValue(shouldBeIncluded =>
+                        selector(item).DistinctUntilChanged().SkipWhile(x => !x).SubscribeWithLatestValue(shouldBeIncluded =>
                         {
                             if (shouldBeIncluded)
                             {
