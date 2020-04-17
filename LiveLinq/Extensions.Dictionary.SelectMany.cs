@@ -79,7 +79,12 @@ namespace LiveLinq
                 (key, value, cachedState) =>
                 {
                     cachedState.Disposable.Dispose();
-                    observer.OnNext(Utility.DictionaryRemove(cachedState.State));
+                    // Sometimes the SelectMany selector never returns before we have to remove the SelectMany parent.
+                    // In that case, cachedState.State will be null and there's nothing that needs to be removed.
+                    if (cachedState.State != null)
+                    {
+                        observer.OnNext(Utility.DictionaryRemove(cachedState.State));
+                    }
                 });
         }
 
