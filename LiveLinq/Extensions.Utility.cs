@@ -1,6 +1,11 @@
 using System;
 using System.Reactive;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
+using System.Reflection;
+using LiveLinq.Dictionary;
+using LiveLinq.List;
+using LiveLinq.Set;
 using UtilityDisposables;
 using SimpleMonads;
 
@@ -12,6 +17,56 @@ namespace LiveLinq
 {
     public static partial class Extensions
     {
+        public static IListChangesStrict<T> SubscribeOn<T>(this IListChangesStrict<T> source, IScheduler scheduler)
+        {
+            return source.AsObservable().SubscribeOn(scheduler).ToLiveLinq();
+        }
+
+        public static IListChangesStrict<T> ObserveOn<T>(this IListChangesStrict<T> source, IScheduler scheduler)
+        {
+            return source.AsObservable().ObserveOn(scheduler).ToLiveLinq();
+        }
+
+        public static IListChanges<T> SubscribeOn<T>(this IListChanges<T> source, IScheduler scheduler)
+        {
+            return source.AsObservable().SubscribeOn(scheduler).ToLiveLinq();
+        }
+
+        public static IListChanges<T> ObserveOn<T>(this IListChanges<T> source, IScheduler scheduler)
+        {
+            return source.AsObservable().ObserveOn(scheduler).ToLiveLinq();
+        }
+
+        public static IDictionaryChangesStrict<TKey, TValue> SubscribeOn<TKey, TValue>(this IDictionaryChangesStrict<TKey, TValue> source, IScheduler scheduler)
+        {
+            return source.AsObservable().SubscribeOn(scheduler).ToLiveLinq();
+        }
+
+        public static IDictionaryChangesStrict<TKey, TValue> ObserveOn<TKey, TValue>(this IDictionaryChangesStrict<TKey, TValue> source, IScheduler scheduler)
+        {
+            return source.AsObservable().ObserveOn(scheduler).ToLiveLinq();
+        }
+
+        public static IDictionaryChanges<TKey, TValue> SubscribeOn<TKey, TValue>(this IDictionaryChanges<TKey, TValue> source, IScheduler scheduler)
+        {
+            return source.AsObservable().SubscribeOn(scheduler).ToLiveLinq();
+        }
+
+        public static IDictionaryChanges<TKey, TValue> ObserveOn<TKey, TValue>(this IDictionaryChanges<TKey, TValue> source, IScheduler scheduler)
+        {
+            return source.AsObservable().ObserveOn(scheduler).ToLiveLinq();
+        }
+        
+        public static ISetChanges<T> SubscribeOn<T>(this ISetChanges<T> source, IScheduler scheduler)
+        {
+            return source.AsObservable().SubscribeOn(scheduler).ToLiveLinq();
+        }
+
+        public static ISetChanges<T> ObserveOn<T>(this ISetChanges<T> source, IScheduler scheduler)
+        {
+            return source.AsObservable().ObserveOn(scheduler).ToLiveLinq();
+        }
+
         /// <summary>
         /// Like the normal Reactive Extensions Subscribe method, except the OnCompleteOrUnsubscribe callback will be called when the event stream is unsubscribed from
         /// or the event stream is completed, and if there was at least one event.
