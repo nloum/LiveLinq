@@ -17,6 +17,28 @@ namespace LiveLinq
     /// </summary>
     public static partial class Extensions
     {
+        public static IListChangesStrict<T> Do<T>(this IListChangesStrict<T> source, Action<T> onAdd,
+            Action<T> onRemove)
+        {
+            return source.AsObservable().Do(change =>
+            {
+                if (change.Type == CollectionChangeType.Add)
+                {
+                    foreach (var item in change.Values)
+                    {
+                        onAdd(item);
+                    }
+                }
+                else if (change.Type == CollectionChangeType.Remove)
+                {
+                    foreach (var item in change.Values)
+                    {
+                        onRemove(item);
+                    }
+                }
+            }).ToLiveLinq();
+        }
+        
         /// <summary>
         /// Utility method that calls <see cref="onAdd"/> when an item is added to the LiveLinq query and <see cref="onRemove"/>
         /// when an item is removed from a LiveLinq query.

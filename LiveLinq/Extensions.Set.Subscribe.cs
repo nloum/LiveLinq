@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics.Tracing;
 using System.Linq;
+using System.Reactive;
 using System.Reactive.Linq;
 using LiveLinq.Core;
 using LiveLinq.Set;
@@ -14,6 +15,37 @@ namespace LiveLinq
 {
     public static partial class Extensions
     {
+        public static ISetChanges<T> Do<T>(this ISetChanges<T> source, Action<T> onAdd, Action<T> onRemove)
+        {
+            return source.AsObservable().Do(change =>
+            {
+                if (change.Type == CollectionChangeType.Add)
+                {
+                    foreach (var item in change.Values)
+                    {
+                        onAdd(item);
+                    }
+                }
+                else if (change.Type == CollectionChangeType.Remove)
+                {
+                    foreach (var item in change.Values)
+                    {
+                        onRemove(item);
+                    }
+                }
+            }).ToLiveLinq();
+        }
+        
+        public static IDisposable Subscribe<T>(this ISetChanges<T> source, Action<T> onAdd, Action<T, RemovalMode> onRemove)
+        {
+            return source.Subscribe(t =>
+                {
+                    onAdd(t);
+                    return Unit.Default;
+                }, (t, state, removalMode) =>
+                onRemove(t, removalMode));
+        }
+
         public static IDisposable Subscribe<T, TState>(this ISetChanges<T> source, Func<T, TState> onAdd, Action<T, TState, RemovalMode> onRemove)
         {
             return source.Subscribe(items =>

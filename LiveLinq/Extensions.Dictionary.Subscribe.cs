@@ -2,6 +2,7 @@ using System;
 using System.Collections.Immutable;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Reflection;
 using LiveLinq.Core;
 using LiveLinq.Dictionary;
 
@@ -9,6 +10,29 @@ namespace LiveLinq
 {
     public static partial class Extensions
     {
+        public static IDictionaryChangesStrict<TKey, TValue> Do<TKey, TValue>(
+            IDictionaryChangesStrict<TKey, TValue> source, Action<TKey, TValue> onAdd, Action<TKey, TValue> onRemove)
+        {
+            return source.AsObservable()
+                .Do(change =>
+                {
+                    if (change.Type == CollectionChangeType.Add)
+                    {
+                        foreach (var item in change.Items)
+                        {
+                            onAdd(item.Key, item.Value);
+                        }
+                    }
+                    else if (change.Type == CollectionChangeType.Remove)
+                    {
+                        foreach (var item in change.Items)
+                        {
+                            onRemove(item.Key, item.Value);
+                        }
+                    }
+                }).ToLiveLinq();
+        }
+        
         public static IDisposable Subscribe<TKey, TValue>(
             this IDictionaryChanges<TKey, TValue> source,
             Action<TKey, TValue> onAdd,
