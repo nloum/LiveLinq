@@ -56,6 +56,15 @@ namespace LiveLinq
         }
 
         /// <summary>
+        /// Creates an observable event stream where each event is the new state of the LiveLinq query and
+        /// the most recent change.
+        /// </summary>
+        public static IObservable<ImmutableList<T>> ToObservableState<T>(this IListChanges<T> source)
+        {
+            return source.ToObservableStateAndChange().Select(x => x.State);
+        }
+
+        /// <summary>
         /// Applies the list change to the specified <see cref="ImmutableList{T}"/>.
         /// </summary>
         public static ListStateAndChange<T> Mutate<T>(this ListStateAndChange<T> subject, IListChange<T> change)

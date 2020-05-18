@@ -172,6 +172,12 @@ namespace LiveLinq
                     (state, change) => state.Accumulate(change));
         }
 
+        public static IObservable<ImmutableDictionary<TKey, TValue>> ToObservableState<TKey, TValue>(
+            this IDictionaryChanges<TKey, TValue> source)
+        {
+            return source.ToObservableStateAndChange().Select(x => x.State);
+        }
+
         public static IObservable<ImmutableDictionary<TKey, TValue>> ToObservableEnumerable<TKey, TValue>(
             this IDictionaryChanges<TKey, TValue> source)
         {

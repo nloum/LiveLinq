@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Text;
@@ -25,6 +26,15 @@ namespace LiveLinq
         public static IObservable<SetStateAndChange<T>> ToObservableStateAndChange<T>(this ISetChanges<T> source)
         {
             return source.AsObservable().Scan(new SetStateAndChange<T>(), (state, change) => state.Mutate(change));
+        }
+
+        /// <summary>
+        /// Creates an observable event stream where each event is the new state of the LiveLinq query and
+        /// the most recent change.
+        /// </summary>
+        public static IObservable<ImmutableHashSet<T>> ToObservableState<T>(this ISetChanges<T> source)
+        {
+            return source.ToObservableStateAndChange().Select(x => x.State);
         }
 
         /// <summary>
