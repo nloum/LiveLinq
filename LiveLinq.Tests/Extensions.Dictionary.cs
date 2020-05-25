@@ -11,6 +11,116 @@ namespace LiveLinq.Tests
     public class Extensions_Dictionary
     {
         [TestMethod]
+        public void SelectObservableNeverShouldBeTreatedAsFalse()
+        {
+            var uut = new ObservableDictionary<int, string>();
+
+            var result = uut.ToLiveLinq().SelectValue((key, value) =>
+                    Observable.Never<string>())
+                .ToReadOnlyObservableDictionary();
+            
+            uut[1] = "a";
+            uut[2] = "b";
+
+            result.Values.Should().BeEmpty();
+        }
+        
+        [TestMethod]
+        public void SelectObservableEmptyShouldBeTreatedAsFalse()
+        {
+            var uut = new ObservableDictionary<int, string>();
+
+            var result = uut.ToLiveLinq().SelectValue((key, value) =>
+                    Observable.Empty<string>())
+                .ToReadOnlyObservableDictionary();
+            
+            uut[1] = "a";
+            uut[2] = "b";
+
+            result.Values.Should().BeEmpty();
+        }
+        
+        [TestMethod]
+        public void SelectObservableReturnShouldBeProcessedCorrectly()
+        {
+            var uut = new ObservableDictionary<int, string>();
+
+            var result = uut.ToLiveLinq().SelectValue((key, value) =>
+                    Observable.Return(value))
+                .ToReadOnlyObservableDictionary();
+            
+            uut[1] = "a";
+            uut[2] = "b";
+
+            result.Values.Should().BeEquivalentTo("a", "b");
+
+            uut.Remove(1);
+            
+            result.Values.Should().BeEquivalentTo("b");
+
+            uut.Remove(2);
+
+            result.Values.Should().BeEmpty();
+        }
+        
+        [TestMethod]
+        public void UnendingSelectObservableOnDifferentThreadShouldBeIgnoredIfItemIsRemoved()
+        {
+            var uut = new ObservableDictionary<int, string>();
+
+            var timer = Observable.Interval(TimeSpan.FromSeconds(1)).Select(x => "x")
+                .ObserveOn(NewThreadScheduler.Default)
+                .SubscribeOn(NewThreadScheduler.Default)
+                .Publish();
+
+            using (timer.Connect())
+            {
+                var result = uut.ToLiveLinq().SelectValue((key, value) => key == 1 ? timer : Observable.Return(value))
+                    .ToReadOnlyObservableDictionary();
+
+                result.Values.Should().BeEmpty();
+                
+                uut[2] = "a";
+                result.Values.Should().BeEquivalentTo("a");
+                uut.Remove(2);
+                result.Values.Should().BeEmpty();
+
+                uut[1] = "a";
+                result.Values.Should().BeEmpty();
+                uut.Remove(1);
+                result.Values.Should().BeEmpty();
+
+                uut[2] = "a";
+                result.Values.Should().BeEquivalentTo("a");
+                uut.Remove(2);
+                result.Values.Should().BeEmpty();
+            }
+        }
+
+        [TestMethod]
+        public void UnendingSelectObservableShouldBeIgnoredIfItemIsRemoved()
+        {
+            var uut = new ObservableDictionary<int, string>();
+
+            var result = uut.ToLiveLinq().SelectValue((key, value) =>
+                    Observable.Return(value).Concat(Observable.Interval(TimeSpan.FromSeconds(.1)).Select(_ => value + _)))
+                .ToReadOnlyObservableDictionary();
+            
+            uut[1] = "a";
+            uut[2] = "b";
+
+            result.Values.Should().BeEquivalentTo("a", "b");
+
+            uut.Remove(1);
+
+            result.Values.Should().BeEquivalentTo("b");
+            
+            uut.Remove(2);
+
+            result.Values.Should().BeEmpty();
+        }
+        
+        [TestMethod]
         public void WhereObservableNeverShouldBeTreatedAsFalse()
         {
             var uut = new ObservableDictionary<int, string>();
