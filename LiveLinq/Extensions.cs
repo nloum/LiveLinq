@@ -16,6 +16,10 @@ namespace LiveLinq
 {
     public static partial class Extensions
     {
+        public static IObservable<T> OtherwiseEmpty<T>(this IMaybe<IObservable<T>> maybes) {
+            return maybes.Otherwise(Observable.Empty<T>());
+        }
+        
         #region Misc
         
         private class ObservableSubscriptionWithLatestValue<T> : IObservableSubscriptionWithLatestValue<T>
