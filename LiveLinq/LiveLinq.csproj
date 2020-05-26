@@ -2,11 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <PackageVersion>1.0.0-beta017</PackageVersion>
+    <PackageVersion>1.0.0-beta018</PackageVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="GenericNumbers" Version="1.0.0-beta002" />
+    <PackageReference Include="GenericNumbers" Version="1.0.0-beta003" />
     <PackageReference Include="MoreCollections" Version="1.0.0-beta003" />
     <PackageReference Include="System.Reactive" Version="4.3.2" />
     <PackageReference Include="System.Runtime.Serialization.Primitives" Version="4.3.0" />
