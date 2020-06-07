@@ -103,11 +103,18 @@ namespace LiveLinq
         /// <summary>
         /// Return a live linq query that never changes
         /// </summary>
-        public static IListChanges<T> EmptyLiveLinqQuery<T>()
+        public static IListChanges<T> EmptyListChanges<T>()
         {
             return Utility<T>.EmptyChanges;
         }
-
+        
+        /// <summary>
+        /// Return a live linq query that never changes
+        /// </summary>
+        public static IListChangesStrict<T> EmptyListChangesStrict<T>()
+        {
+            return Utility<T>.EmptyChanges;
+        }
 
         #region List changes
 

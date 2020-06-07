@@ -111,6 +111,60 @@ namespace LiveLinq.Dictionary
             }
         }
 
+        public void AddOrUpdate(KeyValuePair<TKey, TValue> item)
+        {
+            lock (_lock)
+            {
+                if (_dictionary.ContainsKey(item.Key))
+                {
+                    _subject.OnNext(Utility.DictionaryRemove(new []{new KeyValuePair<TKey, TValue>(item.Key, _dictionary[item.Key]) }));
+                    _dictionary = _dictionary.SetItem(item.Key, item.Value);
+                    _subject.OnNext(Utility.DictionaryAdd(item));
+                }
+                else
+                {
+                    _dictionary = _dictionary.Add(item.Key, item.Value);
+                    _subject.OnNext(Utility.DictionaryAdd(item));
+                }
+            }
+        }
+
+        public void AddOrUpdate(IKeyValuePair<TKey, TValue> item)
+        {
+            lock (_lock)
+            {
+                if (_dictionary.ContainsKey(item.Key))
+                {
+                    _subject.OnNext(Utility.DictionaryRemove(new []{new KeyValuePair<TKey, TValue>(item.Key, _dictionary[item.Key]) }));
+                    _dictionary = _dictionary.SetItem(item.Key, item.Value);
+                    _subject.OnNext(Utility.DictionaryAdd(item));
+                }
+                else
+                {
+                    _dictionary = _dictionary.Add(item.Key, item.Value);
+                    _subject.OnNext(Utility.DictionaryAdd(item));
+                }
+            }
+        }
+
+        public void AddOrUpdate(TKey key, TValue value)
+        {
+            lock (_lock)
+            {
+                if (_dictionary.ContainsKey(key))
+                {
+                    _subject.OnNext(Utility.DictionaryRemove(new []{new KeyValuePair<TKey, TValue>(key, _dictionary[key]) }));
+                    _dictionary = _dictionary.SetItem(key, value);
+                    _subject.OnNext(Utility.DictionaryAdd(new KeyValuePair<TKey, TValue>(key, value)));
+                }
+                else
+                {
+                    _dictionary = _dictionary.Add(key, value);
+                    _subject.OnNext(Utility.DictionaryAdd(new KeyValuePair<TKey, TValue>(key, value)));
+                }
+            }
+        }
+
         public bool Remove(KeyValuePair<TKey, TValue> item)
         {
             lock (_lock)
@@ -172,6 +226,32 @@ namespace LiveLinq.Dictionary
         public void AddRange(IEnumerable<IKeyValuePair<TKey, TValue>> pairs)
         { 
             AddRange(pairs.Select(x => new KeyValuePair<TKey, TValue>(x.Key, x.Value)));
+        }
+
+        public void AddOrUpdateRange(IEnumerable<KeyValuePair<TKey, TValue>> pairs)
+        {
+            lock (_lock)
+            {
+                foreach (var item in pairs)
+                {
+                    if (_dictionary.ContainsKey(item.Key))
+                    {
+                        _subject.OnNext(Utility.DictionaryRemove(new []{new KeyValuePair<TKey, TValue>(item.Key, _dictionary[item.Key]) }));
+                        _dictionary = _dictionary.SetItem(item.Key, item.Value);
+                        _subject.OnNext(Utility.DictionaryAdd(item));
+                    }
+                    else
+                    {
+                        _dictionary = _dictionary.Add(item.Key, item.Value);
+                        _subject.OnNext(Utility.DictionaryAdd(item));
+                    }
+                }
+            }
+        }
+
+        public void AddOrUpdateRange(IEnumerable<IKeyValuePair<TKey, TValue>> pairs)
+        { 
+            AddOrUpdateRange(pairs.Select(x => new KeyValuePair<TKey, TValue>(x.Key, x.Value)));
         }
 
         public void RemoveRange(IEnumerable<TKey> keys)

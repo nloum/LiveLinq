@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Reflection;
 using SimpleMonads;
 using LiveLinq.List;
 
@@ -15,6 +16,16 @@ namespace LiveLinq
 {
     public partial class Utility
     {
+        public static IDictionaryChangesStrict<TKey, TValue> EmptyDictionaryChangesStrict<TKey, TValue>()
+        {
+            return new DictionaryChangesStrict<TKey, TValue>(Observable.Never<IDictionaryChangeStrict<TKey, TValue>>());
+        }
+
+        public static IDictionaryChanges<TKey, TValue> EmptyDictionaryChanges<TKey, TValue>()
+        {
+            return new DictionaryChanges<TKey, TValue>(Observable.Never<IDictionaryChange<TKey, TValue>>());
+        }
+        
         /// <summary>
         /// This function is analogous to the indexing method of <see cref="List{T}"/>, except it returns
         /// an event stream of values as the value at the specified index changes, and it returns a Nothing

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LiveLinq.Core;
@@ -14,6 +15,11 @@ namespace LiveLinq
         public static ISetChange<T> EmptySetChange<T>(CollectionChangeType type = CollectionChangeType.Add)
         {
             return new SetChange<T>(type, ImmutableList<T>.Empty);
+        }
+
+        public static ISetChanges<T> EmptySetChanges<T>()
+        {
+            return new SetChanges<T>(Observable.Never<ISetChange<T>>());
         }
         
         public static ISetChange<T> SetChange<T>(CollectionChangeType type, params T[] elements)

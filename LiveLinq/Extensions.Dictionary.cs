@@ -22,6 +22,18 @@ namespace LiveLinq
 {
     public static partial class Extensions
     {
+        public static IDictionaryChangesStrict<TKey, TValue> OtherwiseEmpty<TKey, TValue>(
+            this IMaybe<IDictionaryChangesStrict<TKey, TValue>> maybe)
+        {
+            return maybe.Otherwise(() => Utility.EmptyDictionaryChangesStrict<TKey, TValue>());
+        }
+
+        public static IDictionaryChanges<TKey, TValue> OtherwiseEmpty<TKey, TValue>(
+            this IMaybe<IDictionaryChanges<TKey, TValue>> maybe)
+        {
+            return maybe.Otherwise(() => Utility.EmptyDictionaryChanges<TKey, TValue>());
+        }
+        
         public static IReadOnlyObservableDictionary<TKey, TValue> ToReadOnlyObservableDictionary<TKey, TValue>(
             this IDictionaryChanges<TKey, TValue> changes)
         {

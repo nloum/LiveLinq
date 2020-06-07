@@ -8,12 +8,18 @@ using System.Threading.Tasks;
 using LiveLinq.Core;
 using LiveLinq.Dictionary;
 using LiveLinq.Set;
+using SimpleMonads;
 using static LiveLinq.Utility;
 
 namespace LiveLinq
 {
     public static partial class Extensions
     {
+        public static ISetChanges<T> OtherwiseEmpty<T>(this IMaybe<ISetChanges<T>> maybe)
+        {
+            return maybe.Otherwise(EmptySetChanges<T>);
+        }
+        
         public static ISetChanges<T> UnchangingSetLiveLinq<T>(this IEnumerable<T> items)
         {
             return Observable.Return(SetChange(CollectionChangeType.Add, items)).ToLiveLinq();

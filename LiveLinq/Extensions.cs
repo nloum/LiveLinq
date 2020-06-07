@@ -348,7 +348,7 @@ namespace LiveLinq
         /// </summary>
         public static IListChanges<T> OtherwiseEmpty<T>(this IMaybe<IListChanges<T>> source)
         {
-            return source.Otherwise(Utility.EmptyLiveLinqQuery<T>());
+            return source.Otherwise(Utility.EmptyListChanges<T>());
         }
 
         #region Sync to a list that is readable and writeable and doesn't have change notifications
