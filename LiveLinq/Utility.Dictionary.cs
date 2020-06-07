@@ -34,13 +34,13 @@ namespace LiveLinq
         /// <param name="index">The index to watch.</param>
         internal static IObservable<IMaybe<TValue>> GetAtKey<TKey, TValue>(IDictionaryChanges<TKey, TValue> source, TKey key)
         {
-            return source.AsObservable().Where(change => change.ContainsKey(key))
+            return Observable.Return(Nothing<TValue>()).Concat(source.AsObservable().Where(change => change.ContainsKey(key))
                 .Select(change =>
             {
                 if (change.Type == CollectionChangeType.Add)
                     return change[key];
                 return Nothing<TValue>();
-            });
+            }));
         }
 
         /// <summary>
@@ -51,8 +51,8 @@ namespace LiveLinq
         /// <param name="index">The observable event stream where each event represents a new index to watch.</param>
         internal static IObservable<IMaybe<TValue>> GetAtKey<TKey, TValue>(IDictionaryChanges<TKey, TValue> source, IObservable<TKey> keys)
         {
-            return source.ToObservableEnumerable()
-                .CombineLatest(keys, (state, key) => state.ContainsKey(key) ? Something(state[key]) : Nothing<TValue>());
+            return Observable.Return(Nothing<TValue>()).Concat(source.ToObservableEnumerable()
+                .CombineLatest(keys, (state, key) => state.ContainsKey(key) ? Something(state[key]) : Nothing<TValue>()));
         }
 
         /// <summary>
