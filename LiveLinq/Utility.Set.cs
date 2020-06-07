@@ -19,7 +19,7 @@ namespace LiveLinq
 
         public static ISetChanges<T> EmptySetChanges<T>()
         {
-            return new SetChanges<T>(Observable.Never<ISetChange<T>>());
+            return new SetChanges<T>(Observable.Return(new SetChange<T>(CollectionChangeType.Add, ImmutableList<T>.Empty)));
         }
         
         public static ISetChange<T> SetChange<T>(CollectionChangeType type, params T[] elements)

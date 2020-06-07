@@ -18,12 +18,12 @@ namespace LiveLinq
     {
         public static IDictionaryChangesStrict<TKey, TValue> EmptyDictionaryChangesStrict<TKey, TValue>()
         {
-            return new DictionaryChangesStrict<TKey, TValue>(Observable.Never<IDictionaryChangeStrict<TKey, TValue>>());
+            return new DictionaryChangesStrict<TKey, TValue>(Observable.Return(new DictionaryChangeStrict<TKey, TValue>(CollectionChangeType.Add, ImmutableDictionary<TKey, TValue>.Empty)));
         }
 
         public static IDictionaryChanges<TKey, TValue> EmptyDictionaryChanges<TKey, TValue>()
         {
-            return new DictionaryChanges<TKey, TValue>(Observable.Never<IDictionaryChange<TKey, TValue>>());
+            return new DictionaryChanges<TKey, TValue>(Observable.Return(new DictionaryChangeNonStrict<TKey, TValue>(CollectionChangeType.Add, ImmutableList<TKey>.Empty)));
         }
         
         /// <summary>
