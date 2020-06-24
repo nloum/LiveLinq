@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <PackageVersion>1.0.0-beta021</PackageVersion>
   </PropertyGroup>
 
   <ItemGroup>
