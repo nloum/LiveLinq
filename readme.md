@@ -1,4 +1,4 @@
-<link rel="stylesheet" type="text/css" href="diffview.css">
+<link rel="stylesheet" type="text/css" href="https://raw.githubusercontent.com/nloum/LiveLinq/develop/diffview.css">
 
 # LiveLinq
 
