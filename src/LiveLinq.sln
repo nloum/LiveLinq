@@ -4,12 +4,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiveLinq", "LiveLinq\LiveLi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiveLinq.Tests", "LiveLinq.Tests\LiveLinq.Tests.csproj", "{079DFE14-FF43-4879-B9E7-DC025BD8E4BE}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_build", "..\build\_build.csproj", "{836152F1-AB05-493F-A80D-00C28E67B111}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{836152F1-AB05-493F-A80D-00C28E67B111}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{836152F1-AB05-493F-A80D-00C28E67B111}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E717C134-5517-421E-AE47-A8EC13BD2A12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E717C134-5517-421E-AE47-A8EC13BD2A12}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E717C134-5517-421E-AE47-A8EC13BD2A12}.Release|Any CPU.ActiveCfg = Release|Any CPU
