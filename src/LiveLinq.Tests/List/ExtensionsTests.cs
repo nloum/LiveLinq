@@ -129,18 +129,18 @@ namespace LiveLinq.Tests.List
             var source = new ObservableCollection<int>();
             var result = source.ToLiveLinq().GroupBy(i => i % 2 == 0);
             using (var evenNumbers = result.Get(true).ToReadOnlyObservableSet())
-            using (var nonGroupedEventNumbers = source.ToLiveLinq().Where(i => i % 2 == 0).ToReadOnlyObservableList())
+            using (var nonGroupedEvenNumbers = source.ToLiveLinq().Where(i => i % 2 == 0).ToReadOnlyObservableList())
             {
-                nonGroupedEventNumbers.Count.Should().Be(0);
+                nonGroupedEvenNumbers.Count.Should().Be(0);
                 evenNumbers.Count.Should().Be(0);
                 source.Add(1);
-                nonGroupedEventNumbers.Count.Should().Be(0);
+                nonGroupedEvenNumbers.Count.Should().Be(0);
                 evenNumbers.Count.Should().Be(0);
                 source.Add(2);
-                nonGroupedEventNumbers.Count.Should().Be(1);
+                nonGroupedEvenNumbers.Count.Should().Be(1);
                 evenNumbers.Count.Should().Be(1);
                 source.Add(2);
-                nonGroupedEventNumbers.Count.Should().Be(2);
+                nonGroupedEvenNumbers.Count.Should().Be(2);
                 evenNumbers.Count.Should().Be(2);
             }
         }

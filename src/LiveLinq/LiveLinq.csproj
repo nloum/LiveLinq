@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="GenericNumbers" Version="1.0.0-beta003" />
-    <PackageReference Include="MoreCollections" Version="1.0.0-beta003" />
+    <PackageReference Include="MoreCollections" Version="1.0.0-alpha0036" />
     <PackageReference Include="System.Reactive" Version="4.3.2" />
     <PackageReference Include="System.Runtime.Serialization.Primitives" Version="4.3.0" />
     <PackageReference Include="UtilityDisposables" Version="1.0.0-beta002" />

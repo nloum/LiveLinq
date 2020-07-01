@@ -200,28 +200,10 @@ namespace LiveLinq
             Func<T, IObservable<int>, IObservable<TKey>> keySelector,
             Func<T, IObservable<int>, IObservable<TValue>> valueSelector)
         {
-            var keysAndValues = source.Select((t, idx) => CombineLatestKeysAndValues(t, idx, keySelector, valueSelector))
-                .MakeStrictExpensively()
-                .ToSetChanges()
-                .AsObservable()
-                .SelectMany(listChange => listChange.Itemize())
-                .Publish().RefCount();
-
-            var result = keysAndValues
-                .Where(listChange => listChange.Type == CollectionChangeType.Add)
-                .Select(listChange => listChange.Values.First())
-                .Distinct(keyValuePair => keyValuePair.Key)
-                .Select(
-                    keyValuePair =>
-                    KeyValuePair(
-                        keyValuePair.Key,
-                        keysAndValues.Where(change => change.Values.First().Key.Equals(keyValuePair.Key)).Select(change => SetChange(change.Type, change.Values.Select(kvp => kvp.Value))).ToLiveLinq()))
-                .Collect()
-                .Where(kvp => kvp.Value.Any())
-                .MakeStrictExpensively()
-                .ToLiveLinq();
-            
-            return result;
+            return source.Select((t, indices) =>
+                    keySelector(t, indices).CombineLatest(valueSelector(t, indices), (key, value) => new {key, value}))
+                .MakeStrictExpensively().ToSetChanges().GroupBy(x => x.key)
+                .SelectValue(x => x.Select(c => c.value));
         }
         
         private static IObservable<IKeyValuePair<TKey, TValue>> CombineLatestKeysAndValues<T, TKey, TValue>(

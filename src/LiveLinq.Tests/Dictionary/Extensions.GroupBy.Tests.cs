@@ -21,10 +21,10 @@ namespace LiveLinq.Tests.Dictionary
                 .ToObservableEnumerable()
                 .ToBehaviorSubject();
             source.Add("4444");
-            source.Add("4444");
+            source.Add("____");
             source.Add("55555");
             property.Value.Count.Should().Be(2);
-            property.Value[4].Value.Should().ContainInOrder("4444", "4444");
+            property.Value[4].Value.Should().ContainInOrder("4444", "____");
             property.Value[5].Value.Should().ContainInOrder("55555");
         }
     }
