@@ -27,5 +27,9 @@ jobs:
       - name: Run './build.cmd Push'
         run: ./build.cmd Push
         env:
-          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
-          NETLIFY_PAT: ${{ secrets.NETLIFY_PAT }}
+            NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+            NETLIFY_PAT: ${{ secrets.NETLIFY_PAT }}
+      - uses: actions/upload-artifact@v1
+        with:
+          name: test-results
+          path: artifacts/test-results

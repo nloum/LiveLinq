@@ -16,7 +16,7 @@ namespace LiveLinq.Tests
             var source = new ObservableSet<string>();
             var result = source.ToLiveLinq()
                 .GroupBy(str => str.Length)
-                .SelectValue((key, values) => values.ToReadOnlySet())
+                .SelectValue((key, values) => values.ToReadOnlyObservableSet())
                 .ToReadOnlyObservableDictionary();
             source.Add("4444");
             source.Add("4444");

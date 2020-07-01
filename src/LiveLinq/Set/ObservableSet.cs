@@ -9,10 +9,11 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using LiveLinq.Core;
+using UtilityDisposables;
 
 namespace LiveLinq.Set
 {
-    public class ObservableSet<T> : IReadOnlyObservableSet<T>
+    public class ObservableSet<T> : ProtectedDisposableCollector, IReadOnlyObservableSet<T>
     {
         private readonly object _lock = new object();
         private ImmutableHashSet<T> _source = ImmutableHashSet<T>.Empty;

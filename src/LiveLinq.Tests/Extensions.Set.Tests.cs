@@ -17,7 +17,7 @@ namespace LiveLinq.Tests
 
             var result = uut.ToLiveLinq().Select((value) =>
                     Observable.Never<string>())
-                .ToReadOnlySet();
+                .ToReadOnlyObservableSet();
 
             uut.Add("a");
             uut.Add("b");
@@ -32,7 +32,7 @@ namespace LiveLinq.Tests
 
             var result = uut.ToLiveLinq().Select((value) =>
                     Observable.Empty<string>())
-                .ToReadOnlySet();
+                .ToReadOnlyObservableSet();
             
             uut.Add("a");
             uut.Add("b");
@@ -47,7 +47,7 @@ namespace LiveLinq.Tests
 
             var result = uut.ToLiveLinq().Select((value) =>
                     Observable.Return(value))
-                .ToReadOnlySet();
+                .ToReadOnlyObservableSet();
             
             uut.Add("a");
             uut.Add("b");
@@ -77,7 +77,7 @@ namespace LiveLinq.Tests
             using (rest.Connect())
             {
                 var result = uut.ToLiveLinq().Select((value) => timer.AsObservable())
-                    .ToReadOnlySet();
+                    .ToReadOnlyObservableSet();
 
                 result.Should().BeEmpty();
                 
@@ -95,7 +95,7 @@ namespace LiveLinq.Tests
 
             var result = uut.ToLiveLinq().Select((value) =>
                     Observable.Return(value).Concat(Observable.Interval(TimeSpan.FromSeconds(.1)).Select(_ => value + _)))
-                .ToReadOnlySet();
+                .ToReadOnlyObservableSet();
             
             uut.Add("a");
             uut.Add("b");
@@ -118,7 +118,7 @@ namespace LiveLinq.Tests
 
             var result = uut.ToLiveLinq().Where((value) =>
                     Observable.Never<bool>())
-                .ToReadOnlySet();
+                .ToReadOnlyObservableSet();
             
             uut.Add("a");
             uut.Add("b");
@@ -133,7 +133,7 @@ namespace LiveLinq.Tests
 
             var result = uut.ToLiveLinq().Where((value) =>
                     Observable.Empty<bool>())
-                .ToReadOnlySet();
+                .ToReadOnlyObservableSet();
             
             uut.Add("a");
             uut.Add("b");
@@ -148,7 +148,7 @@ namespace LiveLinq.Tests
 
             var result = uut.ToLiveLinq().Where((value) =>
                     Observable.Return(true))
-                .ToReadOnlySet();
+                .ToReadOnlyObservableSet();
             
             uut.Add("a");
             uut.Add("b");
@@ -178,7 +178,7 @@ namespace LiveLinq.Tests
             using (rest.Connect())
             {
                 var result = uut.ToLiveLinq().Where((value) => timer.AsObservable())
-                    .ToReadOnlySet();
+                    .ToReadOnlyObservableSet();
 
                 result.Should().BeEmpty();
                 
@@ -196,7 +196,7 @@ namespace LiveLinq.Tests
 
             var result = uut.ToLiveLinq().Where((value) =>
                     Observable.Return(true).Concat(Observable.Interval(TimeSpan.FromSeconds(.1)).Select(_ => value.Length > 0)))
-                .ToReadOnlySet();
+                .ToReadOnlyObservableSet();
             
             uut.Add("a");
             uut.Add("b");

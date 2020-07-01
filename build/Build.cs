@@ -65,7 +65,7 @@ class Build : NukeBuild
 
     Project PackageProject => Solution.GetProject("LiveLinq");
     
-    IEnumerable<Project> TestProjects => Solution.GetProjects("*.Test");
+    IEnumerable<Project> TestProjects => Solution.GetProjects("*.Tests");
     
     Target Clean => _ => _
         .Before(Restore)
@@ -157,7 +157,7 @@ class Build : NukeBuild
 	        //var settings = new GitVersionSettings().SetToolPath( package.Directory / "tools/netcoreapp3.1/any/gitversion.dll");
 
 	        ReportGenerator(_ => _
-	            .SetToolPath(package.Directory / "tools/netcoreapp3.1/any/reportgenerator.dll")
+	            .SetToolPath(package.Directory / "tools/netcoreapp3.0/any/ReportGenerator.dll")
                 .SetReports(TestResultDirectory / "*.xml")
                 .SetReportTypes(ReportTypes.HtmlInline)
                 .SetTargetDirectory(CoverageReportDirectory)

@@ -3,6 +3,7 @@
 using LiveLinq.Dictionary;
 using LiveLinq.List;
 using LiveLinq.Ordered;
+using LiveLinq.Set;
 
 namespace LiveLinq
 {
@@ -10,7 +11,7 @@ namespace LiveLinq
     {
         [Obsolete("This isn't working yet. Convert the dictionary to ISetChanges and use then use that GroupBy extension method.", true)]
         public static IListChanges<TSource> Distinct<TSource, TKey>(
-            this IListChanges<TSource> source,
+            this ISetChanges<TSource> source,
             Func<TSource, TKey> keySelector)
         {
             return source.GroupBy(keySelector)
@@ -23,7 +24,7 @@ namespace LiveLinq
 
         [Obsolete("This isn't working yet. Convert the dictionary to ISetChanges and use then use that GroupBy extension method.", true)]
         public static IListChanges<TSource> Distinct<TSource, TKey>(
-            this IListChanges<TSource> source,
+            this ISetChanges<TSource> source,
             Func<TSource, IObservable<TKey>> keySelector)
         {
             return source.GroupBy(keySelector)

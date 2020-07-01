@@ -21,8 +21,8 @@ namespace LiveLinq
         ///     this returns an event stream of values at that specific key.
         /// </summary>
         [Obsolete("This isn't working yet. Convert the dictionary to ISetChanges and use then use that GroupBy extension method.", true)]
-        public static IListChanges<TValue> Get<TKey, TValue>(
-            this IDictionaryChanges<TKey, IListChanges<TValue>> source,
+        public static ISetChanges<TValue> Get<TKey, TValue>(
+            this IDictionaryChanges<TKey, ISetChanges<TValue>> source,
             TKey key)
         {
             return source.Get(Observable.Return(key));
@@ -39,11 +39,11 @@ namespace LiveLinq
         ///     of this function.
         /// </param>
         [Obsolete("This isn't working yet. Convert the dictionary to ISetChanges and use then use that GroupBy extension method.", true)]
-        public static IListChanges<TValue> Get<TKey, TValue>(
-            this IDictionaryChanges<TKey, IListChanges<TValue>> source,
+        public static ISetChanges<TValue> Get<TKey, TValue>(
+            this IDictionaryChanges<TKey, ISetChanges<TValue>> source,
             IObservable<TKey> key)
         {
-            return source[key].Select(m => m.OtherwiseEmpty()).SelectMany();
+            return source[key].Select(m => m.OtherwiseEmpty()).SelectMany(x => x);
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace LiveLinq
         ///     when the source changes.
         /// </summary>
         [Obsolete("This isn't working yet. Convert the dictionary to ISetChanges and use then use that GroupBy extension method.", true)]
-        public static IDictionaryChanges<TKey, IListChanges<TValue>> GroupBy<TKey, TValue>(
+        public static IDictionaryChanges<TKey, ISetChanges<TValue>> GroupBy<TKey, TValue>(
             this IListChanges<TValue> source,
             Func<TValue, TKey> keySelector)
         {
@@ -63,7 +63,7 @@ namespace LiveLinq
         ///     when the source or key changes.
         /// </summary>
         [Obsolete("This isn't working yet. Convert the dictionary to ISetChanges and use then use that GroupBy extension method.", true)]
-        public static IDictionaryChanges<TKey, IListChanges<TValue>> GroupBy<TKey, TValue>(
+        public static IDictionaryChanges<TKey, ISetChanges<TValue>> GroupBy<TKey, TValue>(
             this IListChanges<TValue> source,
             Func<TValue, IObservable<TKey>> keySelector)
         {
@@ -75,7 +75,7 @@ namespace LiveLinq
         ///     when the source changes.
         /// </summary>
         [Obsolete("This isn't working yet. Convert the dictionary to ISetChanges and use then use that GroupBy extension method.", true)]
-        public static IDictionaryChanges<TKey, IListChanges<TValue>> GroupBy<T, TKey, TValue>(
+        public static IDictionaryChanges<TKey, ISetChanges<TValue>> GroupBy<T, TKey, TValue>(
             this IListChanges<T> source,
             Func<T, TKey> keySelector,
             Func<T, TValue> valueSelector)
@@ -88,7 +88,7 @@ namespace LiveLinq
         ///     when the source or value change.
         /// </summary>
         [Obsolete("This isn't working yet. Convert the dictionary to ISetChanges and use then use that GroupBy extension method.", true)]
-        public static IDictionaryChanges<TKey, IListChanges<TValue>> GroupBy<T, TKey, TValue>(
+        public static IDictionaryChanges<TKey, ISetChanges<TValue>> GroupBy<T, TKey, TValue>(
             this IListChanges<T> source,
             Func<T, TKey> keySelector,
             Func<T, IObservable<TValue>> valueSelector)
@@ -101,7 +101,7 @@ namespace LiveLinq
         ///     when the source or key change.
         /// </summary>
         [Obsolete("This isn't working yet. Convert the dictionary to ISetChanges and use then use that GroupBy extension method.", true)]
-        public static IDictionaryChanges<TKey, IListChanges<TValue>> GroupBy<T, TKey, TValue>(
+        public static IDictionaryChanges<TKey, ISetChanges<TValue>> GroupBy<T, TKey, TValue>(
             this IListChanges<T> source,
             Func<T, IObservable<TKey>> keySelector,
             Func<T, TValue> valueSelector)
@@ -114,7 +114,7 @@ namespace LiveLinq
         ///     when the source, key, or value change.
         /// </summary>
         [Obsolete("This isn't working yet. Convert the dictionary to ISetChanges and use then use that GroupBy extension method.", true)]
-        public static IDictionaryChanges<TKey, IListChanges<TValue>> GroupBy<T, TKey, TValue>(
+        public static IDictionaryChanges<TKey, ISetChanges<TValue>> GroupBy<T, TKey, TValue>(
             this IListChanges<T> source,
             Func<T, IObservable<TKey>> keySelector,
             Func<T, IObservable<TValue>> valueSelector)
@@ -127,7 +127,7 @@ namespace LiveLinq
         ///     when the source changes.
         /// </summary>
         [Obsolete("This isn't working yet. Convert the dictionary to ISetChanges and use then use that GroupBy extension method.", true)]
-        public static IDictionaryChanges<TKey, IListChanges<TValue>> GroupBy<TKey, TValue>(
+        public static IDictionaryChanges<TKey, ISetChanges<TValue>> GroupBy<TKey, TValue>(
             this IListChanges<TValue> source,
             Func<TValue, IObservable<int>, TKey> keySelector)
         {
@@ -139,7 +139,7 @@ namespace LiveLinq
         ///     when the source or key changes.
         /// </summary>
         [Obsolete("This isn't working yet. Convert the dictionary to ISetChanges and use then use that GroupBy extension method.", true)]
-        public static IDictionaryChanges<TKey, IListChanges<TValue>> GroupBy<TKey, TValue>(
+        public static IDictionaryChanges<TKey, ISetChanges<TValue>> GroupBy<TKey, TValue>(
             this IListChanges<TValue> source,
             Func<TValue, IObservable<int>, IObservable<TKey>> keySelector)
         {
@@ -151,7 +151,7 @@ namespace LiveLinq
         ///     when the source changes.
         /// </summary>
         [Obsolete("This isn't working yet. Convert the dictionary to ISetChanges and use then use that GroupBy extension method.", true)]
-        public static IDictionaryChanges<TKey, IListChanges<TValue>> GroupBy<T, TKey, TValue>(
+        public static IDictionaryChanges<TKey, ISetChanges<TValue>> GroupBy<T, TKey, TValue>(
             this IListChanges<T> source,
             Func<T, IObservable<int>, TKey> keySelector,
             Func<T, IObservable<int>, TValue> valueSelector)
@@ -169,7 +169,7 @@ namespace LiveLinq
         ///     when the source or value change.
         /// </summary>
         [Obsolete("This isn't working yet. Convert the dictionary to ISetChanges and use then use that GroupBy extension method.", true)]
-        public static IDictionaryChanges<TKey, IListChanges<TValue>> GroupBy<T, TKey, TValue>(
+        public static IDictionaryChanges<TKey, ISetChanges<TValue>> GroupBy<T, TKey, TValue>(
             this IListChanges<T> source,
             Func<T, IObservable<int>, TKey> keySelector,
             Func<T, IObservable<int>, IObservable<TValue>> valueSelector)
@@ -182,7 +182,7 @@ namespace LiveLinq
         ///     when the source or key change.
         /// </summary>
         [Obsolete("This isn't working yet. Convert the dictionary to ISetChanges and use then use that GroupBy extension method.", true)]
-        public static IDictionaryChanges<TKey, IListChanges<TValue>> GroupBy<T, TKey, TValue>(
+        public static IDictionaryChanges<TKey, ISetChanges<TValue>> GroupBy<T, TKey, TValue>(
             this IListChanges<T> source,
             Func<T, IObservable<int>, IObservable<TKey>> keySelector,
             Func<T, IObservable<int>, TValue> valueSelector)
@@ -195,12 +195,14 @@ namespace LiveLinq
         ///     when the source or key change.
         /// </summary>
         [Obsolete("This isn't working yet. Convert the dictionary to ISetChanges and use then use that GroupBy extension method.", true)]
-        public static IDictionaryChanges<TKey, IListChanges<TValue>> GroupBy<T, TKey, TValue>(
+        public static IDictionaryChanges<TKey, ISetChanges<TValue>> GroupBy<T, TKey, TValue>(
             this IListChanges<T> source,
             Func<T, IObservable<int>, IObservable<TKey>> keySelector,
             Func<T, IObservable<int>, IObservable<TValue>> valueSelector)
         {
             var keysAndValues = source.Select((t, idx) => CombineLatestKeysAndValues(t, idx, keySelector, valueSelector))
+                .MakeStrictExpensively()
+                .ToSetChanges()
                 .AsObservable()
                 .SelectMany(listChange => listChange.Itemize())
                 .Publish().RefCount();
@@ -213,7 +215,7 @@ namespace LiveLinq
                     keyValuePair =>
                     KeyValuePair(
                         keyValuePair.Key,
-                        keysAndValues.Where(change => change.Values.First().Key.Equals(keyValuePair.Key)).Select(change => ListChange(change.Type, change.Range, change.Values.Select(kvp => kvp.Value))).ToLiveLinq()))
+                        keysAndValues.Where(change => change.Values.First().Key.Equals(keyValuePair.Key)).Select(change => SetChange(change.Type, change.Values.Select(kvp => kvp.Value))).ToLiveLinq()))
                 .Collect()
                 .Where(kvp => kvp.Value.Any())
                 .MakeStrictExpensively()

@@ -43,7 +43,7 @@ namespace LiveLinq.Tests.List
         public void GroupBy_SelectMany()
         {
             var source = new ObservableCollection<int>();
-            using (var result = source.ToLiveLinq().GroupBy(i => i % 2 == 0).SelectMany((_, a) => a).ToReadOnlyObservableList())
+            using (var result = source.ToLiveLinq().GroupBy(i => i % 2 == 0).SelectMany((_, a) => a).ToReadOnlyObservableSet())
             {
                 source.Add(1);
                 source.Add(2);
@@ -128,7 +128,7 @@ namespace LiveLinq.Tests.List
         {
             var source = new ObservableCollection<int>();
             var result = source.ToLiveLinq().GroupBy(i => i % 2 == 0);
-            using (var evenNumbers = result.Get(true).ToReadOnlyObservableList())
+            using (var evenNumbers = result.Get(true).ToReadOnlyObservableSet())
             using (var nonGroupedEventNumbers = source.ToLiveLinq().Where(i => i % 2 == 0).ToReadOnlyObservableList())
             {
                 nonGroupedEventNumbers.Count.Should().Be(0);

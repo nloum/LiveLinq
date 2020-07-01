@@ -4,6 +4,7 @@ using System.Reactive.Linq;
 using LiveLinq.Dictionary;
 using LiveLinq.Ordered;
 using LiveLinq.List;
+using LiveLinq.Set;
 
 namespace LiveLinq
 {
@@ -18,7 +19,16 @@ namespace LiveLinq
                 .OrderBy(x => x.Key)
                 .SelectMany(kvp => selector(kvp.Key, kvp.Value));
         }
-        
+
+        public static ISetChanges<TResult> SelectMany<TKeySource, TValueSource, TResult>(
+            this IDictionaryChanges<TKeySource, TValueSource> source,
+            Func<TKeySource, TValueSource, ISetChanges<TResult>> selector)
+        {
+            return source
+                .KeyValuePairsAsSet()
+                .SelectMany(kvp => selector(kvp.Key, kvp.Value));
+        }
+
         public static IDictionaryChanges<TKeyResult, TValueResult> SelectMany<TKeySource, TValueSource, TKeyResult, TValueResult>(
             this IDictionaryChanges<TKeySource, TValueSource> source,
             Func<TKeySource, TValueSource, IDictionaryChanges<TKeyResult, TValueResult>> selector)

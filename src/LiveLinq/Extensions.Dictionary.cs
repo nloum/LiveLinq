@@ -195,7 +195,15 @@ namespace LiveLinq
                 return Utility.SetChange(dictionaryChange.Type, dictionaryChange.KeyValuePairs.Select(x => x.Key));
             }).ToLiveLinq();
         }
-        
+
+        public static ISetChanges<IKeyValuePair<TKey, TValue>> KeyValuePairsAsSet<TKey, TValue>(this IDictionaryChanges<TKey, TValue> dictionaryChanges)
+        {
+            return dictionaryChanges.AsObservable().Select(dictionaryChange =>
+            {
+                return Utility.SetChange(dictionaryChange.Type, dictionaryChange.KeyValuePairs.ToImmutableList());
+            }).ToLiveLinq();
+        }
+
         /// <summary>
         /// Selects the values of the dictionary. Warning: if there are duplicate values anywhere in the dictionary, they will
         /// be reduced to a single distinct value.

@@ -17,7 +17,7 @@ namespace LiveLinq.Tests.Dictionary
             var source = new ObservableList<string>();
             var property = source.ToLiveLinq()
                 .GroupBy(str => str.Length)
-                .SelectValue((key, value) => value.ToObservableEnumerable().ToBehaviorSubject())
+                .SelectValue((key, value) => value.ToObservableState().ToBehaviorSubject())
                 .ToObservableEnumerable()
                 .ToBehaviorSubject();
             source.Add("4444");

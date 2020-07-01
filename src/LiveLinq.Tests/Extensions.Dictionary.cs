@@ -238,7 +238,7 @@ namespace LiveLinq.Tests
             uut[3] = "b";
             uut.Add(4, "c");
 
-            var values = uut.ToLiveLinq().ValuesAsSet().ToReadOnlySet();
+            var values = uut.ToLiveLinq().ValuesAsSet().ToReadOnlyObservableSet();
             values.Should().BeEquivalentTo("a", "b", "c");
             
             uut.Add(5, "d");
@@ -255,7 +255,7 @@ namespace LiveLinq.Tests
             uut[3] = "b";
             uut.Add(4, "c");
 
-            var values = uut.ToLiveLinq().KeysAsSet().ToReadOnlySet();
+            var values = uut.ToLiveLinq().KeysAsSet().ToReadOnlyObservableSet();
             values.Should().BeEquivalentTo(2, 3, 4);
             
             uut.Add(5, "d");

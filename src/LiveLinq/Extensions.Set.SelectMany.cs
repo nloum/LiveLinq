@@ -15,7 +15,12 @@ namespace LiveLinq
         {
             return source.SelectMany(item => selector(item).UnchangingSetLiveLinq());
         }
-        
+
+        public static ISetChanges<T> SelectMany<T>(this ISetChanges<ISetChanges<T>> source)
+        {
+            return source.SelectMany(x => x);
+        }
+
         public static ISetChanges<T2> SelectMany<T1, T2>(this ISetChanges<T1> source, Func<T1, ISetChanges<T2>> selector)
         {
             return Observable.Create((IObserver<ISetChange<T2>> observer) =>

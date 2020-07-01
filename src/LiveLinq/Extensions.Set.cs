@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LiveLinq.Core;
 using LiveLinq.Dictionary;
+using LiveLinq.List;
 using LiveLinq.Set;
 using SimpleMonads;
 using static LiveLinq.Utility;
@@ -89,30 +90,72 @@ namespace LiveLinq
                 .ToLiveLinq();
         }
         
-        public static IReadOnlyObservableSet<T> ToReadOnlySet<T>(this ISetChanges<T> source)
+        public static IReadOnlyObservableSet<T> ToReadOnlyObservableSet<T>(this ISetChanges<T> source)
         {
-            var result = new ObservableSet<T>();
-            source.AsObservable().Subscribe(x =>
-            {
-                if (x.Type == CollectionChangeType.Add)
-                {
-                    result.AddRange(x.Values);
-                }
-                else if (x.Type == CollectionChangeType.Remove)
-                {
-                    result.RemoveRange(x.Values);
-                }
-                else
-                {
-                    throw new ArgumentException($"Unknown change type {x.Type}");
-                }
-            });
+            var result = new ReadOnlyObservableSet<T>(source);
             return result;
         }
 
         public static ISetChanges<T> ToLiveLinq<T>(this IObservable<ISetChange<T>> source)
         {
             return new SetChanges<T>(source);
+        }
+
+        public static ISetChanges<T> ToSetChanges<T>(this IListChangesStrict<T> listChanges)
+        {
+            return listChanges.AsObservable().Select(listChange =>
+            {
+                return (ISetChange<T>)new SetChange<T>(listChange.Type, listChange.Values.ToImmutableList());
+            }).ToLiveLinq();
+        }
+
+        public static IObservable<IMaybe<T>> First<T>(this ISetChanges<T> source)
+        {
+            return source.ToObservableState().Select(x => x.FirstOrDefault()?.ToMaybe() ?? Maybe<T>.Nothing);
+        }
+        
+        public static ISetChanges<TValue> SelectMany<T, TValue>(this IObservable<T> source, Func<T, ISetChanges<TValue>> setChanges)
+        {
+            int index = 0;
+            var observable = source.SelectLatest(x => setChanges(x).ToObservableStateAndChange().Select(stateChangeChange => new { stateChangeChange, index = index++ }));
+            
+            var result = Observable.Create<ISetChange<TValue>>((observer, cancellationToken) =>
+            {
+                return Task.Factory.StartNew<Action>(() =>
+                {
+                    var prevIndex = -1;
+                    SetStateAndChange<TValue> prevStateAndChange = null;
+                    foreach (var item in observable.ToEnumerable())
+                    {
+                        if (cancellationToken.IsCancellationRequested)
+                        {
+                            return () => { };
+                        }
+                    
+                        if (prevStateAndChange == null)
+                        {
+                            prevIndex = item.index;
+                            prevStateAndChange = item.stateChangeChange;
+                            observer.OnNext(item.stateChangeChange.MostRecentChange);
+                        }
+                        else
+                        {
+                            if (prevIndex != item.index)
+                            {
+                                observer.OnNext(new SetChange<TValue>(CollectionChangeType.Remove, prevStateAndChange.State.ToImmutableList()));
+                                observer.OnNext(new SetChange<TValue>(CollectionChangeType.Add, item.stateChangeChange.State.ToImmutableList()));
+                            }
+                            else
+                            {
+                                observer.OnNext(item.stateChangeChange.MostRecentChange);
+                            }
+                        }
+                    }
+                    return () => { };
+                });
+            });
+
+            return result.ToLiveLinq();
         }
     }
 }
