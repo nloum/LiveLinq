@@ -13,7 +13,7 @@ namespace LiveLinq
         public static ISetChanges<T2> SelectMany<T1, T2>(this ISetChanges<T1> source,
             Func<T1, IEnumerable<T2>> selector)
         {
-            return source.SelectMany(item => selector(item).UnchangingSetLiveLinq());
+            return source.SelectMany(item => selector(item).ToLiveLinqUnchangingSet());
         }
 
         public static ISetChanges<T> SelectMany<T>(this ISetChanges<ISetChanges<T>> source)

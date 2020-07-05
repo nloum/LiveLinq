@@ -326,7 +326,7 @@ namespace LiveLinq
         ///     are very important.
         ///     This extension method produces an IListChanges that never sends collection changed events.
         /// </summary>
-        public static IListChangesStrict<TElement> UnchangingListLiveLinq<TElement>(this IEnumerable<TElement> source)
+        public static IListChangesStrict<TElement> ToLiveLinqUnchangingList<TElement>(this IEnumerable<TElement> source)
         {
             return Observable.Return(source).ToLiveLinq();
         }

@@ -86,7 +86,7 @@ namespace LiveLinq.Tests.List
         [Obsolete("This isn't working yet. Convert the dictionary to ISetChanges and use then use that GroupBy extension method.", true)]
         public void GroupBy_SubsequentClear()
         {
-            var source = new ObservableCollection<int>();
+            var source = new ObservableList<int>();
             var result = source.ToLiveLinq().GroupBy(i => i % 2 == 0);
             var snapshot = result.ContainsKey(true).ToBehaviorSubject();
             snapshot.Value.Should().BeFalse();
@@ -103,7 +103,7 @@ namespace LiveLinq.Tests.List
         [Obsolete("This isn't working yet. Convert the dictionary to ISetChanges and use then use that GroupBy extension method.", true)]
         public void GroupBy_ObservableKey()
         {
-            var source = new ObservableCollection<BehaviorSubject<int>>();
+            var source = new ObservableList<BehaviorSubject<int>>();
             var result = source.ToLiveLinq().Select(rp => rp.AsObservable()).GroupBy(i => i % 2 == 0);
             var snapshot = result.ContainsKey(true).ToBehaviorSubject();
             snapshot.Value.Should().BeFalse();

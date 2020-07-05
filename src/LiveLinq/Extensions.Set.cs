@@ -21,7 +21,7 @@ namespace LiveLinq
             return maybe.Otherwise(EmptySetChanges<T>);
         }
         
-        public static ISetChanges<T> UnchangingSetLiveLinq<T>(this IEnumerable<T> items)
+        public static ISetChanges<T> ToLiveLinqUnchangingSet<T>(this IEnumerable<T> items)
         {
             return Observable.Return(SetChange(CollectionChangeType.Add, items)).ToLiveLinq();
         }
