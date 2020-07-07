@@ -49,7 +49,7 @@ namespace LiveLinq
         public static IDisposable Subscribe<T, TState>(this ISetChanges<T> source, Func<T, TState> onAdd, Action<T, TState, RemovalMode> onRemove)
         {
             return source.Subscribe(items =>
-                items.Select(item => new KeyValuePair<T, TState>(item, onAdd(item))), 
+                items.Select(item => new KeyValuePair<T, TState>(item, onAdd(item))).ToImmutableList(), 
                 (items, removalMode) =>
                 {
                     foreach (var item in items)
