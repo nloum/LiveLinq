@@ -2,3 +2,7 @@ image: gitpod/workspace-dotnet
 
 tasks:
   - init: dotnet build src/LiveLinq.sln
+
+vscode:
+  extensions:
+    - formulahendry.dotnet-test-explorer@0.7.3:VY4UZ1ap2QjwnlRvG8NJ7Q==
