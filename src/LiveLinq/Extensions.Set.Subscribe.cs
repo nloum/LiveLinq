@@ -73,7 +73,7 @@ namespace LiveLinq
                 else if (change.Type == CollectionChangeType.Remove)
                 {
                     onRemove(change.Values.Select(value =>
-                        new KeyValuePair<T, TState>(value, state[value])), RemovalMode.Removal);
+                        new KeyValuePair<T, TState>(value, state[value])), RemovalMode.Explicit);
                     return state.RemoveRange(change.Values);
                 }
                 else
@@ -82,7 +82,7 @@ namespace LiveLinq
                 }
             }).Subscribe(_ => { }, (exception, maybeState) =>
                 {
-                    maybeState.IfHasValue(state => onRemove(state, RemovalMode.Error));
+                    maybeState.IfHasValue(state => onRemove(state, RemovalMode.Error(exception)));
                 }, maybeState => { maybeState.IfHasValue(state => onRemove(state, RemovalMode.Complete)); }, maybeState =>
                 {
                     maybeState.IfHasValue(state => onRemove(state, RemovalMode.Unsubscribe));

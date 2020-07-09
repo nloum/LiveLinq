@@ -245,7 +245,7 @@ namespace LiveLinq
                                 onMove(mostRecentState.State.TakeEfficiently(change.Range), oldRange, newRange);
                             }
 
-                            onRemove(mostRecentState.State.TakeEfficiently(change.Range), change.Range, RemovalMode.Removal);
+                            onRemove(mostRecentState.State.TakeEfficiently(change.Range), change.Range, RemovalMode.Explicit);
                             
                             newChange = Utility.ListChangeStrict(CollectionChangeType.Remove, change.Range,
                                 mostRecentState.State.Skip(change.Range.LowerBound.ChangeStrictness(false).Value)
@@ -272,7 +272,7 @@ namespace LiveLinq
                     {
                         if (data.Length > 0)
                         {
-                            onRemove(data[data.Length - 1].State, NumbersUtility.Range(0, data[data.Length - 1].State.Count), RemovalMode.Error);
+                            onRemove(data[data.Length - 1].State, NumbersUtility.Range(0, data[data.Length - 1].State.Count), RemovalMode.Error(exception));
                         }
                     });
                 }, maybeData =>
