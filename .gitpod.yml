@@ -1,5 +1,4 @@
 image: gitpod/workspace-dotnet
 
 tasks:
-  - init: dotnet build
-    command: dotnet run
+  - init: dotnet build src/LiveLinq.sln
