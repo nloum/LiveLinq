@@ -2,7 +2,7 @@
 
 # LiveLinq
 
-![dotnetcore](https://img.shields.io/github/workflow/status/nloum/LiveLinq/dotnetcore) ![nuget](https://img.shields.io/nuget/v/LiveLinq) ![license](https://img.shields.io/github/license/nloum/LiveLinq) [![Join the chat at https://gitter.im/LiveLinq/community](https://badges.gitter.im/LiveLinq/community.svg)](https://gitter.im/LiveLinq/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/nloum/LiveLinq) ![dotnetcore](https://img.shields.io/github/workflow/status/nloum/LiveLinq/dotnetcore) ![nuget](https://img.shields.io/nuget/v/LiveLinq) ![license](https://img.shields.io/github/license/nloum/LiveLinq) [![Join the chat at https://gitter.im/LiveLinq/community](https://badges.gitter.im/LiveLinq/community.svg)](https://gitter.im/LiveLinq/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 LiveLinq is the streaming LINQ library for .NET. The syntax looks mostly like standard LINQ, but it efficiently recalculates the resulting collections when the source collection changes.
 
