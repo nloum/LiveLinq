@@ -21,12 +21,30 @@ namespace LiveLinq
         {
         }
 
-        public static ReasonForRemoval Explicit { get; }
-        public static ReasonForRemoval Unsubscribe { get; }
-        public static ReasonForRemoval Complete { get; }
+        public static ReasonForRemoval Explicit => new ReasonForRemoval(ExplicitRemoval.Default);
+        public static ReasonForRemoval Unsubscribe => new ReasonForRemoval(UnsubscribeRemoval.Default);
+        public static ReasonForRemoval Complete => new ReasonForRemoval(CompleteRemoval.Default);
         public static ReasonForRemoval Error(Exception exception)
         {
             return new ReasonForRemoval(new ErrorRemoval(exception));
+        }
+
+        public override string ToString()
+        {
+            if (Item1.HasValue)
+            {
+                return Item1.Value.ToString();
+            }
+            if (Item2.HasValue)
+            {
+                return Item2.Value.ToString();
+            }
+            if (Item3.HasValue)
+            {
+                return Item3.Value.ToString();
+            }
+
+            return Item4.Value.ToString();
         }
     }
 
