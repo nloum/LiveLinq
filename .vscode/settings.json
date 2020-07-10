@@ -1,0 +1,18 @@
+{
+  // omnisharp docs reference:
+  // https://github.com/OmniSharp/omnisharp-vscode/wiki/How-to-run-and-debug-unit-tests#notes
+  "dotnet-test-explorer.testProjectPath": [ "src/**/*.Tests.csproj" ],
+  "csharp.unitTestDebuggingOptions": {
+    "justMyCode": false,
+    "symbolOptions": {
+      "searchMicrosoftSymbolServer": true
+    },
+    "searchPaths": [
+      "https://symbols.nuget.org/download/symbols"
+    ],
+    "suppressJITOptimizations": true,
+    "env": {
+      "COMPlus_ZapDisable": "1"
+    }
+  }
+}

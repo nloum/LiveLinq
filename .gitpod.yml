@@ -1,0 +1,10 @@
+image: gitpod/workspace-dotnet
+
+tasks:
+  - init: dotnet build src/LiveLinq.sln
+
+vscode:
+  extensions:
+    - formulahendry.dotnet-test-explorer@0.7.3:VY4UZ1ap2QjwnlRvG8NJ7Q==
+    - nuke.support@0.2.2:o/yN7b+f1D5H1G6IKxYOQg==
+    - ms-dotnettools.csharp@1.22.1:mvOHUBhFWjLlqsyEsBx2qg==

@@ -38,6 +38,8 @@ namespace LiveLinq
         {
 
         }
+
+        public override string ToString() => "Explicit";
     }
 
     public class UnsubscribeRemoval
@@ -48,6 +50,8 @@ namespace LiveLinq
         {
 
         }
+
+        public override string ToString() => "Unsubscribe";
     }
 
     public class CompleteRemoval
@@ -58,6 +62,8 @@ namespace LiveLinq
         {
 
         }
+
+        public override string ToString() => "Complete";
     }
 
     public class ErrorRemoval
@@ -68,5 +74,7 @@ namespace LiveLinq
         }
 
         public Exception Exception { get; }
+
+        public override string ToString() => $"Error: {Exception}";
     }
 }
