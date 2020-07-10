@@ -3,30 +3,30 @@ using System;
 
 namespace LiveLinq
 {
-    public class RemovalMode : Either<ExplicitRemoval, UnsubscribeRemoval, CompleteRemoval, ErrorRemoval>
+    public class ReasonForRemoval : Either<ExplicitRemoval, UnsubscribeRemoval, CompleteRemoval, ErrorRemoval>
     {
-        private RemovalMode(ExplicitRemoval item1) : base(item1)
+        private ReasonForRemoval(ExplicitRemoval item1) : base(item1)
         {
         }
 
-        private RemovalMode(UnsubscribeRemoval item2) : base(item2)
+        private ReasonForRemoval(UnsubscribeRemoval item2) : base(item2)
         {
         }
 
-        private RemovalMode(CompleteRemoval item3) : base(item3)
+        private ReasonForRemoval(CompleteRemoval item3) : base(item3)
         {
         }
 
-        private RemovalMode(ErrorRemoval item4) : base(item4)
+        private ReasonForRemoval(ErrorRemoval item4) : base(item4)
         {
         }
 
-        public static RemovalMode Explicit { get; }
-        public static RemovalMode Unsubscribe { get; }
-        public static RemovalMode Complete { get; }
-        public static RemovalMode Error(Exception exception)
+        public static ReasonForRemoval Explicit { get; }
+        public static ReasonForRemoval Unsubscribe { get; }
+        public static ReasonForRemoval Complete { get; }
+        public static ReasonForRemoval Error(Exception exception)
         {
-            return new RemovalMode(new ErrorRemoval(exception));
+            return new ReasonForRemoval(new ErrorRemoval(exception));
         }
     }
 

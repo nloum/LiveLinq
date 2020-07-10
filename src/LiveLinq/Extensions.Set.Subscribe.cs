@@ -36,7 +36,7 @@ namespace LiveLinq
             }).ToLiveLinq();
         }
         
-        public static IDisposable Subscribe<T>(this ISetChanges<T> source, Action<T> onAdd, Action<T, RemovalMode> onRemove)
+        public static IDisposable Subscribe<T>(this ISetChanges<T> source, Action<T> onAdd, Action<T, ReasonForRemoval> onRemove)
         {
             return source.Subscribe(t =>
                 {
@@ -46,7 +46,7 @@ namespace LiveLinq
                 onRemove(t, removalMode));
         }
 
-        public static IDisposable Subscribe<T, TState>(this ISetChanges<T> source, Func<T, TState> onAdd, Action<T, TState, RemovalMode> onRemove)
+        public static IDisposable Subscribe<T, TState>(this ISetChanges<T> source, Func<T, TState> onAdd, Action<T, TState, ReasonForRemoval> onRemove)
         {
             return source.Subscribe(items =>
 				    {
@@ -62,7 +62,7 @@ namespace LiveLinq
                 });
         }
         
-		public static IDisposable Subscribe<T, TState>(this ISetChanges<T> source, Func<IReadOnlyList<T>, IEnumerable<KeyValuePair<T, TState>>> onAdd, Action<IEnumerable<KeyValuePair<T, TState>>, RemovalMode> onRemove)
+		public static IDisposable Subscribe<T, TState>(this ISetChanges<T> source, Func<IReadOnlyList<T>, IEnumerable<KeyValuePair<T, TState>>> onAdd, Action<IEnumerable<KeyValuePair<T, TState>>, ReasonForRemoval> onRemove)
         {
             return source.AsObservable().Scan(ImmutableDictionary<T, TState>.Empty, (state, change) =>
             {
@@ -73,7 +73,7 @@ namespace LiveLinq
                 else if (change.Type == CollectionChangeType.Remove)
                 {
                     onRemove(change.Values.Select(value =>
-                        new KeyValuePair<T, TState>(value, state[value])), RemovalMode.Explicit);
+                        new KeyValuePair<T, TState>(value, state[value])), ReasonForRemoval.Explicit);
                     return state.RemoveRange(change.Values);
                 }
                 else
@@ -82,10 +82,10 @@ namespace LiveLinq
                 }
             }).Subscribe(_ => { }, (exception, maybeState) =>
                 {
-                    maybeState.IfHasValue(state => onRemove(state, RemovalMode.Error(exception)));
-                }, maybeState => { maybeState.IfHasValue(state => onRemove(state, RemovalMode.Complete)); }, maybeState =>
+                    maybeState.IfHasValue(state => onRemove(state, ReasonForRemoval.Error(exception)));
+                }, maybeState => { maybeState.IfHasValue(state => onRemove(state, ReasonForRemoval.Complete)); }, maybeState =>
                 {
-                    maybeState.IfHasValue(state => onRemove(state, RemovalMode.Unsubscribe));
+                    maybeState.IfHasValue(state => onRemove(state, ReasonForRemoval.Unsubscribe));
                 });
         }
     }
