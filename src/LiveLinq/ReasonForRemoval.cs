@@ -28,6 +28,13 @@ namespace LiveLinq
         {
             return new ReasonForRemoval(new ErrorRemoval(exception));
         }
+        
+        public IMaybe<ErrorRemoval> Error => Item4;
+        
+        public bool IsExplicit => Item1.HasValue;
+        public bool IsUnsubscribe => Item2.HasValue;
+        public bool IsComplete => Item3.HasValue;
+        public bool IsError => Item4.HasValue;
 
         public override string ToString()
         {
@@ -45,6 +52,11 @@ namespace LiveLinq
             }
 
             return Item4.Value.ToString();
+        }
+        
+        public override bool Equals(object other)
+        {
+            return object.ReferenceEquals(this, other);
         }
     }
 
