@@ -28,9 +28,7 @@ namespace LiveLinq
         {
             return new ReasonForRemoval(new ErrorRemoval(exception));
         }
-        
-        public IMaybe<ErrorRemoval> Error => Item4;
-        
+                
         public bool IsExplicit => Item1.HasValue;
         public bool IsUnsubscribe => Item2.HasValue;
         public bool IsComplete => Item3.HasValue;
