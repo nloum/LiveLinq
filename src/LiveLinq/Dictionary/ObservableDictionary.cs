@@ -1,279 +1,67 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
-using System.Reactive.Linq;
-using System.Reactive.Subjects;
-using MoreCollections;
 
 namespace LiveLinq.Dictionary
 {
     /// <summary>
     /// This class provides a dictionary that can efficiently have LiveLinq run on it.
     /// </summary>
-    /// <typeparam name="TKey"></typeparam>
-    /// <typeparam name="TValue"></typeparam>
-    public class ObservableDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IReadOnlyObservableDictionary<TKey, TValue>, IDisposable
+    /// <typeparam name="TKey">The dictionary key type</typeparam>
+    /// <typeparam name="TValue">The dictionary value type</typeparam>
+    public class ObservableDictionary<TKey, TValue> : ObservableDictionaryBase<TKey, TValue>, IDisposable
     {
         internal IDisposable AssociatedSubscription { get; set; } = null;
-        private readonly object _lock = new object();
         private ImmutableDictionary<TKey, TValue> _dictionary = ImmutableDictionary<TKey, TValue>.Empty;
-        private readonly Subject<IDictionaryChangeStrict<TKey, TValue>> _subject = new Subject<IDictionaryChangeStrict<TKey, TValue>>();
 
-        public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
+        public override IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
         {
             return _dictionary.GetEnumerator();
         }
 
-        public int Count => _dictionary.Count;
+        public override int Count => _dictionary.Count;
 
-        public bool ContainsKey(TKey key)
+        public override bool ContainsKey(TKey key)
         {
             return _dictionary.ContainsKey(key);
         }
 
-        public bool TryGetValue(TKey key, out TValue value)
+        public override bool TryGetValue(TKey key, out TValue value)
         {
             return _dictionary.TryGetValue(key, out value);
         }
 
-        ICollection<TKey> IDictionary<TKey, TValue>.Keys => Keys.ToList();
-
-        ICollection<TValue> IDictionary<TKey, TValue>.Values => Values.ToList();
-
-        public IEnumerable<TKey> Keys => _dictionary.Keys;
-
-        public IEnumerable<TValue> Values => _dictionary.Values;
-
-        IEnumerator IEnumerable.GetEnumerator()
+        protected override void AddInternal(TKey key, TValue value)
         {
-            return GetEnumerator();
+            _dictionary = _dictionary.Add(key, value);
         }
 
-        public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
+        protected override void RemoveInternal(TKey key)
         {
-            foreach (var item in _dictionary)
+            _dictionary = _dictionary.Remove(key);
+        }
+
+        protected override void AddRangeInternal(ImmutableList<KeyValuePair<TKey, TValue>> pairs)
+        {
+            _dictionary = _dictionary.AddRange(pairs);
+        }
+
+        protected override AddOrUpdateResult AddOrUpdateInternal(TKey key, TValue value, out TValue preExistingValue)
+        {
+            if (_dictionary.TryGetValue(key, out preExistingValue))
             {
-                array[arrayIndex] = item;
-                arrayIndex++;
-            }
-        }
-
-        public bool Contains(KeyValuePair<TKey, TValue> item)
-        {
-            return _dictionary.Contains(item);
-        }
-        
-        public bool IsReadOnly => false;
-
-        public IDictionaryChangesStrict<TKey, TValue> ToLiveLinq()
-        {
-            if (Count > 0)
-            {
-                return Observable.Return(Utility.DictionaryAdd(this)).Concat(_subject).ToLiveLinq();
-            }
-            
-            return _subject.ToLiveLinq();
-        }
-
-        public void Clear()
-        {
-            RemoveRange(Keys);
-        }
-
-        #region Methods responsible for mutation AND sending livelinq events
-        
-        public TValue this[TKey key]
-        {
-            get => _dictionary[key];
-            set
-            {
-                lock (_lock)
-                {
-                    if (TryGetValue(key, out var existingValue))
-                    {
-                        _subject.OnNext(Utility.DictionaryRemove(MoreCollections.Utility.KeyValuePair(key, existingValue)));
-                    }
-
-                    _dictionary = _dictionary.SetItem(key, value);
-                    _subject.OnNext(Utility.DictionaryAdd(new KeyValuePair<TKey, TValue>(key, value)));
-                }
-            }
-        }
-
-        public void Add(KeyValuePair<TKey, TValue> item)
-        {
-            lock (_lock)
-            {
-                _dictionary = _dictionary.Add(item.Key, item.Value);
-                _subject.OnNext(Utility.DictionaryAdd(item));
-            }
-        }
-
-        public void AddOrUpdate(KeyValuePair<TKey, TValue> item)
-        {
-            lock (_lock)
-            {
-                if (_dictionary.ContainsKey(item.Key))
-                {
-                    _subject.OnNext(Utility.DictionaryRemove(new []{new KeyValuePair<TKey, TValue>(item.Key, _dictionary[item.Key]) }));
-                    _dictionary = _dictionary.SetItem(item.Key, item.Value);
-                    _subject.OnNext(Utility.DictionaryAdd(item));
-                }
-                else
-                {
-                    _dictionary = _dictionary.Add(item.Key, item.Value);
-                    _subject.OnNext(Utility.DictionaryAdd(item));
-                }
-            }
-        }
-
-        public void AddOrUpdate(IKeyValuePair<TKey, TValue> item)
-        {
-            lock (_lock)
-            {
-                if (_dictionary.ContainsKey(item.Key))
-                {
-                    _subject.OnNext(Utility.DictionaryRemove(new []{new KeyValuePair<TKey, TValue>(item.Key, _dictionary[item.Key]) }));
-                    _dictionary = _dictionary.SetItem(item.Key, item.Value);
-                    _subject.OnNext(Utility.DictionaryAdd(item));
-                }
-                else
-                {
-                    _dictionary = _dictionary.Add(item.Key, item.Value);
-                    _subject.OnNext(Utility.DictionaryAdd(item));
-                }
-            }
-        }
-
-        public void AddOrUpdate(TKey key, TValue value)
-        {
-            lock (_lock)
-            {
-                if (_dictionary.ContainsKey(key))
-                {
-                    _subject.OnNext(Utility.DictionaryRemove(new []{new KeyValuePair<TKey, TValue>(key, _dictionary[key]) }));
-                    _dictionary = _dictionary.SetItem(key, value);
-                    _subject.OnNext(Utility.DictionaryAdd(new KeyValuePair<TKey, TValue>(key, value)));
-                }
-                else
-                {
-                    _dictionary = _dictionary.Add(key, value);
-                    _subject.OnNext(Utility.DictionaryAdd(new KeyValuePair<TKey, TValue>(key, value)));
-                }
-            }
-        }
-
-        public bool Remove(KeyValuePair<TKey, TValue> item)
-        {
-            lock (_lock)
-            {
-                if (!TryGetValue(item.Key, out var value))
-                {
-                    if (!value.Equals(item.Value))
-                    {
-                        return false;
-                    }
-
-                    _dictionary = _dictionary.Remove(item.Key);
-                    _subject.OnNext(Utility.DictionaryRemove(MoreCollections.Utility.KeyValuePair(item.Key, item.Value)));
-                    return true;
-                }
+                _dictionary = _dictionary.SetItem(key, value);
+                return AddOrUpdateResult.Update;
             }
 
-            return false;
+            _dictionary = _dictionary.Add(key, value);
+            return AddOrUpdateResult.Add;
         }
 
-        public void Add(TKey key, TValue value)
+        protected override void RemoveRangeInternal(IEnumerable<TKey> keys)
         {
-            lock (_lock)
-            {
-                _dictionary = _dictionary.Add(key, value);
-                _subject.OnNext(Utility.DictionaryAdd(MoreCollections.Utility.KeyValuePair(key, value)));
-            }
+            _dictionary = _dictionary.RemoveRange(keys);
         }
-
-        public bool Remove(TKey key)
-        {
-            lock (_lock)
-            {
-                if (!TryGetValue(key, out var value))
-                {
-                    return false;
-                }
-                
-                _dictionary = _dictionary.Remove(key);
-                _subject.OnNext(Utility.DictionaryRemove(MoreCollections.Utility.KeyValuePair(key, value)));
-                return true;
-            }
-        }
-
-        public void AddRange(IEnumerable<KeyValuePair<TKey, TValue>> pairs)
-        {
-            lock (_lock)
-            {
-                var pairsList = pairs.ToImmutableList();
-                if (pairsList.Count == 0)
-                {
-                    return;
-                }
-                _dictionary = _dictionary.AddRange(pairsList);
-                _subject.OnNext(Utility.DictionaryAdd(pairsList));
-            }
-        }
-
-        public void AddRange(IEnumerable<IKeyValuePair<TKey, TValue>> pairs)
-        { 
-            AddRange(pairs.Select(x => new KeyValuePair<TKey, TValue>(x.Key, x.Value)));
-        }
-
-        public void AddOrUpdateRange(IEnumerable<KeyValuePair<TKey, TValue>> pairs)
-        {
-            lock (_lock)
-            {
-                foreach (var item in pairs)
-                {
-                    if (_dictionary.ContainsKey(item.Key))
-                    {
-                        _subject.OnNext(Utility.DictionaryRemove(new []{new KeyValuePair<TKey, TValue>(item.Key, _dictionary[item.Key]) }));
-                        _dictionary = _dictionary.SetItem(item.Key, item.Value);
-                        _subject.OnNext(Utility.DictionaryAdd(item));
-                    }
-                    else
-                    {
-                        _dictionary = _dictionary.Add(item.Key, item.Value);
-                        _subject.OnNext(Utility.DictionaryAdd(item));
-                    }
-                }
-            }
-        }
-
-        public void AddOrUpdateRange(IEnumerable<IKeyValuePair<TKey, TValue>> pairs)
-        { 
-            AddOrUpdateRange(pairs.Select(x => new KeyValuePair<TKey, TValue>(x.Key, x.Value)));
-        }
-
-        public void RemoveRange(IEnumerable<TKey> keys)
-        {
-            lock (_lock)
-            {
-                var pairs = new List<IKeyValuePair<TKey, TValue>>();
-                foreach (var key in keys)
-                {
-                    pairs.Add(MoreCollections.Utility.KeyValuePair(key, this[key]));
-                }
-
-                if (pairs.Count == 0)
-                {
-                    return;
-                }
-                _dictionary = _dictionary.RemoveRange(pairs.Select(x => x.Key));
-                _subject.OnNext(Utility.DictionaryRemove(pairs));
-            }
-        }
-        
-        #endregion
 
         public void Dispose()
         {
