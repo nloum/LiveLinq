@@ -16,7 +16,7 @@ namespace LiveLinq.Dictionary
     /// </summary>
     /// <typeparam name="TKey">The dictionary key type</typeparam>
     /// <typeparam name="TValue">The dictionary value type</typeparam>
-    public abstract class ObservableDictionaryBase<TKey, TValue> : IDictionary<TKey, TValue>, IReadOnlyObservableDictionary<TKey, TValue>
+    public abstract class ObservableDictionaryBase<TKey, TValue> : IObservableDictionary<TKey, TValue>
     {
         private readonly object _lock = new object();
         private readonly Subject<IDictionaryChangeStrict<TKey, TValue>> _subject = new Subject<IDictionaryChangeStrict<TKey, TValue>>();
