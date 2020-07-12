@@ -82,7 +82,7 @@ namespace LiveLinq
             this IListChangesStrict<T> source,
             Action<T, int> onAdd,
             Action<T, int, int> onMove,
-            Action<T, int, RemovalMode> onRemove,
+            Action<T, int, ReasonForRemoval> onRemove,
             bool moveBeforeAdd, bool moveBeforeRemove)
         {
             return source.Subscribe(
@@ -126,7 +126,7 @@ namespace LiveLinq
             this IListChangesStrict<T> source,
             Func<T, int, TState> onAdd,
             Action<T, TState, int, int> onMove,
-            Action<T, TState, int, RemovalMode> onRemove,
+            Action<T, TState, int, ReasonForRemoval> onRemove,
             bool moveBeforeAdd, bool moveBeforeRemove)
         {
             return source.Subscribe(
@@ -144,7 +144,7 @@ namespace LiveLinq
                         onMove(items[i].Item1, items[i].Item2, oldIndex, newIndex);
                     }
                 },
-                (IReadOnlyList<Tuple<T, TState>> items, INumberRange<int> oldRange, RemovalMode removalMode) =>
+                (IReadOnlyList<Tuple<T, TState>> items, INumberRange<int> oldRange, ReasonForRemoval removalMode) =>
                 {
                     for (var i = 0; i < items.Count; i++)
                     {
@@ -183,7 +183,7 @@ namespace LiveLinq
             this IListChangesStrict<T> source,
             Func<IReadOnlyList<T>, INumberRange<int>, ImmutableList<Tuple<T, TState>>> onAdd,
             Action<IReadOnlyList<Tuple<T, TState>>, INumberRange<int>, INumberRange<int>> onMove,
-            Action<IReadOnlyList<Tuple<T, TState>>, INumberRange<int>, RemovalMode> onRemove,
+            Action<IReadOnlyList<Tuple<T, TState>>, INumberRange<int>, ReasonForRemoval> onRemove,
             bool moveBeforeAdd, bool moveBeforeRemove)
         {
             return source
@@ -245,7 +245,7 @@ namespace LiveLinq
                                 onMove(mostRecentState.State.TakeEfficiently(change.Range), oldRange, newRange);
                             }
 
-                            onRemove(mostRecentState.State.TakeEfficiently(change.Range), change.Range, RemovalMode.Explicit);
+                            onRemove(mostRecentState.State.TakeEfficiently(change.Range), change.Range, ReasonForRemoval.Explicit);
                             
                             newChange = Utility.ListChangeStrict(CollectionChangeType.Remove, change.Range,
                                 mostRecentState.State.Skip(change.Range.LowerBound.ChangeStrictness(false).Value)
@@ -272,7 +272,7 @@ namespace LiveLinq
                     {
                         if (data.Length > 0)
                         {
-                            onRemove(data[data.Length - 1].State, NumbersUtility.Range(0, data[data.Length - 1].State.Count), RemovalMode.Error(exception));
+                            onRemove(data[data.Length - 1].State, NumbersUtility.Range(0, data[data.Length - 1].State.Count), ReasonForRemoval.Error(exception));
                         }
                     });
                 }, maybeData =>
@@ -281,7 +281,7 @@ namespace LiveLinq
                     {
                         if (data.Length > 0)
                         {
-                            onRemove(data[data.Length - 1].State, NumbersUtility.Range(0, data[data.Length - 1].State.Count), RemovalMode.Complete);
+                            onRemove(data[data.Length - 1].State, NumbersUtility.Range(0, data[data.Length - 1].State.Count), ReasonForRemoval.Complete);
                         }
                     });
                 }, maybeData =>
@@ -290,7 +290,7 @@ namespace LiveLinq
                     {
                         if (data.Length > 0)
                         {
-                            onRemove(data[data.Length - 1].State, NumbersUtility.Range(0, data[data.Length - 1].State.Count), RemovalMode.Unsubscribe);
+                            onRemove(data[data.Length - 1].State, NumbersUtility.Range(0, data[data.Length - 1].State.Count), ReasonForRemoval.Unsubscribe);
                         }
                     });
                 });
