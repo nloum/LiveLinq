@@ -6,7 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="LiveLinq" Version="1.1.0-alpha0087" />
+      <ProjectReference Include="..\LiveLinq\LiveLinq.csproj" />
     </ItemGroup>
 
 </Project>
