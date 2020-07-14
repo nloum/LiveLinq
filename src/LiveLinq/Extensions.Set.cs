@@ -111,7 +111,7 @@ namespace LiveLinq
 
         public static IObservable<IMaybe<T>> First<T>(this ISetChanges<T> source)
         {
-            return source.ToObservableState().Select(x => x.FirstOrDefault()?.ToMaybe() ?? Maybe<T>.Nothing("Cannot get the first item of an empty set"));
+            return source.ToObservableState().Select(x => x.FirstOrDefault()?.ToMaybe() ?? Maybe<T>.Nothing(() => throw new IndexOutOfRangeException("Cannot get the first item of an empty set")));
         }
         
         public static ISetChanges<TValue> SelectMany<T, TValue>(this IObservable<T> source, Func<T, ISetChanges<TValue>> setChanges)
