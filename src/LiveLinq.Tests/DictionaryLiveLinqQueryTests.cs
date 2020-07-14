@@ -17,6 +17,14 @@ namespace LiveLinq.Tests
     public class DictionaryLiveLinqQueryTests
     {
         [TestMethod]
+        public void IObservableDictionaryShouldNotHaveRedundantMethodsOrProperties()
+        {
+            IObservableDictionary<int, string> uut = new ObservableDictionary<int, string>();
+            uut[4] = "hi"; // this should compile
+            uut[4].Should().Be("hi");
+        }
+        
+        [TestMethod]
         public void ToDictionary_Get()
         {
             var source = new ObservableDictionary<int, string>();
