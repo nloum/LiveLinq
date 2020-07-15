@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using FluentAssertions;
@@ -10,6 +12,18 @@ namespace LiveLinq.Tests
     [TestClass]
     public class Extensions_Set_Tests
     {
+        [TestMethod]
+        public void SetAddRangeSubscribeShouldProcessAllItemsInRange()
+        {
+            var source = new ObservableSet<string>();
+            var items = new List<string>();
+            using (source.ToLiveLinq().Subscribe(str => { items.Add(str); }, (str, mode) => { }))
+            {
+                source.AddRange(new [] { "A", "B", "C", "D" });
+            }
+            items.Should().BeEquivalentTo("A", "B", "C", "D");
+        }
+    
         [TestMethod]
         public void SelectObservableNeverShouldBeTreatedAsFalse()
         {

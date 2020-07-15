@@ -1,9 +1,9 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using System.Runtime.InteropServices;
 using MoreCollections;
 
 namespace LiveLinq.Dictionary
@@ -16,81 +16,29 @@ namespace LiveLinq.Dictionary
     /// </summary>
     /// <typeparam name="TKey">The dictionary key type</typeparam>
     /// <typeparam name="TValue">The dictionary value type</typeparam>
-    public abstract class ObservableDictionaryBase<TKey, TValue> : IObservableDictionary<TKey, TValue>
+    public abstract class ObservableDictionaryBase<TKey, TValue> : ObservableDictionaryBaseWithAbstractLiveLinq<TKey, TValue>, IObservableDictionary<TKey, TValue>
     {
         private readonly object _lock = new object();
         private readonly Subject<IDictionaryChangeStrict<TKey, TValue>> _subject = new Subject<IDictionaryChangeStrict<TKey, TValue>>();
 
-        ICollection<TKey> IDictionary<TKey, TValue>.Keys => Keys.ToList();
-
-        ICollection<TValue> IDictionary<TKey, TValue>.Values => Values.ToList();
-
-        IEnumerator IEnumerable.GetEnumerator()
+        public override IDictionaryChangesStrict<TKey, TValue> ToLiveLinq()
         {
-            return GetEnumerator();
-        }
-
-        public bool IsReadOnly => false;
-
-        public IDictionaryChangesStrict<TKey, TValue> ToLiveLinq()
-        {
-            if (Count > 0)
+            return Observable.Create<IDictionaryChangeStrict<TKey, TValue>>(observer =>
             {
-                return Observable.Return(Utility.DictionaryAdd(this)).Concat(_subject).ToLiveLinq();
-            }
-            
-            return _subject.ToLiveLinq();
+                var result = _subject.Subscribe(observer);
+                var items = this.ToImmutableList();
+                if (items.Count > 0)
+                {
+                    observer.OnNext(Utility.DictionaryAdd(items.AsEnumerable()));
+                }
+
+                return result;
+            }).ToLiveLinq();
         }
 
-        public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
-        {
-            foreach (var item in this)
-            {
-                array[arrayIndex] = item;
-                arrayIndex++;
-            }
-        }
-
-        public bool Contains(KeyValuePair<TKey, TValue> item)
-        {
-            if (!TryGetValue(item.Key, out var value))
-            {
-                return false;
-            }
-
-            var result = value.Equals(item.Value);
-            return result;
-        }
-
-        #region Stuff that might need to be overridden for performance reasons
-        
-        public virtual void Clear()
-        {
-            RemoveRange(Keys);
-        }
-
-        public virtual IEnumerable<TKey> Keys => this.Select(x => x.Key);
-        public virtual IEnumerable<TValue> Values => this.Select(x => x.Value);
-
-        #endregion
-        
-        #region Abstract methods
-
-        public abstract IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator();
-        public abstract int Count { get; }
-        public abstract bool ContainsKey(TKey key);
-        public abstract bool TryGetValue(TKey key, out TValue value);
-        protected abstract void AddInternal(TKey key, TValue value);
-        protected abstract void RemoveInternal(TKey key);
-        protected abstract void AddRangeInternal(ImmutableList<KeyValuePair<TKey, TValue>> pairs);
-        protected abstract AddOrUpdateResult AddOrUpdateInternal(TKey key, TValue value, out TValue preExistingValue);
-        protected abstract void RemoveRangeInternal(IEnumerable<TKey> keys);
-
-        #endregion
-        
         #region Methods responsible for mutation AND sending livelinq events
 
-        public TValue this[TKey key]
+        public override TValue this[TKey key]
         {
             get
             {
@@ -103,27 +51,20 @@ namespace LiveLinq.Dictionary
             }
             set
             {
-                var result = AddOrUpdateInternal(key, value, out var preExistingValue);
-                if (result == AddOrUpdateResult.Update)
+                lock (_lock)
                 {
-                    _subject.OnNext(Utility.DictionaryRemove(MoreCollections.Utility.KeyValuePair(key, preExistingValue)));
-                }
+                    var result = AddOrUpdateInternal(key, value, out var preExistingValue);
+                    if (result == AddOrUpdateResult.Update)
+                    {
+                        _subject.OnNext(Utility.DictionaryRemove(MoreCollections.Utility.KeyValuePair(key, preExistingValue)));
+                    }
                 
-                _subject.OnNext(Utility.DictionaryAdd(new KeyValuePair<TKey, TValue>(key, value)));
+                    _subject.OnNext(Utility.DictionaryAdd(new KeyValuePair<TKey, TValue>(key, value)));
+                }
             }
         }
 
-        public void Add(KeyValuePair<TKey, TValue> item)
-        {
-            Add(item.Key, item.Value);
-        }
-
-        public void Add(IKeyValuePair<TKey, TValue> item)
-        {
-            Add(item.Key, item.Value);
-        }
-
-        public void Add(TKey key, TValue value)
+        public override void Add(TKey key, TValue value)
         {
             lock (_lock)
             {
@@ -132,17 +73,7 @@ namespace LiveLinq.Dictionary
             }
         }
 
-        public void AddOrUpdate(KeyValuePair<TKey, TValue> item)
-        {
-            AddOrUpdate(item.Key, item.Value);
-        }
-
-        public void AddOrUpdate(IKeyValuePair<TKey, TValue> item)
-        {
-            AddOrUpdate(item.Key, item.Value);
-        }
-
-        public void AddOrUpdate(TKey key, TValue value)
+        public override void AddOrUpdate(TKey key, TValue value)
         {
             lock (_lock)
             {
@@ -158,21 +89,11 @@ namespace LiveLinq.Dictionary
             }
         }
         
-        public bool Remove(KeyValuePair<TKey, TValue> item)
-        {
-            return Remove(item.Key, item.Value);
-        }
-        
-        public bool Remove(IKeyValuePair<TKey, TValue> item)
-        {
-            return Remove(item.Key, item.Value);
-        }
-
-        public bool Remove(TKey key, TValue value)
+        public override bool Remove(TKey key, TValue value)
         {
             lock (_lock)
             {
-                if (!TryGetValue(key, out var existingValue))
+                if (TryGetValue(key, out var existingValue))
                 {
                     if (!existingValue.Equals(value))
                     {
@@ -188,7 +109,7 @@ namespace LiveLinq.Dictionary
             return false;
         }
 
-        public bool Remove(TKey key)
+        public override bool Remove(TKey key)
         {
             lock (_lock)
             {
@@ -203,7 +124,7 @@ namespace LiveLinq.Dictionary
             }
         }
 
-        public void AddRange(IEnumerable<KeyValuePair<TKey, TValue>> pairs)
+        public override void AddRange(IEnumerable<KeyValuePair<TKey, TValue>> pairs)
         {
             lock (_lock)
             {
@@ -217,12 +138,7 @@ namespace LiveLinq.Dictionary
             }
         }
 
-        public void AddRange(IEnumerable<IKeyValuePair<TKey, TValue>> pairs)
-        { 
-            AddRange(pairs.Select(x => new KeyValuePair<TKey, TValue>(x.Key, x.Value)));
-        }
-
-        public void AddOrUpdateRange(IEnumerable<KeyValuePair<TKey, TValue>> pairs)
+        public override void AddOrUpdateRange(IEnumerable<KeyValuePair<TKey, TValue>> pairs)
         {
             lock (_lock)
             {
@@ -238,12 +154,7 @@ namespace LiveLinq.Dictionary
             }
         }
 
-        public void AddOrUpdateRange(IEnumerable<IKeyValuePair<TKey, TValue>> pairs)
-        { 
-            AddOrUpdateRange(pairs.Select(x => new KeyValuePair<TKey, TValue>(x.Key, x.Value)));
-        }
-        
-        public void RemoveRange(IEnumerable<TKey> keys)
+        public override void RemoveRange(IEnumerable<TKey> keys)
         {
             lock (_lock)
             {
@@ -263,11 +174,5 @@ namespace LiveLinq.Dictionary
         }
         
         #endregion
-
-        protected enum AddOrUpdateResult
-        {
-            Add,
-            Update
-        }
     }
 }
