@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using System.Reflection;
 using SimpleMonads;
 using LiveLinq.Ordered;
@@ -22,6 +23,31 @@ namespace LiveLinq
 {
     public static partial class Extensions
     {
+        public static IReadOnlyObservableDictionary<TKey, ObservableSet<TValue>> Cache<TKey, TValue>(
+            this IDictionaryChanges<TKey, ISetChanges<TValue>> changes)
+        {
+            var result = new ObservableDictionaryGetOrDefault<TKey, ObservableSet<TValue>>(
+                (TKey key, out IMaybe<ObservableSet<TValue>> maybeValue, out bool persist) =>
+                {
+                    persist = true;
+                    maybeValue = new ObservableSet<TValue>().ToMaybe();
+                });
+
+            var disposable = changes.Subscribe((key, setChanges) =>
+            {
+                return setChanges.Subscribe(value => result[key].Add(value), (value, _) => result[key].Remove(value));
+            }, (key, value, setChangesSubscription) =>
+            {
+                // TODO - remove the key/value pair from result if there are no subscriptions,
+                // so we don't have a memory leak as new groups get added.
+                setChangesSubscription.Dispose();
+            });
+
+            result.AssociatedSubscriptions.Disposes(disposable);
+
+            return result;
+        }
+    
         public static IDictionaryChangesStrict<TKey, TValue> OtherwiseEmpty<TKey, TValue>(
             this IMaybe<IDictionaryChangesStrict<TKey, TValue>> maybe)
         {
@@ -38,7 +64,7 @@ namespace LiveLinq
             this IDictionaryChanges<TKey, TValue> changes)
         {
             var result = new ObservableDictionary<TKey, TValue>();
-            result.AssociatedSubscription = changes.AsObservable().Subscribe(change =>
+            result.AssociatedSubscriptions.Disposes(changes.AsObservable().Subscribe(change =>
             {
                 if (change.Type == CollectionChangeType.Add)
                 {
@@ -48,7 +74,7 @@ namespace LiveLinq
                 {
                     result.RemoveRange(change.KeyValuePairs.Select(x => x.Key));
                 }
-            });
+            }));
             return result;
         }
 

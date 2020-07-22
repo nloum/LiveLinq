@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using UtilityDisposables;
 
 namespace LiveLinq.Dictionary
 {
@@ -9,10 +10,14 @@ namespace LiveLinq.Dictionary
     /// </summary>
     /// <typeparam name="TKey">The dictionary key type</typeparam>
     /// <typeparam name="TValue">The dictionary value type</typeparam>
+    /// <remarks>
+    /// This class is thread-safe.
+    /// </remarks>
     public class ObservableDictionary<TKey, TValue> : ObservableDictionaryBase<TKey, TValue>, IDisposable
     {
-        internal IDisposable AssociatedSubscription { get; set; } = null;
+        internal DisposableCollector AssociatedSubscriptions { get; } = new DisposableCollector();
         private ImmutableDictionary<TKey, TValue> _dictionary = ImmutableDictionary<TKey, TValue>.Empty;
+        protected readonly object Lock = new object();
 
         public override IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
         {
@@ -48,14 +53,17 @@ namespace LiveLinq.Dictionary
 
         protected override AddOrUpdateResult AddOrUpdateInternal(TKey key, TValue value, out TValue preExistingValue)
         {
-            if (_dictionary.TryGetValue(key, out preExistingValue))
+            lock (Lock)
             {
-                _dictionary = _dictionary.SetItem(key, value);
-                return AddOrUpdateResult.Update;
-            }
+                if (_dictionary.TryGetValue(key, out preExistingValue))
+                {
+                    _dictionary = _dictionary.SetItem(key, value);
+                    return AddOrUpdateResult.Update;
+                }
 
-            _dictionary = _dictionary.Add(key, value);
-            return AddOrUpdateResult.Add;
+                _dictionary = _dictionary.Add(key, value);
+                return AddOrUpdateResult.Add;
+            }
         }
 
         protected override void RemoveRangeInternal(IEnumerable<TKey> keys)
@@ -65,7 +73,7 @@ namespace LiveLinq.Dictionary
 
         public void Dispose()
         {
-            AssociatedSubscription?.Dispose();
+            AssociatedSubscriptions.Dispose();
         }
     }
 }
