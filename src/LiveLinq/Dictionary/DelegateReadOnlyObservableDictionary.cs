@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using MoreCollections;
+using SimpleMonads;
 
 namespace LiveLinq.Dictionary
 {
-    public class DelegateReadOnlyObservableDictionary<TKey, TValue> : IReadOnlyObservableDictionary<TKey, TValue>
+    public class DelegateReadOnlyObservableDictionary<TKey, TValue> : IReadOnlyObservableDictionary<TKey, TValue>, IReadOnlyDictionary<TKey, TValue>
     {
         private readonly IReadOnlyObservableDictionary<TKey, TValue> _wrapped;
 
@@ -17,7 +20,7 @@ namespace LiveLinq.Dictionary
             return GetEnumerator();
         }
 
-        public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
+        public IEnumerator<IKeyValuePair<TKey, TValue>> GetEnumerator()
         {
             return _wrapped.GetEnumerator();
         }
@@ -29,9 +32,27 @@ namespace LiveLinq.Dictionary
             return _wrapped.ContainsKey(key);
         }
 
+        IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator()
+        {
+            return _wrapped.Select(kvp => new KeyValuePair<TKey, TValue>(kvp.Key, kvp.Value)).GetEnumerator();
+        }
+
         public bool TryGetValue(TKey key, out TValue value)
         {
-            return _wrapped.TryGetValue(key, out value);
+            var result = TryGetValue(key);
+            if (result.HasValue)
+            {
+                value = result.Value;
+                return true;
+            }
+
+            value = default;
+            return false;
+        }
+
+        public IMaybe<TValue> TryGetValue(TKey key)
+        {
+            return _wrapped.TryGetValue(key);
         }
 
         public TValue this[TKey key] => _wrapped[key];

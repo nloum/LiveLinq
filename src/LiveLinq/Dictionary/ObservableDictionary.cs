@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
+using MoreCollections;
 using UtilityDisposables;
 
 namespace LiveLinq.Dictionary
@@ -19,9 +21,14 @@ namespace LiveLinq.Dictionary
         private ImmutableDictionary<TKey, TValue> _dictionary = ImmutableDictionary<TKey, TValue>.Empty;
         protected readonly object Lock = new object();
 
-        public override IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
+        protected override IEnumerator<KeyValuePair<TKey, TValue>> GetKeyValuePairEnumeratorInternal()
         {
             return _dictionary.GetEnumerator();
+        }
+
+        protected override IEnumerator<IKeyValuePair<TKey, TValue>> GetIKeyValuePairEnumeratorInternal()
+        {
+            return _dictionary.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value)).GetEnumerator();
         }
 
         public override int Count => _dictionary.Count;

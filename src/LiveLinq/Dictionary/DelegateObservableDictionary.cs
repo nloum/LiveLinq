@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using MoreCollections;
+using SimpleMonads;
 
 namespace LiveLinq.Dictionary
 {
@@ -17,7 +19,17 @@ namespace LiveLinq.Dictionary
 
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
         {
-            return _wrapped.GetEnumerator();
+            return ((IDictionary<TKey, TValue>)_wrapped).GetEnumerator();
+        }
+
+        IEnumerator<IKeyValuePair<TKey, TValue>> IEnumerable<IKeyValuePair<TKey, TValue>>.GetEnumerator()
+        {
+            return ((IReadOnlyDictionaryEx<TKey, TValue>)_wrapped).GetEnumerator();
+        }
+
+        public IMaybe<TValue> TryGetValue(TKey key)
+        {
+            return _wrapped.TryGetValue(key);
         }
 
         public void Add(KeyValuePair<TKey, TValue> item)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using MoreCollections;
+using SimpleMonads;
 
 namespace LiveLinq.Dictionary
 {
@@ -24,7 +25,7 @@ namespace LiveLinq.Dictionary
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return GetEnumerator();
+            return GetKeyValuePairEnumeratorInternal();
         }
 
         public bool IsReadOnly => false;
@@ -33,7 +34,7 @@ namespace LiveLinq.Dictionary
 
         public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
         {
-            foreach (var item in this)
+            foreach (var item in ((IDictionary<TKey, TValue>)this))
             {
                 array[arrayIndex] = item;
                 arrayIndex++;
@@ -51,6 +52,26 @@ namespace LiveLinq.Dictionary
             return result;
         }
 
+        public IMaybe<TValue> TryGetValue(TKey key)
+        {
+            if (TryGetValue(key, out var value))
+            {
+                return value.ToMaybe();
+            }
+
+            return Maybe<TValue>.Nothing();
+        }
+        
+        IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator()
+        {
+            return GetKeyValuePairEnumeratorInternal();
+        }
+
+        IEnumerator<IKeyValuePair<TKey, TValue>> IEnumerable<IKeyValuePair<TKey, TValue>>.GetEnumerator()
+        {
+            return GetIKeyValuePairEnumeratorInternal();
+        }
+        
         #region Stuff that might need to be overridden for performance/atomicity reasons
         
         public virtual void Clear()
@@ -58,8 +79,8 @@ namespace LiveLinq.Dictionary
             RemoveRange(Keys);
         }
 
-        public virtual IEnumerable<TKey> Keys => this.Select(x => x.Key);
-        public virtual IEnumerable<TValue> Values => this.Select(x => x.Value);
+        public virtual IEnumerable<TKey> Keys => ((IDictionary<TKey, TValue>)this).Select(x => x.Key);
+        public virtual IEnumerable<TValue> Values => ((IDictionary<TKey, TValue>)this).Select(x => x.Value);
 
         protected virtual void RemoveRangeInternal(IEnumerable<TKey> keys)
         {
@@ -101,7 +122,8 @@ namespace LiveLinq.Dictionary
         
         #region Abstract methods
 
-        public abstract IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator();
+        protected abstract IEnumerator<KeyValuePair<TKey, TValue>> GetKeyValuePairEnumeratorInternal();
+        protected abstract IEnumerator<IKeyValuePair<TKey, TValue>> GetIKeyValuePairEnumeratorInternal();
         public abstract int Count { get; }
         public abstract bool TryGetValue(TKey key, out TValue value);
         protected abstract void AddInternal(TKey key, TValue value);

@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using LiveLinq.Dictionary;
 using LiveLinq.Examples.EntityFrameworkRepository.Task;
+using MoreCollections;
+using SimpleMonads;
 
 namespace LiveLinq.Examples.EntityFrameworkRepository.Inventory
 {
@@ -25,7 +27,7 @@ namespace LiveLinq.Examples.EntityFrameworkRepository.Inventory
             return GetEnumerator();
         }
 
-        public IEnumerator<KeyValuePair<Guid, Task.Task>> GetEnumerator()
+        public IEnumerator<IKeyValuePair<Guid, Task.Task>> GetEnumerator()
         {
             return _wrapped.GetEnumerator();
         }
@@ -37,9 +39,9 @@ namespace LiveLinq.Examples.EntityFrameworkRepository.Inventory
             return _wrapped.ContainsKey(key);
         }
 
-        public bool TryGetValue(Guid key, out Task.Task value)
+        public IMaybe<Task.Task> TryGetValue(Guid key)
         {
-            return _wrapped.TryGetValue(key, out value);
+            return _wrapped.TryGetValue(key);
         }
 
         public Task.Task this[Guid key] => _wrapped[key];

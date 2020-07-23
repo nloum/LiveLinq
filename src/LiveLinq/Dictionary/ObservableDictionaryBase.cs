@@ -16,7 +16,7 @@ namespace LiveLinq.Dictionary
     /// </summary>
     /// <typeparam name="TKey">The dictionary key type</typeparam>
     /// <typeparam name="TValue">The dictionary value type</typeparam>
-    public abstract class ObservableDictionaryBase<TKey, TValue> : ObservableDictionaryBaseWithAbstractLiveLinq<TKey, TValue>, IObservableDictionary<TKey, TValue>
+    public abstract class ObservableDictionaryBase<TKey, TValue> : ObservableDictionaryBaseWithAbstractLiveLinq<TKey, TValue>
     {
         private readonly object _lock = new object();
         private readonly Subject<IDictionaryChangeStrict<TKey, TValue>> _subject = new Subject<IDictionaryChangeStrict<TKey, TValue>>();
@@ -26,10 +26,10 @@ namespace LiveLinq.Dictionary
             return Observable.Create<IDictionaryChangeStrict<TKey, TValue>>(observer =>
             {
                 var result = _subject.Subscribe(observer);
-                var items = this.ToImmutableList();
+                var items = ((IReadOnlyDictionaryEx<TKey, TValue>)this).ToImmutableList();
                 if (items.Count > 0)
                 {
-                    observer.OnNext(Utility.DictionaryAdd(items.AsEnumerable()));
+                    observer.OnNext(Utility.DictionaryAdd(items));
                 }
 
                 return result;

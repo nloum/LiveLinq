@@ -3,10 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using MoreCollections;
+using SimpleMonads;
 
 namespace LiveLinq.Dictionary
 {
-    internal class ReadOnlyBindableDictionary<TKey, TValue> : IReadOnlyBindableDictionary<TKey, TValue>, IDisposable
+    internal class ReadOnlyBindableDictionary<TKey, TValue> : IReadOnlyBindableDictionary<TKey, TValue>, IReadOnlyDictionary<TKey, TValue>, IDisposable
     {
         private readonly BindableDictionary<TKey, TValue> _bindableDictionary = new BindableDictionary<TKey, TValue>();
         public IDisposable AssociatedSubscription { get; set; }
@@ -25,6 +26,16 @@ namespace LiveLinq.Dictionary
         {
             add => _bindableDictionary.CollectionChanged += value;
             remove => _bindableDictionary.CollectionChanged -= value;
+        }
+
+        public IMaybe<TValue> TryGetValue(TKey key)
+        {
+            if (TryGetValue(key, out var value))
+            {
+                return value.ToMaybe();
+            }
+
+            return Maybe<TValue>.Nothing();
         }
 
         public int Count => _bindableDictionary.Count;

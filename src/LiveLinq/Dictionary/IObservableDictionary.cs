@@ -3,7 +3,7 @@ using MoreCollections;
 
 namespace LiveLinq.Dictionary
 {
-    public interface IObservableDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IReadOnlyObservableDictionary<TKey, TValue>
+    public interface IObservableDictionary<TKey, TValue> : IReadOnlyObservableDictionary<TKey, TValue>, IDictionary<TKey, TValue>, IReadOnlyDictionary<TKey, TValue>
     {
         new int Count { get; }
         new bool ContainsKey(TKey key);

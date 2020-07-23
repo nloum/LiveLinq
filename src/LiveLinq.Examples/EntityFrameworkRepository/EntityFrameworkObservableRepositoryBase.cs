@@ -3,6 +3,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using LiveLinq.Dictionary;
 using Microsoft.EntityFrameworkCore;
+using MoreCollections;
 
 namespace LiveLinq.Examples.EntityFrameworkRepository
 {
@@ -38,11 +39,19 @@ namespace LiveLinq.Examples.EntityFrameworkRepository
         protected abstract TAggregateRoot Convert(TDbDto dbDto);
         protected abstract void Update(TAggregateRoot source, TDbDto destination);
 
-        public override IEnumerator<KeyValuePair<TId, TAggregateRoot>> GetEnumerator()
+        protected override IEnumerator<KeyValuePair<TId, TAggregateRoot>> GetKeyValuePairEnumeratorInternal()
         {
             using (var dbContext = CreateDbContext())
             {
                 return GetDbSet(dbContext).Select(x => new KeyValuePair<TId, TAggregateRoot>(GetId(x), Convert((TDbDto) x))).ToImmutableList().GetEnumerator();
+            }
+        }
+
+        protected override IEnumerator<IKeyValuePair<TId, TAggregateRoot>> GetIKeyValuePairEnumeratorInternal()
+        {
+            using (var dbContext = CreateDbContext())
+            {
+                return GetDbSet(dbContext).Select(x => MoreCollections.Utility.KeyValuePair(GetId(x), Convert((TDbDto) x))).ToImmutableList().GetEnumerator();
             }
         }
 

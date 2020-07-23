@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Reactive.Linq;
+using MoreCollections;
 
 namespace LiveLinq.Dictionary
 {
@@ -24,7 +25,14 @@ namespace LiveLinq.Dictionary
             return _wrapped.Any(x => x.ContainsKey(key));
         }
 
-        public override IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
+        protected override IEnumerator<KeyValuePair<TKey, TValue>> GetKeyValuePairEnumeratorInternal()
+        {
+            return _wrapped.SelectMany(x => x)
+                .Select(kvp => new KeyValuePair<TKey, TValue>(kvp.Key, kvp.Value))
+                .GetEnumerator();
+        }
+
+        protected override IEnumerator<IKeyValuePair<TKey, TValue>> GetIKeyValuePairEnumeratorInternal()
         {
             return _wrapped.SelectMany(x => x).GetEnumerator();
         }
@@ -34,8 +42,10 @@ namespace LiveLinq.Dictionary
         {
             foreach (var item in _wrapped)
             {
-                if (item.TryGetValue(key, out value))
+                var result = item.TryGetValue(key);
+                if (result.HasValue)
                 {
+                    value = result.Value;
                     return true;
                 }
             }

@@ -23,7 +23,7 @@ namespace LiveLinq
 {
     public static partial class Extensions
     {
-        public static IReadOnlyObservableDictionary<TKey, ObservableSet<TValue>> Cache<TKey, TValue>(
+        public static IReadOnlyObservableDictionary<TKey, IReadOnlyObservableSet<TValue>> Cache<TKey, TValue>(
             this IDictionaryChanges<TKey, ISetChanges<TValue>> changes)
         {
             var result = new ObservableDictionaryGetOrDefault<TKey, ObservableSet<TValue>>(
