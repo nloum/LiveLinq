@@ -41,5 +41,11 @@ namespace LiveLinq.List
                 else throw new ArgumentException($"Unknown list change type: {Type}");
             }
         }
+        
+        public override string ToString()
+        {
+            var toFrom = Type == CollectionChangeType.Add ? "to" : "from";
+            return $"{Type} {Values.Count} values {toFrom} a list (strictly)";
+        }
     }
 }

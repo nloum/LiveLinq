@@ -33,15 +33,19 @@ namespace LiveLinq.Dictionary
         {
             return Observable.Create<IDictionaryChangeStrict<TKey, TValue>>(observer =>
             {
-                var result = _subject.Where(x => x.Values.Count > 0).Subscribe(observer);
-                var items = ((IReadOnlyDictionaryEx<TKey, TValue>)this).ToImmutableList();
+                var items = this.ToImmutableList();
                 if (items.Count > 0)
                 {
                     observer.OnNext(Utility.DictionaryAdd(items));
                 }
-
+                var result = _subject.Where(x => x.Values.Count > 0).Subscribe(observer);
                 return result;
             }).ToLiveLinq();
+        }
+
+        private void OnNext(IDictionaryChangeStrict<TKey, TValue> change)
+        {
+            _subject.OnNext(change);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -81,7 +85,7 @@ namespace LiveLinq.Dictionary
         {
             if (_state.TryAdd(key, value))
             {
-                _subject.OnNext(Utility.DictionaryAdd(MoreCollections.Utility.KeyValuePair(key, value)));
+                OnNext(Utility.DictionaryAdd(MoreCollections.Utility.KeyValuePair(key, value)));
                 return true;
             }
             
@@ -92,7 +96,7 @@ namespace LiveLinq.Dictionary
         {
             if (_state.TryAdd(key, value, out var existingValue, out var newValue))
             {
-                _subject.OnNext(Utility.DictionaryAdd(MoreCollections.Utility.KeyValuePair(key, newValue)));
+                OnNext(Utility.DictionaryAdd(MoreCollections.Utility.KeyValuePair(key, newValue)));
                 return true;
             }
             
@@ -103,7 +107,7 @@ namespace LiveLinq.Dictionary
         {
             if (_state.TryAdd(key, value, out existingValue, out newValue))
             {
-                _subject.OnNext(Utility.DictionaryAdd(MoreCollections.Utility.KeyValuePair(key, newValue)));
+                OnNext(Utility.DictionaryAdd(MoreCollections.Utility.KeyValuePair(key, newValue)));
                 return true;
             }
 
@@ -113,93 +117,93 @@ namespace LiveLinq.Dictionary
         public void TryAddRange(IEnumerable<IKeyValuePair<TKey, TValue>> newItems, out IReadOnlyDictionaryEx<TKey, IDictionaryItemAddAttempt<TValue>> result)
         {
             _state.TryAddRange(newItems, out result);
-            _subject.OnNext(Utility.DictionaryAdd(result.Where(x => x.Value.Added).Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
+            OnNext(Utility.DictionaryAdd(result.Where(x => x.Value.Added).Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
         }
 
         public void TryAddRange(IEnumerable<KeyValuePair<TKey, TValue>> newItems, out IReadOnlyDictionaryEx<TKey, IDictionaryItemAddAttempt<TValue>> result)
         {
             _state.TryAddRange(newItems, out result);
-            _subject.OnNext(Utility.DictionaryAdd(result.Where(x => x.Value.Added).Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
+            OnNext(Utility.DictionaryAdd(result.Where(x => x.Value.Added).Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
         }
 
         public void TryAddRange<TKeyValuePair>(IEnumerable<TKeyValuePair> newItems, Func<TKeyValuePair, TKey> key, Func<TKeyValuePair, TValue> value, out IReadOnlyDictionaryEx<TKey, IDictionaryItemAddAttempt<TValue>> result)
         {
             _state.TryAddRange(newItems, key, value, out result);
-            _subject.OnNext(Utility.DictionaryAdd(result.Where(x => x.Value.Added).Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
+            OnNext(Utility.DictionaryAdd(result.Where(x => x.Value.Added).Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
         }
 
         public void TryAddRange(IEnumerable<IKeyValuePair<TKey, TValue>> newItems)
         {
             _state.TryAddRange(newItems, out var result);
-            _subject.OnNext(Utility.DictionaryAdd(result.Where(x => x.Value.Added).Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
+            OnNext(Utility.DictionaryAdd(result.Where(x => x.Value.Added).Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
         }
 
         public void TryAddRange(IEnumerable<KeyValuePair<TKey, TValue>> newItems)
         {
             _state.TryAddRange(newItems, out var result);
-            _subject.OnNext(Utility.DictionaryAdd(result.Where(x => x.Value.Added).Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
+            OnNext(Utility.DictionaryAdd(result.Where(x => x.Value.Added).Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
         }
 
         public void TryAddRange<TKeyValuePair>(IEnumerable<TKeyValuePair> newItems, Func<TKeyValuePair, TKey> key, Func<TKeyValuePair, TValue> value)
         {
             _state.TryAddRange(newItems, key, value, out var result);
-            _subject.OnNext(Utility.DictionaryAdd(result.Where(x => x.Value.Added).Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
+            OnNext(Utility.DictionaryAdd(result.Where(x => x.Value.Added).Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
         }
 
         public void TryAddRange(params IKeyValuePair<TKey, TValue>[] newItems)
         {
             _state.TryAddRange(newItems, out var result);
-            _subject.OnNext(Utility.DictionaryAdd(result.Where(x => x.Value.Added).Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
+            OnNext(Utility.DictionaryAdd(result.Where(x => x.Value.Added).Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
         }
 
         public void TryAddRange(params KeyValuePair<TKey, TValue>[] newItems)
         {
             _state.TryAddRange(newItems, out var result);
-            _subject.OnNext(Utility.DictionaryAdd(result.Where(x => x.Value.Added).Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
+            OnNext(Utility.DictionaryAdd(result.Where(x => x.Value.Added).Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
         }
 
         public void Add(TKey key, TValue value)
         {
             _state.Add(key, value);
-            _subject.OnNext(Utility.DictionaryAdd(MoreCollections.Utility.KeyValuePair(key, value)));
+            OnNext(Utility.DictionaryAdd(MoreCollections.Utility.KeyValuePair(key, value)));
         }
 
         public void AddRange(IEnumerable<IKeyValuePair<TKey, TValue>> newItems)
         {
             _state.TryAddRange(newItems, out var result);
-            _subject.OnNext(Utility.DictionaryAdd(result.Where(x => x.Value.Added).Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
+            OnNext(Utility.DictionaryAdd(result.Where(x => x.Value.Added).Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
         }
 
         public void AddRange(IEnumerable<KeyValuePair<TKey, TValue>> newItems)
         {
             _state.TryAddRange(newItems, out var result);
-            _subject.OnNext(Utility.DictionaryAdd(result.Where(x => x.Value.Added).Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
+            OnNext(Utility.DictionaryAdd(result.Where(x => x.Value.Added).Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
         }
 
         public void AddRange<TKeyValuePair>(IEnumerable<TKeyValuePair> newItems, Func<TKeyValuePair, TKey> key, Func<TKeyValuePair, TValue> value)
         {
             _state.TryAddRange(newItems, key, value, out var result);
-            _subject.OnNext(Utility.DictionaryAdd(result.Where(x => x.Value.Added).Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
+            OnNext(Utility.DictionaryAdd(result.Where(x => x.Value.Added).Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
         }
 
         public void AddRange(params IKeyValuePair<TKey, TValue>[] newItems)
         {
             _state.TryAddRange(newItems, out var result);
-            _subject.OnNext(Utility.DictionaryAdd(result.Where(x => x.Value.Added).Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
+            OnNext(Utility.DictionaryAdd(result.Where(x => x.Value.Added).Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
         }
 
         public void AddRange(params KeyValuePair<TKey, TValue>[] newItems)
         {
             _state.TryAddRange(newItems, out var result);
-            _subject.OnNext(Utility.DictionaryAdd(result.Where(x => x.Value.Added).Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
+            OnNext(Utility.DictionaryAdd(result.Where(x => x.Value.Added).Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
         }
 
         public bool TryUpdate(TKey key, TValue value)
         {
             if (_state.TryUpdate(key, value, out var previousValue))
             {
-                _subject.OnNext(Utility.DictionaryRemove(MoreCollections.Utility.KeyValuePair(key, previousValue)));
-                _subject.OnNext(Utility.DictionaryAdd(MoreCollections.Utility.KeyValuePair(key, value)));
+                OnNext(Utility.DictionaryRemove(MoreCollections.Utility.KeyValuePair(key, previousValue)));
+                OnNext(Utility.DictionaryAdd(MoreCollections.Utility.KeyValuePair(key, value)));
                 return true;
             }
 
@@ -210,8 +214,8 @@ namespace LiveLinq.Dictionary
         {
             if (_state.TryUpdate(key, value, out previousValue))
             {
-                _subject.OnNext(Utility.DictionaryRemove(MoreCollections.Utility.KeyValuePair(key, previousValue)));
-                _subject.OnNext(Utility.DictionaryAdd(MoreCollections.Utility.KeyValuePair(key, value)));
+                OnNext(Utility.DictionaryRemove(MoreCollections.Utility.KeyValuePair(key, previousValue)));
+                OnNext(Utility.DictionaryAdd(MoreCollections.Utility.KeyValuePair(key, value)));
                 return true;
             }
 
@@ -222,8 +226,8 @@ namespace LiveLinq.Dictionary
         {
             if (_state.TryUpdate(key, value, out previousValue, out newValue))
             {
-                _subject.OnNext(Utility.DictionaryRemove(MoreCollections.Utility.KeyValuePair(key, previousValue)));
-                _subject.OnNext(Utility.DictionaryAdd(MoreCollections.Utility.KeyValuePair(key, newValue)));
+                OnNext(Utility.DictionaryRemove(MoreCollections.Utility.KeyValuePair(key, previousValue)));
+                OnNext(Utility.DictionaryAdd(MoreCollections.Utility.KeyValuePair(key, newValue)));
                 return true;
             }
 
@@ -234,153 +238,153 @@ namespace LiveLinq.Dictionary
         {
             _state.TryUpdateRange(newItems, out var results);
             var resultsList = results.Where(x => x.Value.Updated).ToImmutableList();
-            _subject.OnNext(Utility.DictionaryRemove(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.ExistingValue.Value))));
-            _subject.OnNext(Utility.DictionaryAdd(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
+            OnNext(Utility.DictionaryRemove(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.ExistingValue.Value))));
+            OnNext(Utility.DictionaryAdd(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
         }
 
         public void TryUpdateRange(IEnumerable<KeyValuePair<TKey, TValue>> newItems)
         {
             _state.TryUpdateRange(newItems, out var results);
             var resultsList = results.Where(x => x.Value.Updated).ToImmutableList();
-            _subject.OnNext(Utility.DictionaryRemove(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.ExistingValue.Value))));
-            _subject.OnNext(Utility.DictionaryAdd(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
+            OnNext(Utility.DictionaryRemove(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.ExistingValue.Value))));
+            OnNext(Utility.DictionaryAdd(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
         }
 
         public void TryUpdateRange<TKeyValuePair>(IEnumerable<TKeyValuePair> newItems, Func<TKeyValuePair, TKey> key, Func<TKeyValuePair, TValue> value)
         {
             _state.TryUpdateRange(newItems, key, value, out var results);
             var resultsList = results.Where(x => x.Value.Updated).ToImmutableList();
-            _subject.OnNext(Utility.DictionaryRemove(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.ExistingValue.Value))));
-            _subject.OnNext(Utility.DictionaryAdd(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
+            OnNext(Utility.DictionaryRemove(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.ExistingValue.Value))));
+            OnNext(Utility.DictionaryAdd(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
         }
 
         public void TryUpdateRange(params IKeyValuePair<TKey, TValue>[] newItems)
         {
             _state.TryUpdateRange(newItems, out var results);
             var resultsList = results.Where(x => x.Value.Updated).ToImmutableList();
-            _subject.OnNext(Utility.DictionaryRemove(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.ExistingValue.Value))));
-            _subject.OnNext(Utility.DictionaryAdd(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
+            OnNext(Utility.DictionaryRemove(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.ExistingValue.Value))));
+            OnNext(Utility.DictionaryAdd(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
         }
 
         public void TryUpdateRange(params KeyValuePair<TKey, TValue>[] newItems)
         {
             _state.TryUpdateRange(newItems, out var results);
             var resultsList = results.Where(x => x.Value.Updated).ToImmutableList();
-            _subject.OnNext(Utility.DictionaryRemove(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.ExistingValue.Value))));
-            _subject.OnNext(Utility.DictionaryAdd(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
+            OnNext(Utility.DictionaryRemove(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.ExistingValue.Value))));
+            OnNext(Utility.DictionaryAdd(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
         }
 
         public void TryUpdateRange(IEnumerable<IKeyValuePair<TKey, TValue>> newItems, out IReadOnlyDictionaryEx<TKey, IDictionaryItemUpdateAttempt<TValue>> results)
         {
             _state.TryUpdateRange(newItems, out results);
             var resultsList = results.Where(x => x.Value.Updated).ToImmutableList();
-            _subject.OnNext(Utility.DictionaryRemove(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.ExistingValue.Value))));
-            _subject.OnNext(Utility.DictionaryAdd(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
+            OnNext(Utility.DictionaryRemove(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.ExistingValue.Value))));
+            OnNext(Utility.DictionaryAdd(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
         }
 
         public void TryUpdateRange(IEnumerable<KeyValuePair<TKey, TValue>> newItems, out IReadOnlyDictionaryEx<TKey, IDictionaryItemUpdateAttempt<TValue>> results)
         {
             _state.TryUpdateRange(newItems, out results);
             var resultsList = results.Where(x => x.Value.Updated).ToImmutableList();
-            _subject.OnNext(Utility.DictionaryRemove(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.ExistingValue.Value))));
-            _subject.OnNext(Utility.DictionaryAdd(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
+            OnNext(Utility.DictionaryRemove(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.ExistingValue.Value))));
+            OnNext(Utility.DictionaryAdd(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
         }
 
         public void TryUpdateRange<TKeyValuePair>(IEnumerable<TKeyValuePair> newItems, Func<TKeyValuePair, TKey> key, Func<TKeyValuePair, TValue> value, out IReadOnlyDictionaryEx<TKey, IDictionaryItemUpdateAttempt<TValue>> results)
         {
             _state.TryUpdateRange(newItems, key, value, out results);
             var resultsList = results.Where(x => x.Value.Updated).ToImmutableList();
-            _subject.OnNext(Utility.DictionaryRemove(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.ExistingValue.Value))));
-            _subject.OnNext(Utility.DictionaryAdd(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
+            OnNext(Utility.DictionaryRemove(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.ExistingValue.Value))));
+            OnNext(Utility.DictionaryAdd(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
         }
 
         public void Update(TKey key, TValue value)
         {
             _state.Update(key, value, out var previousValue);
-            _subject.OnNext(Utility.DictionaryRemove(MoreCollections.Utility.KeyValuePair(key, previousValue)));
-            _subject.OnNext(Utility.DictionaryAdd(MoreCollections.Utility.KeyValuePair(key, value)));
+            OnNext(Utility.DictionaryRemove(MoreCollections.Utility.KeyValuePair(key, previousValue)));
+            OnNext(Utility.DictionaryAdd(MoreCollections.Utility.KeyValuePair(key, value)));
         }
 
         public void UpdateRange(IEnumerable<IKeyValuePair<TKey, TValue>> newItems)
         {
             _state.UpdateRange(newItems, out var results);
             var resultsList = results.Where(x => x.Value.Updated).ToImmutableList();
-            _subject.OnNext(Utility.DictionaryRemove(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.ExistingValue.Value))));
-            _subject.OnNext(Utility.DictionaryAdd(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
+            OnNext(Utility.DictionaryRemove(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.ExistingValue.Value))));
+            OnNext(Utility.DictionaryAdd(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
         }
 
         public void UpdateRange(IEnumerable<KeyValuePair<TKey, TValue>> newItems)
         {
             _state.UpdateRange(newItems, out var results);
             var resultsList = results.Where(x => x.Value.Updated).ToImmutableList();
-            _subject.OnNext(Utility.DictionaryRemove(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.ExistingValue.Value))));
-            _subject.OnNext(Utility.DictionaryAdd(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
+            OnNext(Utility.DictionaryRemove(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.ExistingValue.Value))));
+            OnNext(Utility.DictionaryAdd(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
         }
 
         public void UpdateRange<TKeyValuePair>(IEnumerable<TKeyValuePair> newItems, Func<TKeyValuePair, TKey> key, Func<TKeyValuePair, TValue> value)
         {
             _state.UpdateRange(newItems, key, value, out var results);
             var resultsList = results.Where(x => x.Value.Updated).ToImmutableList();
-            _subject.OnNext(Utility.DictionaryRemove(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.ExistingValue.Value))));
-            _subject.OnNext(Utility.DictionaryAdd(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
+            OnNext(Utility.DictionaryRemove(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.ExistingValue.Value))));
+            OnNext(Utility.DictionaryAdd(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
         }
 
         public void Update(TKey key, TValue value, out TValue previousValue)
         {
             _state.Update(key, value, out previousValue);
-            _subject.OnNext(Utility.DictionaryRemove(MoreCollections.Utility.KeyValuePair(key, previousValue)));
-            _subject.OnNext(Utility.DictionaryAdd(MoreCollections.Utility.KeyValuePair(key, value)));
+            OnNext(Utility.DictionaryRemove(MoreCollections.Utility.KeyValuePair(key, previousValue)));
+            OnNext(Utility.DictionaryAdd(MoreCollections.Utility.KeyValuePair(key, value)));
         }
 
         public void UpdateRange(IEnumerable<IKeyValuePair<TKey, TValue>> newItems, out IReadOnlyDictionaryEx<TKey, IDictionaryItemUpdateAttempt<TValue>> results)
         {
             _state.UpdateRange(newItems, out results);
             var resultsList = results.Where(x => x.Value.Updated).ToImmutableList();
-            _subject.OnNext(Utility.DictionaryRemove(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.ExistingValue.Value))));
-            _subject.OnNext(Utility.DictionaryAdd(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
+            OnNext(Utility.DictionaryRemove(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.ExistingValue.Value))));
+            OnNext(Utility.DictionaryAdd(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
         }
 
         public void UpdateRange(IEnumerable<KeyValuePair<TKey, TValue>> newItems, out IReadOnlyDictionaryEx<TKey, IDictionaryItemUpdateAttempt<TValue>> results)
         {
             _state.UpdateRange(newItems, out results);
             var resultsList = results.Where(x => x.Value.Updated).ToImmutableList();
-            _subject.OnNext(Utility.DictionaryRemove(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.ExistingValue.Value))));
-            _subject.OnNext(Utility.DictionaryAdd(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
+            OnNext(Utility.DictionaryRemove(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.ExistingValue.Value))));
+            OnNext(Utility.DictionaryAdd(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
         }
 
         public void UpdateRange<TKeyValuePair>(IEnumerable<TKeyValuePair> newItems, Func<TKeyValuePair, TKey> key, Func<TKeyValuePair, TValue> value, out IReadOnlyDictionaryEx<TKey, IDictionaryItemUpdateAttempt<TValue>> results)
         {
             _state.UpdateRange(newItems, key, value, out results);
             var resultsList = results.Where(x => x.Value.Updated).ToImmutableList();
-            _subject.OnNext(Utility.DictionaryRemove(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.ExistingValue.Value))));
-            _subject.OnNext(Utility.DictionaryAdd(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
+            OnNext(Utility.DictionaryRemove(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.ExistingValue.Value))));
+            OnNext(Utility.DictionaryAdd(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
         }
 
         public void UpdateRange(params IKeyValuePair<TKey, TValue>[] newItems)
         {
             _state.UpdateRange(newItems, out var results);
             var resultsList = results.Where(x => x.Value.Updated).ToImmutableList();
-            _subject.OnNext(Utility.DictionaryRemove(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.ExistingValue.Value))));
-            _subject.OnNext(Utility.DictionaryAdd(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
+            OnNext(Utility.DictionaryRemove(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.ExistingValue.Value))));
+            OnNext(Utility.DictionaryAdd(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
         }
 
         public void UpdateRange(params KeyValuePair<TKey, TValue>[] newItems)
         {
             _state.UpdateRange(newItems, out var results);
             var resultsList = results.Where(x => x.Value.Updated).ToImmutableList();
-            _subject.OnNext(Utility.DictionaryRemove(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.ExistingValue.Value))));
-            _subject.OnNext(Utility.DictionaryAdd(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
+            OnNext(Utility.DictionaryRemove(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.ExistingValue.Value))));
+            OnNext(Utility.DictionaryAdd(resultsList.Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue.Value))));
         }
 
         public DictionaryItemAddOrUpdateResult AddOrUpdate(TKey key, TValue value)
         {
             var result = _state.AddOrUpdate(key, value);
-            if (result == DictionaryItemAddOrUpdateResult.Add)
+            if (result == DictionaryItemAddOrUpdateResult.Update)
             {
-                _subject.OnNext(Utility.DictionaryRemove(MoreCollections.Utility.KeyValuePair(key, value)));
+                OnNext(Utility.DictionaryRemove(MoreCollections.Utility.KeyValuePair(key, value)));
             }
 
-            _subject.OnNext(Utility.DictionaryAdd(MoreCollections.Utility.KeyValuePair(key, value)));
+            OnNext(Utility.DictionaryAdd(MoreCollections.Utility.KeyValuePair(key, value)));
 
             return result;
         }
@@ -388,12 +392,12 @@ namespace LiveLinq.Dictionary
         public DictionaryItemAddOrUpdateResult AddOrUpdate(TKey key, Func<TValue> valueIfAdding, Func<TValue, TValue> valueIfUpdating)
         {
             var result = _state.AddOrUpdate(key, valueIfAdding, valueIfUpdating, out var previousValue, out var newValue);
-            if (result == DictionaryItemAddOrUpdateResult.Add)
+            if (result == DictionaryItemAddOrUpdateResult.Update)
             {
-                _subject.OnNext(Utility.DictionaryRemove(MoreCollections.Utility.KeyValuePair(key, newValue)));
+                OnNext(Utility.DictionaryRemove(MoreCollections.Utility.KeyValuePair(key, newValue)));
             }
 
-            _subject.OnNext(Utility.DictionaryAdd(MoreCollections.Utility.KeyValuePair(key, newValue)));
+            OnNext(Utility.DictionaryAdd(MoreCollections.Utility.KeyValuePair(key, newValue)));
 
             return result;
         }
@@ -402,12 +406,12 @@ namespace LiveLinq.Dictionary
             out TValue previousValue, out TValue newValue)
         {
             var result = _state.AddOrUpdate(key, valueIfAdding, valueIfUpdating, out previousValue, out newValue);
-            if (result == DictionaryItemAddOrUpdateResult.Add)
+            if (result == DictionaryItemAddOrUpdateResult.Update)
             {
-                _subject.OnNext(Utility.DictionaryRemove(MoreCollections.Utility.KeyValuePair(key, newValue)));
+                OnNext(Utility.DictionaryRemove(MoreCollections.Utility.KeyValuePair(key, newValue)));
             }
 
-            _subject.OnNext(Utility.DictionaryAdd(MoreCollections.Utility.KeyValuePair(key, newValue)));
+            OnNext(Utility.DictionaryAdd(MoreCollections.Utility.KeyValuePair(key, newValue)));
 
             return result;
         }
@@ -422,13 +426,13 @@ namespace LiveLinq.Dictionary
         {
             var resultsGrouped = results.GroupBy(x => x.Value.Result)
                 .ToImmutableDictionary(x => x.Key, x => x.ToImmutableList());
-            _subject.OnNext(Utility.DictionaryRemove(resultsGrouped[DictionaryItemAddOrUpdateResult.Update]
+            OnNext(Utility.DictionaryRemove(resultsGrouped[DictionaryItemAddOrUpdateResult.Update]
                 .Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.ExistingValue.Value))));
             var addedByUpdate = resultsGrouped[DictionaryItemAddOrUpdateResult.Update]
                 .Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue));
             var addedBySimpleAdd = resultsGrouped[DictionaryItemAddOrUpdateResult.Add]
                 .Select(kvp => MoreCollections.Utility.KeyValuePair(kvp.Key, kvp.Value.NewValue));
-            _subject.OnNext(Utility.DictionaryAdd(addedByUpdate.Concat(addedBySimpleAdd)));
+            OnNext(Utility.DictionaryAdd(addedByUpdate.Concat(addedBySimpleAdd)));
         }
 
         public void AddOrUpdateRange(IEnumerable<KeyValuePair<TKey, TValue>> newItems, out IReadOnlyDictionaryEx<TKey, IDictionaryItemAddOrUpdate<TValue>> results)
@@ -476,38 +480,38 @@ namespace LiveLinq.Dictionary
         public void TryRemoveRange(IEnumerable<TKey> keysToRemove)
         {
             _state.TryRemoveRange(keysToRemove, out var results);
-            _subject.OnNext(Utility.DictionaryRemove(results));
+            OnNext(Utility.DictionaryRemove(results));
         }
 
         public void RemoveRange(IEnumerable<TKey> keysToRemove)
         {
             _state.RemoveRange(keysToRemove, out var results);
-            _subject.OnNext(Utility.DictionaryRemove(results));
+            OnNext(Utility.DictionaryRemove(results));
         }
 
         public void RemoveWhere(Func<TKey, TValue, bool> predicate)
         {
             _state.RemoveWhere(predicate, out var results);
-            _subject.OnNext(Utility.DictionaryRemove(results));
+            OnNext(Utility.DictionaryRemove(results));
         }
 
         public void RemoveWhere(Func<IKeyValuePair<TKey, TValue>, bool> predicate)
         {
             _state.RemoveWhere(predicate, out var results);
-            _subject.OnNext(Utility.DictionaryRemove(results));
+            OnNext(Utility.DictionaryRemove(results));
         }
 
         public void Clear()
         {
             _state.Clear(out var results);
-            _subject.OnNext(Utility.DictionaryRemove(results));
+            OnNext(Utility.DictionaryRemove(results));
         }
 
         public bool TryRemove(TKey key)
         {
             if (_state.TryRemove(key, out var removedItem))
             {
-                _subject.OnNext(Utility.DictionaryRemove(MoreCollections.Utility.KeyValuePair(key, removedItem)));
+                OnNext(Utility.DictionaryRemove(MoreCollections.Utility.KeyValuePair(key, removedItem)));
                 return true;
             }
 
@@ -517,44 +521,44 @@ namespace LiveLinq.Dictionary
         public void Remove(TKey key)
         {
             _state.Remove(key, out var removedItem);
-            _subject.OnNext(Utility.DictionaryRemove(MoreCollections.Utility.KeyValuePair(key, removedItem)));
+            OnNext(Utility.DictionaryRemove(MoreCollections.Utility.KeyValuePair(key, removedItem)));
         }
 
         public void TryRemoveRange(IEnumerable<TKey> keysToRemove, out IReadOnlyDictionaryEx<TKey, TValue> removedItems)
         {
             _state.TryRemoveRange(keysToRemove, out removedItems);
-            _subject.OnNext(Utility.DictionaryRemove(removedItems));
+            OnNext(Utility.DictionaryRemove(removedItems));
         }
 
         public void RemoveRange(IEnumerable<TKey> keysToRemove, out IReadOnlyDictionaryEx<TKey, TValue> removedItems)
         {
             _state.RemoveRange(keysToRemove, out removedItems);
-            _subject.OnNext(Utility.DictionaryRemove(removedItems));
+            OnNext(Utility.DictionaryRemove(removedItems));
         }
 
         public void RemoveWhere(Func<TKey, TValue, bool> predicate, out IReadOnlyDictionaryEx<TKey, TValue> removedItems)
         {
             _state.RemoveWhere(predicate, out removedItems);
-            _subject.OnNext(Utility.DictionaryRemove(removedItems));
+            OnNext(Utility.DictionaryRemove(removedItems));
         }
 
         public void RemoveWhere(Func<IKeyValuePair<TKey, TValue>, bool> predicate, out IReadOnlyDictionaryEx<TKey, TValue> removedItems)
         {
             _state.RemoveWhere(predicate, out removedItems);
-            _subject.OnNext(Utility.DictionaryRemove(removedItems));
+            OnNext(Utility.DictionaryRemove(removedItems));
         }
 
         public void Clear(out IReadOnlyDictionaryEx<TKey, TValue> removedItems)
         {
             _state.Clear(out removedItems);
-            _subject.OnNext(Utility.DictionaryRemove(removedItems));
+            OnNext(Utility.DictionaryRemove(removedItems));
         }
 
         public bool TryRemove(TKey key, out TValue removedItem)
         {
             if (_state.TryRemove(key, out removedItem))
             {
-                _subject.OnNext(Utility.DictionaryRemove(MoreCollections.Utility.KeyValuePair(key, removedItem)));
+                OnNext(Utility.DictionaryRemove(MoreCollections.Utility.KeyValuePair(key, removedItem)));
                 
                 return true;
             }
@@ -565,13 +569,16 @@ namespace LiveLinq.Dictionary
         public void Remove(TKey key, out TValue removedItem)
         {
             _state.Remove(key, out removedItem);
-            _subject.OnNext(Utility.DictionaryRemove(MoreCollections.Utility.KeyValuePair(key, removedItem)));
+            OnNext(Utility.DictionaryRemove(MoreCollections.Utility.KeyValuePair(key, removedItem)));
         }
 
         public TValue this[TKey key]
         {
             get => _state[key];
-            set => _state[key] = value;
+            set
+            {
+                AddOrUpdate(key, value);
+            }
         }
     }
 }

@@ -86,5 +86,11 @@ namespace LiveLinq.Dictionary
                 yield return new DictionaryChangeStrict<TKey, TValue>(Type,
                     ImmutableDictionary<TKey, TValue>.Empty.Add(item.Key, item.Value));
         }
+        
+        public override string ToString()
+        {
+            var toFrom = Type == CollectionChangeType.Add ? "to" : "from";
+            return $"{Type} {Values.Count} values {toFrom} a dictionary (strictly)";
+        }
     }
 }

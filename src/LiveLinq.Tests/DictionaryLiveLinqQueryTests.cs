@@ -59,7 +59,7 @@ namespace LiveLinq.Tests
             get2.Should().Be(Something("Hi there"));
             source.Remove(2);
             get2.Should().Be(Nothing<string>());
-            source.Add(2, "Hello");
+            source[2] = "Hello";
             get2.Should().Be(Something("Hello"));
         }
 

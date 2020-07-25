@@ -28,5 +28,11 @@ namespace LiveLinq.Set
             Type = type;
             Values = values;
         }
+        
+        public override string ToString()
+        {
+            var toFrom = Type == CollectionChangeType.Add ? "to" : "from";
+            return $"{Type} {Values.Count} values {toFrom} a set";
+        }
     }
 }
