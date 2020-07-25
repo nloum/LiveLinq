@@ -15,23 +15,6 @@ namespace LiveLinq
 {
     public static partial class Extensions
     {
-        /// <summary>
-        /// Start a LiveLinq method chain. The LiveLinq extension methods only work on a
-        /// ListChanges and not on an ObservableCollection because 1) we can have
-        /// multiple observable collection types (such as BindingList, and any class that
-        /// implements INotifyCollectionChanged), 2) we don't want to have a namespacing conflict
-        /// where, depending upon the argument types, a LINQ method could be the one being used
-        /// or a LiveLinq version of it could be used. We want it to be crystal clear which
-        /// method is being called, because LiveLinq is analogous to LINQ, but the differences
-        /// are very important.
-        /// </summary>
-        public static IDictionaryChangesStrict<TKey, TValue> ToLiveLinq<TKey, TValue>(this BindableDictionary<TKey, TValue> source)
-        {
-            var enumerable = (IEnumerable<IKeyValuePair<TKey, TValue>>)source;
-
-            return new DictionaryChangesStrict<TKey, TValue>(enumerable.ToLiveLinq(source).AsObservable().Select(kvp => kvp.ToDictionaryChange()));
-        }
-
         public static IDictionaryChangesStrict<TKey, TValue> ToLiveLinq<TKey, TValue>(
             this IObservable<IDictionaryChangeStrict<TKey, TValue>> source)
         {
