@@ -17,15 +17,13 @@ namespace LiveLinq.Dictionary
     /// </remarks>
     public class ObservableDictionaryGetOrDefault<TKey, TValue> : IObservableDictionary<TKey, TValue>
     {
-        private readonly GetDefaultValue<TKey, TValue> _getDefaultValue;
-
         internal DisposableCollector AssociatedSubscriptions { get; } = new DisposableCollector();
 
-        private readonly ObservableDictionaryDecorator<TKey, TValue> _wrapped = new ObservableDictionaryDecorator<TKey, TValue>(new ConcurrentDictionaryEx<TKey, TValue>());
+        private readonly ObservableDictionaryDecorator<TKey, TValue> _wrapped;
 
         public ObservableDictionaryGetOrDefault(GetDefaultValue<TKey, TValue> getDefaultValue)
         {
-            _getDefaultValue = getDefaultValue;
+            _wrapped = new ObservableDictionaryDecorator<TKey, TValue>(new DelegateDictionaryGetOrDefault<TKey, TValue>(new ConcurrentDictionaryEx<TKey, TValue>(), getDefaultValue));
         }
 
         IEnumerator IEnumerable.GetEnumerator()
