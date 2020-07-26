@@ -23,7 +23,7 @@ namespace LiveLinq.Dictionary
 
         public ObservableDictionaryGetOrDefault(GetDefaultValue<TKey, TValue> getDefaultValue)
         {
-            _wrapped = new ObservableDictionaryDecorator<TKey, TValue>(new DelegateDictionaryGetOrDefault<TKey, TValue>(new ConcurrentDictionaryEx<TKey, TValue>(), getDefaultValue));
+            _wrapped = new ObservableDictionaryDecorator<TKey, TValue>(new DictionaryGetOrDefaultDecorator<TKey, TValue>(new ConcurrentDictionaryEx<TKey, TValue>(), getDefaultValue));
         }
 
         IEnumerator IEnumerable.GetEnumerator()
