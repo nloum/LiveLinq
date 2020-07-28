@@ -29,6 +29,15 @@ namespace LiveLinq.Dictionary
             _state = state;
         }
 
+        protected ObservableDictionaryDecorator()
+        {
+        }
+
+        protected void Initialize(IDictionaryEx<TKey, TValue> state)
+        {
+            _state = state;
+        }
+
         public IDictionaryChangesStrict<TKey, TValue> ToLiveLinq()
         {
             return Observable.Create<IDictionaryChangeStrict<TKey, TValue>>(observer =>

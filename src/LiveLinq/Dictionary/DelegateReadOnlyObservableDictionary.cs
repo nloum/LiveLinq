@@ -8,16 +8,26 @@ namespace LiveLinq.Dictionary
 {
     public class DelegateReadOnlyObservableDictionary<TKey, TValue> : DelegateReadOnlyDictionaryEx<TKey, TValue>, IReadOnlyObservableDictionary<TKey, TValue>
     {
-        private readonly IReadOnlyObservableDictionary<TKey, TValue> _wrapped;
+        private IReadOnlyObservableDictionary<TKey, TValue> _wrapped;
 
         public DelegateReadOnlyObservableDictionary(IReadOnlyObservableDictionary<TKey, TValue> wrapped) : base(wrapped)
         {
             _wrapped = wrapped;
         }
 
+        protected DelegateReadOnlyObservableDictionary()
+        {
+        }
+
         public IDictionaryChangesStrict<TKey, TValue> ToLiveLinq()
         {
             return _wrapped.ToLiveLinq();
+        }
+        
+        protected virtual void Initialize(IObservableDictionary<TKey, TValue> wrapped)
+        {
+            _wrapped = wrapped;
+            base.Initialize(wrapped);
         }
     }
 }

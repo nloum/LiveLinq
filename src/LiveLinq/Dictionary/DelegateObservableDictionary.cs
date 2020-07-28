@@ -8,9 +8,19 @@ namespace LiveLinq.Dictionary
 {
     public class DelegateObservableDictionary<TKey, TValue> : IObservableDictionary<TKey, TValue>
     {
-        private readonly IObservableDictionary<TKey, TValue> _wrapped;
+        private IObservableDictionary<TKey, TValue> _wrapped;
         
         public DelegateObservableDictionary(IObservableDictionary<TKey, TValue> wrapped)
+        {
+            _wrapped = wrapped;
+        }
+
+        protected DelegateObservableDictionary()
+        {
+            _wrapped = null;
+        }
+
+        protected virtual void SetWrapped(IObservableDictionary<TKey, TValue> wrapped)
         {
             _wrapped = wrapped;
         }
