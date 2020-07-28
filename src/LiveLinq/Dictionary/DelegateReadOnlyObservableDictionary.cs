@@ -24,7 +24,7 @@ namespace LiveLinq.Dictionary
             return _wrapped.ToLiveLinq();
         }
         
-        protected virtual void Initialize(IObservableDictionary<TKey, TValue> wrapped)
+        protected void Initialize(IObservableDictionary<TKey, TValue> wrapped)
         {
             _wrapped = wrapped;
             base.Initialize(wrapped);

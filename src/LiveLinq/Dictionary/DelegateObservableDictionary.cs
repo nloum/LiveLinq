@@ -20,7 +20,7 @@ namespace LiveLinq.Dictionary
             _wrapped = null;
         }
 
-        protected virtual void SetWrapped(IObservableDictionary<TKey, TValue> wrapped)
+        protected void Initialize(IObservableDictionary<TKey, TValue> wrapped)
         {
             _wrapped = wrapped;
         }
