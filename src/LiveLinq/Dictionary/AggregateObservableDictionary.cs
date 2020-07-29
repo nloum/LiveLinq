@@ -70,6 +70,11 @@ namespace LiveLinq.Dictionary
             return false;
         }
 
+        public void Mutate(IEnumerable<DictionaryMutation<TKey, TValue>> mutations, out IReadOnlyList<DictionaryMutationResult<TKey, TValue>> results)
+        {
+            _mutationsGoHere.Mutate(mutations, out results);
+        }
+
         public bool TryAdd(TKey key, TValue value)
         {
             return _mutationsGoHere.TryAdd(key, value);

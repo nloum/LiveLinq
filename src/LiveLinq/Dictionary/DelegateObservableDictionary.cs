@@ -25,6 +25,11 @@ namespace LiveLinq.Dictionary
             _wrapped = wrapped;
         }
 
+        public void Mutate(IEnumerable<DictionaryMutation<TKey, TValue>> mutations, out IReadOnlyList<DictionaryMutationResult<TKey, TValue>> results)
+        {
+            _wrapped.Mutate(mutations, out results);
+        }
+
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();

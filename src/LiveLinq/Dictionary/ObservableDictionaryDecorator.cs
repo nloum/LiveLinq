@@ -5,6 +5,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using LiveLinq.Core;
 using MoreCollections;
 using SimpleMonads;
 
@@ -50,6 +51,36 @@ namespace LiveLinq.Dictionary
                 var result = _subject.Where(x => x.Values.Count > 0).Subscribe(observer);
                 return result;
             }).ToLiveLinq();
+        }
+
+        public void Mutate(IEnumerable<DictionaryMutation<TKey, TValue>> mutations, out IReadOnlyList<DictionaryMutationResult<TKey, TValue>> results)
+        {
+            _state.Mutate(mutations, out results);
+            
+            foreach (var result in results)
+            {
+                if (result.Add.HasValue && result.Add.Value.Added)
+                {
+                    _subject.OnNext(Utility.DictionaryAdd(MoreCollections.Utility.KeyValuePair(result.Key, result.Add.Value.NewValue.Value)));
+                }
+                else if (result.Update.HasValue && result.Update.Value.Updated)
+                {
+                    _subject.OnNext(Utility.DictionaryRemove(MoreCollections.Utility.KeyValuePair(result.Key, result.Update.Value.ExistingValue.Value)));
+                    _subject.OnNext(Utility.DictionaryAdd(MoreCollections.Utility.KeyValuePair(result.Key, result.Update.Value.NewValue.Value)));
+                }
+                else if (result.Remove.HasValue && result.Remove.Value.HasValue)
+                {
+                    _subject.OnNext(Utility.DictionaryRemove(MoreCollections.Utility.KeyValuePair(result.Key, result.Remove.Value.Value)));
+                }
+                else if (result.AddOrUpdate.HasValue)
+                {
+                    if (result.AddOrUpdate.Value.Result == DictionaryItemAddOrUpdateResult.Update)
+                    {
+                        _subject.OnNext(Utility.DictionaryRemove(MoreCollections.Utility.KeyValuePair(result.Key, result.AddOrUpdate.Value.ExistingValue.Value)));
+                    }
+                    _subject.OnNext(Utility.DictionaryAdd(MoreCollections.Utility.KeyValuePair(result.Key, result.AddOrUpdate.Value.NewValue)));
+                }
+            }
         }
 
         private void OnNext(IDictionaryChangeStrict<TKey, TValue> change)
