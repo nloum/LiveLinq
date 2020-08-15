@@ -18,6 +18,7 @@ namespace LiveLinq.Dictionary
         protected void Initialize(IObservableDictionaryWithBuiltInKey<TKey, TValue> wrapped)
         {
             _wrapped = wrapped;
+            base.Initialize(wrapped);
         }
 
         public IDictionaryChangesStrict<TKey, TValue> ToLiveLinq()
