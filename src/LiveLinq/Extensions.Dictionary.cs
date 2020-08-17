@@ -44,6 +44,16 @@ namespace LiveLinq
             return new AnonymousObservableDictionaryWithBuiltInKeyAdapter<TKey, TValue>(source, key);
         }
         
+        /// <summary>
+        /// Creates a facade on top of the specified IObservableDictionary that has a built-in key, which means you're telling
+        /// the object how to get the key from a value. That means any API where you pass in a TValue, you
+        /// won't have to tell the API what the key is.
+        /// </summary>
+        public static IReadOnlyObservableDictionaryWithBuiltInKey<TKey, TValue> WithBuiltInKey<TKey, TValue>(this IReadOnlyObservableDictionary<TKey, TValue> source, Func<TValue, TKey> key)
+        {
+            return new AnonymousReadOnlyObservableDictionaryWithBuiltInKeyAdapter<TKey, TValue>(source, key);
+        }
+
         public static IReadOnlyObservableDictionary<TKey, IReadOnlyObservableSet<TValue>> Cache<TKey, TValue>(
             this IDictionaryChanges<TKey, ISetChanges<TValue>> changes)
         {
