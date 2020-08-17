@@ -4,13 +4,13 @@ using System.Collections.Generic;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading;
+using ComposableCollections.Dictionary;
 using SimpleMonads;
 using GenericNumbers;
 using MoreCollections;
 using LiveLinq.Core;
 using LiveLinq.List;
 using UtilityDisposables;
-using static MoreCollections.Utility;
 
 namespace LiveLinq
 {
@@ -91,13 +91,13 @@ namespace LiveLinq
             return result;
         }
 
-        public static IReadOnlyList<IKeyValuePair<TKey, TValue>> KeysAndValues<TKey, TValue>(
+        public static IReadOnlyList<IKeyValue<TKey, TValue>> KeysAndValues<TKey, TValue>(
             this IKeyedCollectionChange<TKey, TValue> source)
         {
             return new KeysAndValuesImpl<TKey, TValue>(source);
         }
         
-        private class KeysAndValuesImpl<TKey, TValue> : IReadOnlyList<IKeyValuePair<TKey, TValue>>
+        private class KeysAndValuesImpl<TKey, TValue> : IReadOnlyList<IKeyValue<TKey, TValue>>
         {
             private readonly IKeyedCollectionChange<TKey, TValue> _source;
 
@@ -123,11 +123,11 @@ namespace LiveLinq
             /// <returns>
             /// A <see cref="T:System.Collections.Generic.IEnumerator`1"/> that can be used to iterate through the collection.
             /// </returns>
-            public IEnumerator<IKeyValuePair<TKey, TValue>> GetEnumerator()
+            public IEnumerator<IKeyValue<TKey, TValue>> GetEnumerator()
             {
                 for (var i = 0; i < _source.Keys.Count; i++)
                 {
-                    yield return KeyValuePair<TKey, TValue>(_source.Keys[i], _source.Values[i]);
+                    yield return new KeyValue<TKey, TValue>(_source.Keys[i], _source.Values[i]);
                 }
             }
 
@@ -146,7 +146,7 @@ namespace LiveLinq
             /// The element at the specified index in the read-only list.
             /// </returns>
             /// <param name="index">The zero-based index of the element to get. </param>
-            public IKeyValuePair<TKey, TValue> this[int index] => KeyValuePair<TKey,TValue>(this._source.Keys[index], this._source.Values[index]);
+            public IKeyValue<TKey, TValue> this[int index] => new KeyValue<TKey,TValue>(this._source.Keys[index], this._source.Values[index]);
         }
 
         //public static IObservable<IListChange<TValue>> RemoveEmptyGroups<TValue>(this IObservable<IListChange<TValue>> source)

@@ -5,11 +5,12 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ComposableCollections.Dictionary;
 using LiveLinq.Dictionary;
 using SimpleMonads;
 using MoreCollections;
 using LiveLinq.List;
-using static MoreCollections.Utility;
+
 
 namespace LiveLinq
 {
@@ -33,7 +34,7 @@ namespace LiveLinq
         /// Same as LINQ's ToDictionary, except watches the source for changes and updates the result accordingly.
         /// </summary>
         public static IDictionaryChangesStrict<TKey, TValue> ToLiveLinq<TKey, TValue>(
-            this IListChangesStrict<IKeyValuePair<TKey, TValue>> source)
+            this IListChangesStrict<IKeyValue<TKey, TValue>> source)
         {
             return new DictionaryChangesStrict<TKey, TValue>(source.AsObservable().Select(kvp => kvp.ToDictionaryChange()));
         }
@@ -42,7 +43,7 @@ namespace LiveLinq
         /// Generates a LiveLinq query that initially has no element, and as each new source event is fired, it clears the query
         /// and then adds the value from the new source event.
         /// </summary>
-        public static IDictionaryChangesStrict<TKey, TValue> ToLiveLinq<TKey, TValue>(this IObservable<IKeyValuePair<TKey, TValue>> source)
+        public static IDictionaryChangesStrict<TKey, TValue> ToLiveLinq<TKey, TValue>(this IObservable<IKeyValue<TKey, TValue>> source)
         {
             return source.Select(maybe => maybe.ToMaybe()).ToLiveLinq();
         }
@@ -51,7 +52,7 @@ namespace LiveLinq
         /// Generates a LiveLinq query that initially has no element, and as each new source event is fired, it clears the query
         /// and then, if the new source event has a value, it adds that value.
         /// </summary>
-        public static IDictionaryChangesStrict<TKey, TValue> ToLiveLinq<TKey, TValue>(this IObservable<IMaybe<IKeyValuePair<TKey, TValue>>> source)
+        public static IDictionaryChangesStrict<TKey, TValue> ToLiveLinq<TKey, TValue>(this IObservable<IMaybe<IKeyValue<TKey, TValue>>> source)
         {
             return source.Select(maybe => maybe.ToEnumerable().ToImmutableDictionary(kvp => kvp.Key, kvp => kvp.Value)).ToLiveLinq();
         }
@@ -86,7 +87,7 @@ namespace LiveLinq
         {
             return source.Select(
                 element =>
-                keySelector(element).CombineLatest(valueSelector(element), KeyValuePair<TKey, TValue>))
+                keySelector(element).CombineLatest(valueSelector(element), (key, value) => new KeyValue<TKey, TValue>(key, value)))
                 .MakeStrictExpensively()
                 .ToLiveLinq();
         }
@@ -101,7 +102,7 @@ namespace LiveLinq
         {
             return source.Select(
                 element =>
-                valueSelector(element).Select(value => KeyValuePair<TKey, TValue>(keySelector(element), value)))
+                valueSelector(element).Select(value => new KeyValue<TKey, TValue>(keySelector(element), value)))
                 .MakeStrictExpensively()
                 .ToLiveLinq();
         }
@@ -116,7 +117,7 @@ namespace LiveLinq
         {
             return source.Select(
                 element =>
-                keySelector(element).Select(key => KeyValuePair<TKey, TValue>(key, valueSelector(element))))
+                keySelector(element).Select(key => new KeyValue<TKey, TValue>(key, valueSelector(element))))
                 .MakeStrictExpensively()
                 .ToLiveLinq();
         }
@@ -131,7 +132,7 @@ namespace LiveLinq
         {
             return source.Select(
                 element =>
-                KeyValuePair<TKey, TValue>(keySelector(element), valueSelector(element)))
+                new KeyValue<TKey, TValue>(keySelector(element), valueSelector(element)))
                 .ToLiveLinq();
         }
 

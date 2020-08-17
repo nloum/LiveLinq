@@ -3,11 +3,10 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
-using System.Reflection;
 using LiveLinq.Dictionary;
 using LiveLinq.Set;
 using System.Collections.Generic;
-using MoreCollections;
+using ComposableCollections.Dictionary;
 
 namespace LiveLinq
 {
@@ -42,7 +41,7 @@ namespace LiveLinq
                             else
                             {
                                 var newValue = new BehaviorSubject<ISetChange<TValue>>(setChange);
-                                var dictionaryChange = Utility.DictionaryChange(change.Type, MoreCollections.Utility.KeyValuePair(group.Key, newValue.ToLiveLinq()));
+                                var dictionaryChange = Utility.DictionaryChange(change.Type, new KeyValue<TKey, ISetChanges<TValue>>(group.Key, newValue.ToLiveLinq()));
                                 dictionaryChanges.Add(dictionaryChange);
                                 dictionary = dictionary.SetItem(group.Key, newValue);
                             }

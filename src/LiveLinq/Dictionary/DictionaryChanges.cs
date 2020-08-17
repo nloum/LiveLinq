@@ -4,7 +4,7 @@ using SimpleMonads;
 
 using LiveLinq.List;
 
-using MoreCollections;
+using ComposableCollections.Dictionary;
 
 namespace LiveLinq.Dictionary
 {

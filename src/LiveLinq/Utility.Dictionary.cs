@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reflection;
+using ComposableCollections.Dictionary;
 using SimpleMonads;
 using LiveLinq.List;
 
@@ -75,7 +76,7 @@ namespace LiveLinq
         /// <summary>
         /// Create a <see cref="IDictionaryChange{TKey,TValue}"/> object that represents adding items to a dictionary.
         /// </summary>
-        public static IDictionaryChangeStrict<TKey, TValue> DictionaryChange<TKey, TValue>(CollectionChangeType type, IEnumerable<IKeyValuePair<TKey, TValue>> keysAndValues)
+        public static IDictionaryChangeStrict<TKey, TValue> DictionaryChange<TKey, TValue>(CollectionChangeType type, IEnumerable<IKeyValue<TKey, TValue>> keysAndValues)
         {
             return new DictionaryChangeStrict<TKey, TValue>(type, keysAndValues.ToImmutableDictionary(kvp => kvp.Key, kvp => kvp.Value));
         }
@@ -83,7 +84,7 @@ namespace LiveLinq
         /// <summary>
         /// Create a <see cref="IDictionaryChange{TKey,TValue}"/> object that represents adding items to a dictionary.
         /// </summary>
-        public static IDictionaryChangeStrict<TKey, TValue> DictionaryChange<TKey, TValue>(CollectionChangeType type, params IKeyValuePair<TKey, TValue>[] keysAndValues)
+        public static IDictionaryChangeStrict<TKey, TValue> DictionaryChange<TKey, TValue>(CollectionChangeType type, params IKeyValue<TKey, TValue>[] keysAndValues)
         {
             return new DictionaryChangeStrict<TKey, TValue>(type, keysAndValues.ToImmutableDictionary(kvp => kvp.Key, kvp => kvp.Value));
         }
@@ -141,7 +142,7 @@ namespace LiveLinq
         /// <summary>
         /// Create a <see cref="IDictionaryChange{TKey,TValue}"/> object that represents adding items to a dictionary.
         /// </summary>
-        public static IDictionaryChangeStrict<TKey, TValue> DictionaryRemove<TKey, TValue>(params IKeyValuePair<TKey, TValue>[] keysAndValues)
+        public static IDictionaryChangeStrict<TKey, TValue> DictionaryRemove<TKey, TValue>(params IKeyValue<TKey, TValue>[] keysAndValues)
         {
             return new DictionaryChangeStrict<TKey, TValue>(CollectionChangeType.Remove, keysAndValues.ToImmutableDictionary(kvp => kvp.Key, kvp => kvp.Value));
         }
@@ -149,7 +150,7 @@ namespace LiveLinq
         /// <summary>
         /// Create a <see cref="IDictionaryChange{TKey,TValue}"/> object that represents adding items to a dictionary.
         /// </summary>
-        public static IDictionaryChangeStrict<TKey, TValue> DictionaryRemove<TKey, TValue>(IEnumerable<IKeyValuePair<TKey, TValue>> keysAndValues)
+        public static IDictionaryChangeStrict<TKey, TValue> DictionaryRemove<TKey, TValue>(IEnumerable<IKeyValue<TKey, TValue>> keysAndValues)
         {
             return new DictionaryChangeStrict<TKey, TValue>(CollectionChangeType.Remove, keysAndValues.ToImmutableDictionary(kvp => kvp.Key, kvp => kvp.Value));
         }
@@ -187,7 +188,7 @@ namespace LiveLinq
         /// <summary>
         /// Create a <see cref="IDictionaryChange{TKey,TValue}"/> object that represents adding items to a dictionary.
         /// </summary>
-        public static IDictionaryChangeStrict<TKey, TValue> DictionaryAdd<TKey, TValue>(IEnumerable<IKeyValuePair<TKey, TValue>> keysAndValues)
+        public static IDictionaryChangeStrict<TKey, TValue> DictionaryAdd<TKey, TValue>(IEnumerable<IKeyValue<TKey, TValue>> keysAndValues)
         {
             return new DictionaryChangeStrict<TKey, TValue>(CollectionChangeType.Add, keysAndValues.ToImmutableDictionary(kvp => kvp.Key, kvp => kvp.Value));
         }
@@ -195,7 +196,7 @@ namespace LiveLinq
         /// <summary>
         /// Create a <see cref="IDictionaryChange{TKey,TValue}"/> object that represents adding items to a dictionary.
         /// </summary>
-        public static IDictionaryChangeStrict<TKey, TValue> DictionaryAdd<TKey, TValue>(params IKeyValuePair<TKey, TValue>[] keysAndValues)
+        public static IDictionaryChangeStrict<TKey, TValue> DictionaryAdd<TKey, TValue>(params IKeyValue<TKey, TValue>[] keysAndValues)
         {
             return new DictionaryChangeStrict<TKey, TValue>(CollectionChangeType.Add, keysAndValues.ToImmutableDictionary(kvp => kvp.Key, kvp => kvp.Value));
         }

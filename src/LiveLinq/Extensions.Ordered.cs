@@ -2,6 +2,7 @@
 using System.Collections.Immutable;
 using System.Linq;
 using System.Reactive.Linq;
+using ComposableCollections.Dictionary;
 using MoreCollections;
 using static LiveLinq.Utility;
 using GenericNumbers.Relational;
@@ -10,7 +11,6 @@ using LiveLinq.Dictionary;
 using LiveLinq.List;
 using LiveLinq.Ordered;
 using LiveLinq.Set;
-using static MoreCollections.Utility;
 
 namespace LiveLinq
 {
@@ -241,7 +241,7 @@ namespace LiveLinq
                             .Where(change => Equals(change.Values.First().Key, grouping.Key))
                             .Select(change => ListChange(change.Type, change.Range, change.Values.Select(kvp => kvp.Value.Value)))
                             .ToLiveLinq();
-                        return DictionaryAdd(KeyValuePair(grouping.Key, simplifiedGrouping));
+                        return DictionaryAdd(new KeyValue<TKey, IListChanges<TValue>>(grouping.Key, simplifiedGrouping));
                     })
                     .ToLiveLinq();
         }
@@ -475,7 +475,7 @@ namespace LiveLinq
         /// 
         /// Just like in LINQ.
         /// </summary>
-        public static IOrderedListChanges<IKeyValuePair<TKey, TValue>> OrderBy<TKey, TValue>(this IDictionaryChangesStrict<TKey, TValue> source, Func<IKeyValuePair<TKey, TValue>, IKeyValuePair<TKey, TValue>, int> comparer)
+        public static IOrderedListChanges<IKeyValue<TKey, TValue>> OrderBy<TKey, TValue>(this IDictionaryChangesStrict<TKey, TValue> source, Func<IKeyValue<TKey, TValue>, IKeyValue<TKey, TValue>, int> comparer)
         {
             return Sort(source.DictionaryChangesToListChangesSortedByKey().AsObservable(), comparer);
         }
@@ -496,7 +496,7 @@ namespace LiveLinq
         /// 
         /// Just like in LINQ.
         /// </summary>
-        public static IOrderedListChanges<IKeyValuePair<TKey, TValue>> OrderByDescending<TKey, TValue>(this IDictionaryChangesStrict<TKey, TValue> source, Func<IKeyValuePair<TKey, TValue>, IKeyValuePair<TKey, TValue>, int> comparer)
+        public static IOrderedListChanges<IKeyValue<TKey, TValue>> OrderByDescending<TKey, TValue>(this IDictionaryChangesStrict<TKey, TValue> source, Func<IKeyValue<TKey, TValue>, IKeyValue<TKey, TValue>, int> comparer)
         {
             return Sort(source.DictionaryChangesToListChangesSortedByKey().AsObservable(), (a, b) => -1 * comparer(a, b));
         }
@@ -517,7 +517,7 @@ namespace LiveLinq
         /// 
         /// Just like in LINQ.
         /// </summary>
-        public static IOrderedListChanges<IKeyValuePair<TKey, TValue>> OrderBy<TKey, TValue, TSortKey>(this IDictionaryChangesStrict<TKey, TValue> source, Func<IKeyValuePair<TKey, TValue>, TSortKey> keySelector)
+        public static IOrderedListChanges<IKeyValue<TKey, TValue>> OrderBy<TKey, TValue, TSortKey>(this IDictionaryChangesStrict<TKey, TValue> source, Func<IKeyValue<TKey, TValue>, TSortKey> keySelector)
         {
             return Sort(source.DictionaryChangesToListChangesSortedByKey().AsObservable(), (a, b) => keySelector(a).CompareTo(keySelector(b)));
         }
@@ -538,19 +538,19 @@ namespace LiveLinq
         /// 
         /// Just like in LINQ.
         /// </summary>
-        public static IOrderedListChanges<IKeyValuePair<TKey, TValue>> OrderByDescending<TKey, TValue, TSortKey>(this IDictionaryChangesStrict<TKey, TValue> source, Func<IKeyValuePair<TKey, TValue>, TSortKey> keySelector)
+        public static IOrderedListChanges<IKeyValue<TKey, TValue>> OrderByDescending<TKey, TValue, TSortKey>(this IDictionaryChangesStrict<TKey, TValue> source, Func<IKeyValue<TKey, TValue>, TSortKey> keySelector)
         {
             return Sort(source.DictionaryChangesToListChangesSortedByKey().AsObservable(), (a, b) => -1 * keySelector(a).CompareTo(keySelector(b)));
         }
 
-        public static IListChangesStrict<IKeyValuePair<TKey, TValue>> DictionaryChangesToListChangesSortedByKey<TKey, TValue>(
+        public static IListChangesStrict<IKeyValue<TKey, TValue>> DictionaryChangesToListChangesSortedByKey<TKey, TValue>(
             this IDictionaryChangesStrict<TKey, TValue> source)
         {
             return source
                 .AsObservable()
                 .Select(change => change.Itemize().ToObservable())
                 .Concat()
-                .Scan(new { List = ImmutableList<IKeyValuePair<TKey, TValue>>.Empty, Change = (IListChangeStrict<IKeyValuePair<TKey, TValue>>)null },
+                .Scan(new { List = ImmutableList<IKeyValue<TKey, TValue>>.Empty, Change = (IListChangeStrict<IKeyValue<TKey, TValue>>)null },
                     (state, change) =>
                     {
                         if (change.Type == CollectionChangeType.Add)

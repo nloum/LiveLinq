@@ -3,7 +3,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Runtime.Serialization;
 using SimpleMonads;
-using MoreCollections;
+using ComposableCollections.Dictionary;
 using LiveLinq.Core;
 
 namespace LiveLinq.Dictionary
@@ -16,7 +16,7 @@ namespace LiveLinq.Dictionary
         [DataMember]
         public IReadOnlyList<TKey> Keys { get; set; }
         public IReadOnlyList<TValue> Values => ImmutableList<TValue>.Empty;
-        public IReadOnlyList<IKeyValuePair<TKey, TValue>> KeyValuePairs => ImmutableList<IKeyValuePair<TKey, TValue>>.Empty;
+        public IReadOnlyList<IKeyValue<TKey, TValue>> KeyValuePairs => ImmutableList<IKeyValue<TKey, TValue>>.Empty;
 
         public bool IsEffectivelyStrict => false;
 

@@ -1,10 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
-using MoreCollections;
+using ComposableCollections.Dictionary;
 
 namespace LiveLinq.Dictionary
 {
-    public interface IReadOnlyObservableDictionary<TKey, out TValue> : IReadOnlyDictionaryEx<TKey, TValue>
+    public interface IReadOnlyObservableDictionary<TKey, out TValue> : IComposableReadOnlyDictionary<TKey, TValue>
     {
         IDictionaryChangesStrict<TKey, TValue> ToLiveLinq();
     }

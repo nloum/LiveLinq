@@ -1,8 +1,8 @@
-using MoreCollections;
+using ComposableCollections.Dictionary;
 
 namespace LiveLinq.Dictionary
 {
-    public interface IObservableDictionary<TKey, TValue> : IDictionaryEx<TKey, TValue>, IReadOnlyObservableDictionary<TKey, TValue>
+    public interface IObservableDictionary<TKey, TValue> : IComposableDictionary<TKey, TValue>, IReadOnlyObservableDictionary<TKey, TValue>
     {
     }
 }

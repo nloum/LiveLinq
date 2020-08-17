@@ -2,19 +2,20 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Reactive.Subjects;
+using ComposableCollections;
 using GenericNumbers.Relational;
-using MoreCollections;
+using ComposableCollections.Dictionary;
 using LiveLinq.Core;
 using LiveLinq.List;
+using MoreCollections;
 using static LiveLinq.Utility;
-using static MoreCollections.Utility;
 
 namespace LiveLinq.Dictionary
 {
     /// <summary>
     /// A sorted observable dictionary/list combination.
     /// </summary>
-    public class SortedObservableDictionaryList<TKey, TValue> : ObservableListBase<IKeyValuePair<TKey, TValue>>, IDictionary<TKey, TValue>
+    public class SortedObservableDictionaryList<TKey, TValue> : ObservableListBase<IKeyValue<TKey, TValue>>, IDictionary<TKey, TValue>
     {
         private readonly Func<TKey, TKey, int> _comparer;
 
@@ -32,13 +33,13 @@ namespace LiveLinq.Dictionary
         #region ObservableListBase implementation
 
         private readonly object _lock = new object();
-        private ImmutableList<IKeyValuePair<TKey, TValue>> _internalList = ImmutableList<IKeyValuePair<TKey, TValue>>.Empty;
-        private readonly Subject<IListChangeStrict<IKeyValuePair<TKey, TValue>>> _changes = new Subject<IListChangeStrict<IKeyValuePair<TKey, TValue>>>();
+        private ImmutableList<IKeyValue<TKey, TValue>> _internalList = ImmutableList<IKeyValue<TKey, TValue>>.Empty;
+        private readonly Subject<IListChangeStrict<IKeyValue<TKey, TValue>>> _changes = new Subject<IListChangeStrict<IKeyValue<TKey, TValue>>>();
 
         /// <summary>
         /// Gets an enumerator that will enumerate all the key/value pairs in this dictionary.
         /// </summary>
-        public override IEnumerator<IKeyValuePair<TKey, TValue>> GetEnumerator()
+        public override IEnumerator<IKeyValue<TKey, TValue>> GetEnumerator()
         {
             return this._internalList.GetEnumerator();
         }
@@ -46,7 +47,7 @@ namespace LiveLinq.Dictionary
         /// <summary>
         /// Copies the elements of this dictionary to the specified array, starting at the specified index.
         /// </summary>
-        public override void CopyTo(IKeyValuePair<TKey, TValue>[] array, int arrayIndex)
+        public override void CopyTo(IKeyValue<TKey, TValue>[] array, int arrayIndex)
         {
             this._internalList.CopyTo(array, arrayIndex);
         }
@@ -60,7 +61,7 @@ namespace LiveLinq.Dictionary
         /// Returns the index of the specified key if the key exists in this dictionary and the value at that key is the specified value.
         /// Otherwise, returns -1.
         /// </summary>
-        public override int IndexOf(IKeyValuePair<TKey, TValue> item)
+        public override int IndexOf(IKeyValue<TKey, TValue> item)
         {
             return _internalList.BinarySearch(kvp => kvp.CompareTo(item));
         }
@@ -76,7 +77,7 @@ namespace LiveLinq.Dictionary
         /// <summary>
         /// Returns the key/value pair at the specified index
         /// </summary>
-        protected override IKeyValuePair<TKey, TValue> GetAt(int index)
+        protected override IKeyValue<TKey, TValue> GetAt(int index)
         {
             return this._internalList[index];
         }
@@ -84,7 +85,7 @@ namespace LiveLinq.Dictionary
         /// <summary>
         /// Implement this to define the IObservable that becomes a livelinq query whenever someone calls this.LiveLinq().
         /// </summary>
-        protected override IDisposable ToLiveLinqSubscribe(IObserver<IListChangeStrict<IKeyValuePair<TKey, TValue>>> observer)
+        protected override IDisposable ToLiveLinqSubscribe(IObserver<IListChangeStrict<IKeyValue<TKey, TValue>>> observer)
         {
             lock (_lock)
             {
@@ -120,7 +121,7 @@ namespace LiveLinq.Dictionary
         /// <param name="item">The object to locate in the <see cref="T:System.Collections.Generic.ICollection`1"/>.</param>
         public bool Contains(KeyValuePair<TKey, TValue> item)
         {
-            return Contains(KeyValuePair<TKey, TValue>(item.Key, item.Value));
+            return Contains(item.ToKeyValue());
         }
 
         /// <summary>
@@ -141,7 +142,7 @@ namespace LiveLinq.Dictionary
         /// <param name="key">The object to use as the key of the element to add.</param><param name="value">The object to use as the value of the element to add.</param><exception cref="T:System.ArgumentNullException"><paramref name="key"/> is null.</exception><exception cref="T:System.ArgumentException">An element with the same key already exists in the <see cref="T:System.Collections.Generic.IDictionary`2"/>.</exception><exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.Generic.IDictionary`2"/> is read-only.</exception>
         public void Add(TKey key, TValue value)
         {
-            Add(KeyValuePair<TKey, TValue>(key, value));
+            Add(new KeyValue<TKey, TValue>(key, value));
         }
 
         /// <summary>
@@ -183,7 +184,7 @@ namespace LiveLinq.Dictionary
         /// <param name="item">The object to remove from the <see cref="T:System.Collections.Generic.ICollection`1"/>.</param><exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.Generic.ICollection`1"/> is read-only.</exception>
         public bool Remove(KeyValuePair<TKey, TValue> item)
         {
-            return Remove(KeyValuePair<TKey, TValue>(item.Key, item.Value));
+            return Remove(new KeyValue<TKey, TValue>(item.Key, item.Value));
         }
 
         /// <summary>
@@ -192,7 +193,7 @@ namespace LiveLinq.Dictionary
         /// <param name="item">The object to add to the <see cref="T:System.Collections.Generic.ICollection`1"/>.</param><exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.Generic.ICollection`1"/> is read-only.</exception>
         public void Add(KeyValuePair<TKey, TValue> item)
         {
-            Add(KeyValuePair<TKey, TValue>(item.Key, item.Value));
+            Add(new KeyValue<TKey, TValue>(item.Key, item.Value));
         }
 
         /// <summary>
@@ -210,7 +211,7 @@ namespace LiveLinq.Dictionary
             }
             set
             {
-                Add(KeyValuePair<TKey, TValue>(key, value));
+                Add(new KeyValue<TKey, TValue>(key, value));
             }
         }
 
@@ -223,7 +224,7 @@ namespace LiveLinq.Dictionary
         /// <param name="key">The key of the element to remove.</param><exception cref="T:System.ArgumentNullException"><paramref name="key"/> is null.</exception><exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.Generic.IDictionary`2"/> is read-only.</exception>
         public bool Remove(TKey key)
         {
-            return Remove(KeyValuePair<TKey, TValue>(key, this[key]));
+            return Remove(new KeyValue<TKey, TValue>(key, this[key]));
         }
 
         /// <summary>
@@ -249,7 +250,7 @@ namespace LiveLinq.Dictionary
         /// <summary>
         /// Insert the specified range of items, in the order that they are specified, starting at the specified index.
         /// </summary>
-        protected override void UnlockedInsertRange(int index, IReadOnlyList<IKeyValuePair<TKey, TValue>> items)
+        protected override void UnlockedInsertRange(int index, IReadOnlyList<IKeyValue<TKey, TValue>> items)
         {
             for (var i = 0; i < items.Count; i++)
             {
@@ -263,9 +264,9 @@ namespace LiveLinq.Dictionary
         /// <summary>
         /// Remove the specified range of items from this list.
         /// </summary>
-        protected override IReadOnlyList<IKeyValuePair<TKey, TValue>>  UnlockedRemoveRange(int index, int count)
+        protected override IReadOnlyList<IKeyValue<TKey, TValue>>  UnlockedRemoveRange(int index, int count)
         {
-            var removedItems = new List<IKeyValuePair<TKey, TValue>>();
+            var removedItems = new List<IKeyValue<TKey, TValue>>();
             for (var i = 0; i < count; i++)
             {
                 removedItems.Add(this[index]);

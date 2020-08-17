@@ -4,13 +4,14 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ComposableCollections.Dictionary;
 using LiveLinq.Dictionary;
 using LiveLinq.List;
 
 using MoreCollections;
 
 using static SimpleMonads.Utility;
-using static MoreCollections.Utility;
+
 
 namespace LiveLinq
 {
@@ -22,7 +23,7 @@ namespace LiveLinq
         {
             return source.SelectMany((key, value) => selector(key, value)
                     .DistinctUntilChanged()
-                    .Select(included => included ? Something(KeyValuePair(key, value)) : Nothing<IKeyValuePair<TKey, TValue>>())
+                    .Select(included => included ? Something(new KeyValue<TKey, TValue>(key, value)) : Nothing<IKeyValue<TKey, TValue>>())
                 .ToLiveLinq());
         }
         

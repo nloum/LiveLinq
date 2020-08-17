@@ -1,4 +1,4 @@
-using MoreCollections;
+using ComposableCollections.Dictionary;
 
 namespace LiveLinq.Dictionary
 {

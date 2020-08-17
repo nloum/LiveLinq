@@ -2,10 +2,10 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Runtime.Serialization;
-using MoreCollections;
+using ComposableCollections.Dictionary;
+using ComposableCollections.List;
 using SimpleMonads;
 using LiveLinq.Core;
-using static MoreCollections.Utility;
 using static SimpleMonads.Utility;
 
 namespace LiveLinq.Dictionary
@@ -15,7 +15,7 @@ namespace LiveLinq.Dictionary
     {
         private IReadOnlyList<TKey> _keys;
         private IReadOnlyList<TValue> _values;
-        private IReadOnlyList<IKeyValuePair<TKey, TValue>> _keyValuePairs;
+        private IReadOnlyList<IKeyValue<TKey, TValue>> _keyValuePairs;
 
         public DictionaryChangeStrict(CollectionChangeType type, ImmutableDictionary<TKey, TValue> items)
         {
@@ -30,7 +30,7 @@ namespace LiveLinq.Dictionary
             get
             {
                 if (_values == null)
-                    _values = new SelectReadOnlyList<IKeyValuePair<TKey, TValue>, TValue>(KeyValuePairs, (x, _) => x.Value);
+                    _values = new SelectReadOnlyList<IKeyValue<TKey, TValue>, TValue>(KeyValuePairs, (x, _) => x.Value);
                 return _values;
             }
         }
@@ -42,7 +42,7 @@ namespace LiveLinq.Dictionary
             get
             {
                 if (_keys == null)
-                    _keys = new SelectReadOnlyList<IKeyValuePair<TKey, TValue>, TKey>(KeyValuePairs, (x, _) => x.Key);
+                    _keys = new SelectReadOnlyList<IKeyValue<TKey, TValue>, TKey>(KeyValuePairs, (x, _) => x.Key);
                 return _keys;
             }
         }
@@ -52,12 +52,12 @@ namespace LiveLinq.Dictionary
             return Dictionary.ContainsKey(key);
         }
 
-        public IReadOnlyList<IKeyValuePair<TKey, TValue>> KeyValuePairs
+        public IReadOnlyList<IKeyValue<TKey, TValue>> KeyValuePairs
         {
             get
             {
                 if (_keyValuePairs == null)
-                    _keyValuePairs = Dictionary.Select(x => KeyValuePair<TKey, TValue>(x.Key, x.Value)).ToImmutableList();
+                    _keyValuePairs = Dictionary.Select(x => new KeyValue<TKey, TValue>(x.Key, x.Value)).ToImmutableList();
                 return _keyValuePairs;
             }
         }

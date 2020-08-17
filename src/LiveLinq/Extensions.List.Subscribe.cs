@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
+using ComposableCollections.Dictionary;
 using GenericNumbers;
 using LiveLinq.Core;
 using LiveLinq.List;

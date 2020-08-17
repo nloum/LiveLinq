@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Reactive.Linq;
-using MoreCollections;
+using ComposableCollections.Dictionary;
 using SimpleMonads;
 
 namespace LiveLinq.Dictionary
@@ -25,7 +25,7 @@ namespace LiveLinq.Dictionary
             return GetEnumerator();
         }
 
-        public IEnumerator<IKeyValuePair<TKey, TValue>> GetEnumerator()
+        public IEnumerator<IKeyValue<TKey, TValue>> GetEnumerator()
         {
             return _wrapped.SelectMany(x => x).GetEnumerator();
         }
@@ -90,22 +90,22 @@ namespace LiveLinq.Dictionary
             return _mutationsGoHere.TryAdd(key, value, out existingValue, out newValue);
         }
 
-        public void TryAddRange(IEnumerable<IKeyValuePair<TKey, TValue>> newItems, out IReadOnlyDictionaryEx<TKey, IDictionaryItemAddAttempt<TValue>> result)
+        public void TryAddRange(IEnumerable<IKeyValue<TKey, TValue>> newItems, out IComposableReadOnlyDictionary<TKey, IDictionaryItemAddAttempt<TValue>> result)
         {
             _mutationsGoHere.TryAddRange(newItems, out result);
         }
 
-        public void TryAddRange(IEnumerable<KeyValuePair<TKey, TValue>> newItems, out IReadOnlyDictionaryEx<TKey, IDictionaryItemAddAttempt<TValue>> result)
+        public void TryAddRange(IEnumerable<KeyValuePair<TKey, TValue>> newItems, out IComposableReadOnlyDictionary<TKey, IDictionaryItemAddAttempt<TValue>> result)
         {
             _mutationsGoHere.TryAddRange(newItems, out result);
         }
 
-        public void TryAddRange<TKeyValuePair>(IEnumerable<TKeyValuePair> newItems, Func<TKeyValuePair, TKey> key, Func<TKeyValuePair, TValue> value, out IReadOnlyDictionaryEx<TKey, IDictionaryItemAddAttempt<TValue>> result)
+        public void TryAddRange<TKeyValuePair>(IEnumerable<TKeyValuePair> newItems, Func<TKeyValuePair, TKey> key, Func<TKeyValuePair, TValue> value, out IComposableReadOnlyDictionary<TKey, IDictionaryItemAddAttempt<TValue>> result)
         {
             _mutationsGoHere.TryAddRange(newItems, key, value, out result);
         }
 
-        public void TryAddRange(IEnumerable<IKeyValuePair<TKey, TValue>> newItems)
+        public void TryAddRange(IEnumerable<IKeyValue<TKey, TValue>> newItems)
         {
             _mutationsGoHere.TryAddRange(newItems);
         }
@@ -120,7 +120,7 @@ namespace LiveLinq.Dictionary
             _mutationsGoHere.TryAddRange(newItems, key, value);
         }
 
-        public void TryAddRange(params IKeyValuePair<TKey, TValue>[] newItems)
+        public void TryAddRange(params IKeyValue<TKey, TValue>[] newItems)
         {
             _mutationsGoHere.TryAddRange(newItems);
         }
@@ -135,7 +135,7 @@ namespace LiveLinq.Dictionary
             _mutationsGoHere.Add(key, value);
         }
 
-        public void AddRange(IEnumerable<IKeyValuePair<TKey, TValue>> newItems)
+        public void AddRange(IEnumerable<IKeyValue<TKey, TValue>> newItems)
         {
             _mutationsGoHere.AddRange(newItems);
         }
@@ -150,7 +150,7 @@ namespace LiveLinq.Dictionary
             _mutationsGoHere.AddRange(newItems, key, value);
         }
 
-        public void AddRange(params IKeyValuePair<TKey, TValue>[] newItems)
+        public void AddRange(params IKeyValue<TKey, TValue>[] newItems)
         {
             _mutationsGoHere.AddRange(newItems);
         }
@@ -175,7 +175,7 @@ namespace LiveLinq.Dictionary
             return _mutationsGoHere.TryUpdate(key, value, out previousValue, out newValue);
         }
 
-        public void TryUpdateRange(IEnumerable<IKeyValuePair<TKey, TValue>> newItems)
+        public void TryUpdateRange(IEnumerable<IKeyValue<TKey, TValue>> newItems)
         {
             _mutationsGoHere.TryUpdateRange(newItems);
         }
@@ -190,7 +190,7 @@ namespace LiveLinq.Dictionary
             _mutationsGoHere.TryUpdateRange(newItems, key, value);
         }
 
-        public void TryUpdateRange(params IKeyValuePair<TKey, TValue>[] newItems)
+        public void TryUpdateRange(params IKeyValue<TKey, TValue>[] newItems)
         {
             _mutationsGoHere.TryUpdateRange(newItems);
         }
@@ -200,17 +200,17 @@ namespace LiveLinq.Dictionary
             _mutationsGoHere.TryUpdateRange(newItems);
         }
 
-        public void TryUpdateRange(IEnumerable<IKeyValuePair<TKey, TValue>> newItems, out IReadOnlyDictionaryEx<TKey, IDictionaryItemUpdateAttempt<TValue>> result)
+        public void TryUpdateRange(IEnumerable<IKeyValue<TKey, TValue>> newItems, out IComposableReadOnlyDictionary<TKey, IDictionaryItemUpdateAttempt<TValue>> result)
         {
             _mutationsGoHere.TryUpdateRange(newItems, out result);
         }
 
-        public void TryUpdateRange(IEnumerable<KeyValuePair<TKey, TValue>> newItems, out IReadOnlyDictionaryEx<TKey, IDictionaryItemUpdateAttempt<TValue>> result)
+        public void TryUpdateRange(IEnumerable<KeyValuePair<TKey, TValue>> newItems, out IComposableReadOnlyDictionary<TKey, IDictionaryItemUpdateAttempt<TValue>> result)
         {
             _mutationsGoHere.TryUpdateRange(newItems, out result);
         }
 
-        public void TryUpdateRange<TKeyValuePair>(IEnumerable<TKeyValuePair> newItems, Func<TKeyValuePair, TKey> key, Func<TKeyValuePair, TValue> value, out IReadOnlyDictionaryEx<TKey, IDictionaryItemUpdateAttempt<TValue>> result)
+        public void TryUpdateRange<TKeyValuePair>(IEnumerable<TKeyValuePair> newItems, Func<TKeyValuePair, TKey> key, Func<TKeyValuePair, TValue> value, out IComposableReadOnlyDictionary<TKey, IDictionaryItemUpdateAttempt<TValue>> result)
         {
             _mutationsGoHere.TryUpdateRange(newItems, key, value, out result);
         }
@@ -220,7 +220,7 @@ namespace LiveLinq.Dictionary
             _mutationsGoHere.Update(key, value);
         }
 
-        public void UpdateRange(IEnumerable<IKeyValuePair<TKey, TValue>> newItems)
+        public void UpdateRange(IEnumerable<IKeyValue<TKey, TValue>> newItems)
         {
             _mutationsGoHere.UpdateRange(newItems);
         }
@@ -240,22 +240,22 @@ namespace LiveLinq.Dictionary
             _mutationsGoHere.Update(key, value, out previousValue);
         }
 
-        public void UpdateRange(IEnumerable<IKeyValuePair<TKey, TValue>> newItems, out IReadOnlyDictionaryEx<TKey, IDictionaryItemUpdateAttempt<TValue>> results)
+        public void UpdateRange(IEnumerable<IKeyValue<TKey, TValue>> newItems, out IComposableReadOnlyDictionary<TKey, IDictionaryItemUpdateAttempt<TValue>> results)
         {
             _mutationsGoHere.UpdateRange(newItems, out results);
         }
 
-        public void UpdateRange(IEnumerable<KeyValuePair<TKey, TValue>> newItems, out IReadOnlyDictionaryEx<TKey, IDictionaryItemUpdateAttempt<TValue>> results)
+        public void UpdateRange(IEnumerable<KeyValuePair<TKey, TValue>> newItems, out IComposableReadOnlyDictionary<TKey, IDictionaryItemUpdateAttempt<TValue>> results)
         {
             _mutationsGoHere.UpdateRange(newItems, out results);
         }
 
-        public void UpdateRange<TKeyValuePair>(IEnumerable<TKeyValuePair> newItems, Func<TKeyValuePair, TKey> key, Func<TKeyValuePair, TValue> value, out IReadOnlyDictionaryEx<TKey, IDictionaryItemUpdateAttempt<TValue>> results)
+        public void UpdateRange<TKeyValuePair>(IEnumerable<TKeyValuePair> newItems, Func<TKeyValuePair, TKey> key, Func<TKeyValuePair, TValue> value, out IComposableReadOnlyDictionary<TKey, IDictionaryItemUpdateAttempt<TValue>> results)
         {
             _mutationsGoHere.UpdateRange(newItems, key, value, out results);
         }
 
-        public void UpdateRange(params IKeyValuePair<TKey, TValue>[] newItems)
+        public void UpdateRange(params IKeyValue<TKey, TValue>[] newItems)
         {
             _mutationsGoHere.UpdateRange(newItems);
         }
@@ -281,22 +281,22 @@ namespace LiveLinq.Dictionary
             return _mutationsGoHere.AddOrUpdate(key, valueIfAdding, valueIfUpdating, out previousValue, out newValue);
         }
 
-        public void AddOrUpdateRange(IEnumerable<IKeyValuePair<TKey, TValue>> newItems, out IReadOnlyDictionaryEx<TKey, IDictionaryItemAddOrUpdate<TValue>> result)
+        public void AddOrUpdateRange(IEnumerable<IKeyValue<TKey, TValue>> newItems, out IComposableReadOnlyDictionary<TKey, IDictionaryItemAddOrUpdate<TValue>> result)
         {
             _mutationsGoHere.AddOrUpdateRange(newItems, out result);
         }
 
-        public void AddOrUpdateRange(IEnumerable<KeyValuePair<TKey, TValue>> newItems, out IReadOnlyDictionaryEx<TKey, IDictionaryItemAddOrUpdate<TValue>> result)
+        public void AddOrUpdateRange(IEnumerable<KeyValuePair<TKey, TValue>> newItems, out IComposableReadOnlyDictionary<TKey, IDictionaryItemAddOrUpdate<TValue>> result)
         {
             _mutationsGoHere.AddOrUpdateRange(newItems, out result);
         }
 
-        public void AddOrUpdateRange<TKeyValuePair>(IEnumerable<TKeyValuePair> newItems, Func<TKeyValuePair, TKey> key, Func<TKeyValuePair, TValue> value, out IReadOnlyDictionaryEx<TKey, IDictionaryItemAddOrUpdate<TValue>> result)
+        public void AddOrUpdateRange<TKeyValuePair>(IEnumerable<TKeyValuePair> newItems, Func<TKeyValuePair, TKey> key, Func<TKeyValuePair, TValue> value, out IComposableReadOnlyDictionary<TKey, IDictionaryItemAddOrUpdate<TValue>> result)
         {
             _mutationsGoHere.AddOrUpdateRange(newItems, key, value, out result);
         }
 
-        public void AddOrUpdateRange(IEnumerable<IKeyValuePair<TKey, TValue>> newItems)
+        public void AddOrUpdateRange(IEnumerable<IKeyValue<TKey, TValue>> newItems)
         {
             _mutationsGoHere.AddOrUpdateRange(newItems);
         }
@@ -311,7 +311,7 @@ namespace LiveLinq.Dictionary
             _mutationsGoHere.AddOrUpdateRange(newItems, key, value);
         }
 
-        public void AddOrUpdateRange(params IKeyValuePair<TKey, TValue>[] newItems)
+        public void AddOrUpdateRange(params IKeyValue<TKey, TValue>[] newItems)
         {
             _mutationsGoHere.AddOrUpdateRange(newItems);
         }
@@ -336,7 +336,7 @@ namespace LiveLinq.Dictionary
             _mutationsGoHere.RemoveWhere(predicate);
         }
 
-        public void RemoveWhere(Func<IKeyValuePair<TKey, TValue>, bool> predicate)
+        public void RemoveWhere(Func<IKeyValue<TKey, TValue>, bool> predicate)
         {
             _mutationsGoHere.RemoveWhere(predicate);
         }
@@ -356,27 +356,27 @@ namespace LiveLinq.Dictionary
             _mutationsGoHere.Remove(key);
         }
 
-        public void TryRemoveRange(IEnumerable<TKey> keysToRemove, out IReadOnlyDictionaryEx<TKey, TValue> removedItems)
+        public void TryRemoveRange(IEnumerable<TKey> keysToRemove, out IComposableReadOnlyDictionary<TKey, TValue> removedItems)
         {
             _mutationsGoHere.TryRemoveRange(keysToRemove, out removedItems);
         }
 
-        public void RemoveRange(IEnumerable<TKey> keysToRemove, out IReadOnlyDictionaryEx<TKey, TValue> removedItems)
+        public void RemoveRange(IEnumerable<TKey> keysToRemove, out IComposableReadOnlyDictionary<TKey, TValue> removedItems)
         {
             _mutationsGoHere.RemoveRange(keysToRemove, out removedItems);
         }
 
-        public void RemoveWhere(Func<TKey, TValue, bool> predicate, out IReadOnlyDictionaryEx<TKey, TValue> removedItems)
+        public void RemoveWhere(Func<TKey, TValue, bool> predicate, out IComposableReadOnlyDictionary<TKey, TValue> removedItems)
         {
             _mutationsGoHere.RemoveWhere(predicate, out removedItems);
         }
 
-        public void RemoveWhere(Func<IKeyValuePair<TKey, TValue>, bool> predicate, out IReadOnlyDictionaryEx<TKey, TValue> removedItems)
+        public void RemoveWhere(Func<IKeyValue<TKey, TValue>, bool> predicate, out IComposableReadOnlyDictionary<TKey, TValue> removedItems)
         {
             _mutationsGoHere.RemoveWhere(predicate, out removedItems);
         }
 
-        public void Clear(out IReadOnlyDictionaryEx<TKey, TValue> removedItems)
+        public void Clear(out IComposableReadOnlyDictionary<TKey, TValue> removedItems)
         {
             _mutationsGoHere.Clear(out removedItems);
         }

@@ -1,12 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using MoreCollections;
+using ComposableCollections.Dictionary;
 using SimpleMonads;
 
 namespace LiveLinq.Dictionary
 {
-    public class DelegateReadOnlyObservableDictionary<TKey, TValue> : DelegateReadOnlyDictionaryEx<TKey, TValue>, IReadOnlyObservableDictionary<TKey, TValue>
+    public class DelegateReadOnlyObservableDictionary<TKey, TValue> : DelegateReadOnlyDictionary<TKey, TValue>, IReadOnlyObservableDictionary<TKey, TValue>
     {
         private IReadOnlyObservableDictionary<TKey, TValue> _wrapped;
 

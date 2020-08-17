@@ -9,7 +9,7 @@ using GenericNumbers;
 using MoreCollections;
 using LiveLinq.Core;
 using LiveLinq.List;
-using static MoreCollections.Utility;
+
 using static GenericNumbers.NumbersUtility;
 
 namespace LiveLinq

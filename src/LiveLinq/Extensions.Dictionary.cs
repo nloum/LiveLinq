@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Reflection;
+using ComposableCollections.Dictionary;
 using SimpleMonads;
 using LiveLinq.Ordered;
 
@@ -204,7 +205,7 @@ namespace LiveLinq
             }).ToLiveLinq();
         }
 
-        public static ISetChanges<IKeyValuePair<TKey, TValue>> KeyValuePairsAsSet<TKey, TValue>(this IDictionaryChanges<TKey, TValue> dictionaryChanges)
+        public static ISetChanges<IKeyValue<TKey, TValue>> KeyValuePairsAsSet<TKey, TValue>(this IDictionaryChanges<TKey, TValue> dictionaryChanges)
         {
             return dictionaryChanges.AsObservable().Select(dictionaryChange =>
             {
@@ -230,7 +231,7 @@ namespace LiveLinq
         /// when the range of items to be removed is specified, but not the actual values to be removed.
         /// </summary>
         public static IDictionaryChangeStrict<TKey, TValue> ToDictionaryChange<TKey, TValue>(
-            this IListChangeStrict<IKeyValuePair<TKey, TValue>> listChange)
+            this IListChangeStrict<IKeyValue<TKey, TValue>> listChange)
         {
             if (listChange.Type == CollectionChangeType.Add)
                 return Utility.DictionaryAdd(listChange.Values);

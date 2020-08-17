@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using MoreCollections;
+using ComposableCollections.Dictionary;
 using SimpleMonads;
 using UtilityDisposables;
 
@@ -21,7 +21,7 @@ namespace LiveLinq.Dictionary
 
         public ObservableDictionaryGetOrDefault(GetDefaultValue<TKey, TValue> getDefaultValue)
         {
-            Initialize(new ObservableDictionaryDecorator<TKey, TValue>(new DictionaryGetOrDefaultDecorator<TKey, TValue>(new ConcurrentDictionaryEx<TKey, TValue>(), getDefaultValue)));
+            Initialize(new ObservableDictionaryDecorator<TKey, TValue>(new DictionaryGetOrDefaultDecorator<TKey, TValue>(new ConcurrentDictionary<TKey, TValue>(), getDefaultValue)));
         }
 
         public void Dispose()

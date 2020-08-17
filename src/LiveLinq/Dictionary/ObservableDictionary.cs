@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using MoreCollections;
+using ComposableCollections.Dictionary;
 using SimpleMonads;
 using UtilityDisposables;
 
@@ -19,7 +19,7 @@ namespace LiveLinq.Dictionary
     {
         internal DisposableCollector AssociatedSubscriptions { get; } = new DisposableCollector();
 
-        private readonly ObservableDictionaryDecorator<TKey, TValue> _wrapped = new ObservableDictionaryDecorator<TKey, TValue>(new ConcurrentDictionaryEx<TKey, TValue>());
+        private readonly ObservableDictionaryDecorator<TKey, TValue> _wrapped = new ObservableDictionaryDecorator<TKey, TValue>(new ConcurrentDictionary<TKey, TValue>());
 
         public ObservableDictionary()
         {

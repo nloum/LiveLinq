@@ -1,13 +1,13 @@
 using System;
 using System.Collections.ObjectModel;
-
+using ComposableCollections.Dictionary;
 using FluentAssertions;
 
 using LiveLinq.List;
 using LiveLinq.Dictionary;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MoreCollections;
-using static MoreCollections.Utility;
+
 
 using static SimpleMonads.Utility;
 
@@ -66,14 +66,14 @@ namespace LiveLinq.Tests
         [TestMethod]
         public void ToDictionary_Reset()
         {
-            var source = new ObservableCollection<IKeyValuePair<int, string>>();
+            var source = new ObservableCollection<IKeyValue<int, string>>();
             var get2 = Nothing<string>();
             source.ToLiveLinq().ToLiveLinq()[2].Subscribe(val => get2 = val);
             get2.Should().Be(Nothing<string>());
-            source.Add(KeyValuePair(2, "Hi there"));
+            source.Add(new KeyValue<int, string>(2, "Hi there"));
             get2.Should().Be(Something("Hi there"));
             source.RemoveAt(0);
-            source.Add(KeyValuePair(2, "Hello"));
+            source.Add(new KeyValue<int, string>(2, "Hello"));
             get2.Should().Be(Something("Hello"));
         }
     }

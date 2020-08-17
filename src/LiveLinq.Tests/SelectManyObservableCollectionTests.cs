@@ -9,7 +9,7 @@ using FluentAssertions;
 using LiveLinq.List;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MoreCollections;
-using static MoreCollections.Utility;
+
 
 namespace LiveLinq.Tests
 {

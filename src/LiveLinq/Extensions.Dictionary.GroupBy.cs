@@ -4,12 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using ComposableCollections.Dictionary;
 using MoreCollections;
 using LiveLinq.Core;
 using LiveLinq.Dictionary;
 using LiveLinq.List;
 using LiveLinq.Set;
-using static MoreCollections.Utility;
+
 using static LiveLinq.Utility;
 
 namespace LiveLinq
@@ -206,7 +207,7 @@ namespace LiveLinq
                 .SelectValue(x => x.Select(c => c.value));
         }
         
-        private static IObservable<IKeyValuePair<TKey, TValue>> CombineLatestKeysAndValues<T, TKey, TValue>(
+        private static IObservable<IKeyValue<TKey, TValue>> CombineLatestKeysAndValues<T, TKey, TValue>(
             T t,
             IObservable<int> idx,
             Func<T, IObservable<int>, IObservable<TKey>> keySelector,
@@ -215,7 +216,7 @@ namespace LiveLinq
             return Observable.CombineLatest(
                 keySelector(t, idx),
                 valueSelector(t, idx),
-                (key, value) => KeyValuePair(key, value));
+                (key, value) => new KeyValue<TKey, TValue>(key, value));
         }
     }
 }

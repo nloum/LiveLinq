@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using SimpleMonads;
-using MoreCollections;
+using ComposableCollections.Dictionary;
 using LiveLinq.Core;
 
 namespace LiveLinq.Dictionary
@@ -10,7 +10,7 @@ namespace LiveLinq.Dictionary
         /// <summary>
         /// Represents the key/value pairs being added or removed
         /// </summary>
-        IReadOnlyList<IKeyValuePair<TKey, TValue>> KeyValuePairs { get; }
+        IReadOnlyList<IKeyValue<TKey, TValue>> KeyValuePairs { get; }
 
         /// <summary>
         /// Get the value at the specified index.
