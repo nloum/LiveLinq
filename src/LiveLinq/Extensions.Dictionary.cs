@@ -24,6 +24,17 @@ namespace LiveLinq
 {
     public static partial class Extensions
     {
+        public static IObservableDictionary<TKey, TValue> WithLiveLinq<TKey, TValue>(
+            this IComposableDictionary<TKey, TValue> source)
+        {
+            return new ObservableDictionaryDecorator<TKey, TValue>(source);
+        }
+        
+        public static IObservableDictionaryWithBuiltInKey<TKey, TValue> WithBuiltInKey<TKey, TValue>(this IObservableDictionary<TKey, TValue> source, Func<TValue, TKey> key)
+        {
+            return new AnonymousObservableDictionaryWithBuiltInKeyAdapter<TKey, TValue>(source, key);
+        }
+        
         public static IReadOnlyObservableDictionary<TKey, IReadOnlyObservableSet<TValue>> Cache<TKey, TValue>(
             this IDictionaryChanges<TKey, ISetChanges<TValue>> changes)
         {
@@ -48,7 +59,7 @@ namespace LiveLinq
 
             return result;
         }
-    
+        
         public static IDictionaryChangesStrict<TKey, TValue> OtherwiseEmpty<TKey, TValue>(
             this IMaybe<IDictionaryChangesStrict<TKey, TValue>> maybe)
         {
