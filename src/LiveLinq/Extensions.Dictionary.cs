@@ -54,6 +54,26 @@ namespace LiveLinq
             return new AnonymousReadOnlyObservableDictionaryWithBuiltInKeyAdapter<TKey, TValue>(source, key);
         }
 
+        
+        /// <summary>
+        /// Creates a facade on top of the specified IObservableDictionary that lets you optionally create values when
+        /// they're accessed, on demand.
+        /// </summary>
+        public static IObservableDictionary<TKey, TValue> WithDefaultValue<TKey, TValue>(this IObservableDictionary<TKey, TValue> source, GetDefaultValue<TKey, TValue> getDefaultValue)
+        {
+            return new ObservableDictionaryGetOrDefaultDecorator<TKey, TValue>(source, getDefaultValue);
+        }
+
+        /// <summary>
+        /// Creates a facade on top of the specified IObservableDictionary that lets you optionally update values when
+        /// they're accessed, on demand.
+        /// </summary>
+        public static IObservableDictionary<TKey, TValue> WithRefreshing<TKey, TValue>(this IObservableDictionary<TKey, TValue> source, RefreshValue<TKey, TValue> refreshValue)
+        {
+            return new ObservableDictionaryGetOrRefreshDecorator<TKey, TValue>(source, refreshValue);
+        }
+
+
         /// <summary>
         /// A special ToReadOnlyObservableDictionary that works well for IDictionaryChanges{TKey, ISetChanges{TValue}}
         /// so that you can read the set results in each group easily. This works well for results from the .GroupBy
