@@ -25,5 +25,10 @@ namespace LiveLinq.Dictionary
         {
             return _wrapped.ToLiveLinq();
         }
+
+        public virtual void Dispose()
+        {
+            _wrapped.Dispose();
+        }
     }
 }

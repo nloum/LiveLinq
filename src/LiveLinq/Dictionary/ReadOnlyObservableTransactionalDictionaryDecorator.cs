@@ -7,11 +7,11 @@ namespace LiveLinq.Dictionary
 {
     public class ObservableTransactionalDictionaryDecorator<TKey, TValue> : IObservableTransactionalDictionary<TKey, TValue>
     {
-        private readonly ITransactionalDictionary<TKey, TValue> _wrapped;
+        private readonly ITransactionalCollection<IDisposableReadOnlyDictionary<TKey, TValue>, IDisposableDictionary<TKey, TValue>> _wrapped;
         private readonly bool _fireInitialState;
         private readonly Subject<IDictionaryChangeStrict<TKey, TValue>> _subject = new Subject<IDictionaryChangeStrict<TKey, TValue>>();
 
-        public ObservableTransactionalDictionaryDecorator(ITransactionalDictionary<TKey, TValue> wrapped, bool fireInitialState)
+        public ObservableTransactionalDictionaryDecorator(ITransactionalCollection<IDisposableReadOnlyDictionary<TKey, TValue>, IDisposableDictionary<TKey, TValue>> wrapped, bool fireInitialState)
         {
             _wrapped = wrapped;
             _fireInitialState = fireInitialState;

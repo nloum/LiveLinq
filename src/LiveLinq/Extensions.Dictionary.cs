@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Reflection;
+using ComposableCollections;
 using ComposableCollections.Dictionary;
 using SimpleMonads;
 using LiveLinq.Ordered;
@@ -49,7 +50,7 @@ namespace LiveLinq
         /// calls that change the collection and fires out LiveLinq change events.
         /// </summary>
         public static IObservableTransactionalDictionary<TKey, TValue> WithLiveLinq<TKey, TValue>(
-            this ITransactionalDictionary<TKey, TValue> source, bool fireInitialState = true)
+            this ITransactionalCollection<IDisposableReadOnlyDictionary<TKey, TValue>, IDisposableDictionary<TKey, TValue>> source, bool fireInitialState = true)
         {
             return new ObservableTransactionalDictionaryDecorator<TKey, TValue>(source, fireInitialState);
         }
@@ -87,6 +88,25 @@ namespace LiveLinq
         /// Creates a facade on top of the specified IObservableDictionary that lets you optionally create values when
         /// they're accessed, on demand.
         /// </summary>
+        public static IObservableTransactionalDictionary<TKey, TValue> WithDefaultValue<TKey, TValue>(this IObservableTransactionalDictionary<TKey, TValue> source, GetDefaultValue<TKey, TValue> getDefaultValue)
+        {
+            return new AnonymousObservableTransactionalDictionary<TKey, TValue>(() =>
+            {
+                var result = source.BeginWrite();
+                return new DisposableDictionaryDecorator<TKey, TValue>(result.WithDefaultValue(getDefaultValue),
+                    result);
+            }, () =>
+            {
+                var result = source.BeginWrite();
+                return new DisposableDictionaryDecorator<TKey, TValue>(result.WithDefaultValue(getDefaultValue),
+                    result);
+            }, source.ToLiveLinq);
+        }
+
+        /// <summary>
+        /// Creates a facade on top of the specified IObservableDictionary that lets you optionally create values when
+        /// they're accessed, on demand.
+        /// </summary>
         public static IObservableDictionary<TKey, TValue> WithDefaultValue<TKey, TValue>(this IObservableDictionary<TKey, TValue> source, Func<TKey, TValue> getDefaultValue, bool persist = true)
         {
             return new ObservableDictionaryGetOrDefaultDecorator<TKey, TValue>(source,
@@ -98,6 +118,25 @@ namespace LiveLinq
         }
 
         /// <summary>
+        /// Creates a facade on top of the specified IObservableDictionary that lets you optionally create values when
+        /// they're accessed, on demand.
+        /// </summary>
+        public static IObservableTransactionalDictionary<TKey, TValue> WithDefaultValue<TKey, TValue>(this IObservableTransactionalDictionary<TKey, TValue> source, Func<TKey, TValue> getDefaultValue)
+        {
+            return new AnonymousObservableTransactionalDictionary<TKey, TValue>(() =>
+            {
+                var result = source.BeginWrite();
+                return new DisposableDictionaryDecorator<TKey, TValue>(result.WithDefaultValue(getDefaultValue),
+                    result);
+            }, () =>
+            {
+                var result = source.BeginWrite();
+                return new DisposableDictionaryDecorator<TKey, TValue>(result.WithDefaultValue(getDefaultValue),
+                    result);
+            }, source.ToLiveLinq);
+        }
+
+        /// <summary>
         /// Creates a facade on top of the specified IObservableDictionary that lets you optionally update values when
         /// they're accessed, on demand.
         /// </summary>
@@ -106,6 +145,25 @@ namespace LiveLinq
             return new ObservableDictionaryGetOrRefreshDecorator<TKey, TValue>(source, refreshValue);
         }
         
+        /// <summary>
+        /// Creates a facade on top of the specified IObservableDictionary that lets you optionally create values when
+        /// they're accessed, on demand.
+        /// </summary>
+        public static IObservableTransactionalDictionary<TKey, TValue> WithRefreshing<TKey, TValue>(this IObservableTransactionalDictionary<TKey, TValue> source, RefreshValue<TKey, TValue> refreshValue)
+        {
+            return new AnonymousObservableTransactionalDictionary<TKey, TValue>(() =>
+            {
+                var result = source.BeginWrite();
+                return new DisposableDictionaryDecorator<TKey, TValue>(result.WithRefreshing(refreshValue),
+                    result);
+            }, () =>
+            {
+                var result = source.BeginWrite();
+                return new DisposableDictionaryDecorator<TKey, TValue>(result.WithRefreshing(refreshValue),
+                    result);
+            }, source.ToLiveLinq);
+        }
+
         /// <summary>
         /// A special ToReadOnlyObservableDictionary that works well for IDictionaryChanges{TKey, ISetChanges{TValue}}
         /// so that you can read the set results in each group easily. This works well for results from the .GroupBy
