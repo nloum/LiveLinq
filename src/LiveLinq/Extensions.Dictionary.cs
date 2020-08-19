@@ -35,6 +35,26 @@ namespace LiveLinq
         }
         
         /// <summary>
+        /// Returns a facade on top of the collection that was passed in. This facade intercepts all
+        /// calls that change the collection and fires out LiveLinq change events.
+        /// </summary>
+        public static IObservableDictionary<TKey, TValue> WithLiveLinq<TKey, TValue>(
+            this IComposableDictionary<TKey, TValue> source, Subject<IDictionaryChangeStrict<TKey, TValue>> subject)
+        {
+            return new ObservableDictionaryDecorator<TKey, TValue>(source, subject);
+        }
+
+        /// <summary>
+        /// Returns a facade on top of the collection that was passed in. This facade intercepts all
+        /// calls that change the collection and fires out LiveLinq change events.
+        /// </summary>
+        public static IObservableTransactionalDictionary<TKey, TValue> WithLiveLinq<TKey, TValue>(
+            this ITransactionalDictionary<TKey, TValue> source, bool fireInitialState = true)
+        {
+            return new ObservableTransactionalDictionaryDecorator<TKey, TValue>(source, fireInitialState);
+        }
+
+        /// <summary>
         /// Creates a facade on top of the specified IObservableDictionary that has a built-in key, which means you're telling
         /// the object how to get the key from a value. That means any API where you pass in a TValue, you
         /// won't have to tell the API what the key is.

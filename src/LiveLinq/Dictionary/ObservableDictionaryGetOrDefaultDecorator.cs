@@ -21,6 +21,11 @@ namespace LiveLinq.Dictionary
             base.Initialize(wrapped, getDefaultValue);
         }
 
+        public void Dispose()
+        {
+            _wrapped.Dispose();
+        }
+
         public IDictionaryChangesStrict<TKey, TValue> ToLiveLinq()
         {
             return _wrapped.ToLiveLinq();

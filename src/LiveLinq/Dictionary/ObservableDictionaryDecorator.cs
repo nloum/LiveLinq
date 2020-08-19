@@ -21,13 +21,21 @@ namespace LiveLinq.Dictionary
     /// <typeparam name="TValue">The dictionary value type</typeparam>
     public class ObservableDictionaryDecorator<TKey, TValue> : IObservableDictionary<TKey, TValue>
     {
-        private readonly Subject<IDictionaryChangeStrict<TKey, TValue>> _subject = new Subject<IDictionaryChangeStrict<TKey, TValue>>();
-
+        private Subject<IDictionaryChangeStrict<TKey, TValue>> _subject;
+        private readonly bool _fireInitialState;
+        private readonly bool _disposeSubject;
         private IComposableDictionary<TKey, TValue> _state;
 
-        public ObservableDictionaryDecorator(IComposableDictionary<TKey, TValue> state)
+        public ObservableDictionaryDecorator(IComposableDictionary<TKey, TValue> state) : this(state, new Subject<IDictionaryChangeStrict<TKey, TValue>>(), true, true)
+        {
+        }
+
+        public ObservableDictionaryDecorator(IComposableDictionary<TKey, TValue> state, Subject<IDictionaryChangeStrict<TKey, TValue>> subject, bool fireInitialState = false, bool disposeSubject = false)
         {
             _state = state;
+            _subject = subject;
+            _fireInitialState = fireInitialState;
+            _disposeSubject = disposeSubject;
         }
 
         protected ObservableDictionaryDecorator()
@@ -39,14 +47,23 @@ namespace LiveLinq.Dictionary
             _state = state;
         }
 
+        protected void Initialize(IComposableDictionary<TKey, TValue> state, Subject<IDictionaryChangeStrict<TKey, TValue>> subject)
+        {
+            _state = state;
+            _subject = subject;
+        }
+
         public IDictionaryChangesStrict<TKey, TValue> ToLiveLinq()
         {
             return Observable.Create<IDictionaryChangeStrict<TKey, TValue>>(observer =>
             {
-                var items = this.ToImmutableList();
-                if (items.Count > 0)
+                if (_fireInitialState)
                 {
-                    observer.OnNext(Utility.DictionaryAdd(items));
+                    var items = this.ToImmutableList();
+                    if (items.Count > 0)
+                    {
+                        observer.OnNext(Utility.DictionaryAdd(items));
+                    }
                 }
                 var result = _subject.Where(x => x.Values.Count > 0).Subscribe(observer);
                 return result;
@@ -618,6 +635,14 @@ namespace LiveLinq.Dictionary
             set
             {
                 AddOrUpdate(key, value);
+            }
+        }
+
+        public void Dispose()
+        {
+            if (_disposeSubject)
+            {
+                _subject.Dispose();
             }
         }
     }

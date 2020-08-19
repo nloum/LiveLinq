@@ -15,6 +15,11 @@ namespace LiveLinq.Dictionary
             _wrapped = wrapped;
         }
 
+        public void Dispose()
+        {
+            _wrapped.Dispose();
+        }
+
         protected DelegateObservableDictionary()
         {
             _wrapped = null;

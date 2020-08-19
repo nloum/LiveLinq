@@ -20,6 +20,11 @@ namespace LiveLinq.Dictionary
             _wrapped = wrapped.Concat(new IReadOnlyObservableDictionary<TKey, TValue>[]{mutationsGoHere}).ToImmutableList();
         }
 
+        public void Dispose()
+        {
+            _mutationsGoHere.Dispose();
+        }
+
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();

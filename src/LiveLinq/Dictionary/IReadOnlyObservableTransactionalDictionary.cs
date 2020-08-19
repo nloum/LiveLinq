@@ -1,9 +1,8 @@
-using System;
 using ComposableCollections.Dictionary;
 
 namespace LiveLinq.Dictionary
 {
-    public interface IReadOnlyObservableDictionary<TKey, out TValue> : IDisposableReadOnlyDictionary<TKey, TValue>
+    public interface IReadOnlyObservableTransactionalDictionary<TKey, TValue> : IReadOnlyTransactionalDictionary<TKey, TValue>
     {
         IDictionaryChangesStrict<TKey, TValue> ToLiveLinq();
     }
