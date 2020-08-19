@@ -30,6 +30,9 @@ namespace LiveLinq.Tests
             result.Keys.Count().Should().Be(2);
             result[4].Should().BeEquivalentTo("4444"); // There should only be one item because we're dealing with sets, not lists
             result[5].Should().BeEmpty();
+            
+            source.Remove("4444");
+            result[4].Should().BeEmpty();
         }
     }
 }
