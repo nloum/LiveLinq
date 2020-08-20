@@ -46,6 +46,16 @@ namespace LiveLinq
         }
 
         /// <summary>
+        /// Returns a facade on top of the collection that was passed in. This facade exposes the events fired on the
+        /// IObserver as changes to this collection.
+        /// </summary>
+        public static IReadOnlyObservableDictionary<TKey, TValue> WithLiveLinq<TKey, TValue>(
+            this IComposableReadOnlyDictionary<TKey, TValue> source, IObservable<IDictionaryChangeStrict<TKey, TValue>> observer)
+        {
+            return new ReadOnlyObservableDictionaryDecorator<TKey, TValue>(source, observer);
+        }
+
+        /// <summary>
         /// Returns a facade on top of the collection that was passed in. This facade intercepts all
         /// calls that change the collection and fires out LiveLinq change events.
         /// </summary>
