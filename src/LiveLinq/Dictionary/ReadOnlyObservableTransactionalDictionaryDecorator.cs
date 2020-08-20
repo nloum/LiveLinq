@@ -24,7 +24,8 @@ namespace LiveLinq.Dictionary
 
         public IDisposableDictionary<TKey, TValue> BeginWrite()
         {
-            return new ObservableDictionaryDecorator<TKey, TValue>(_wrapped.BeginWrite(), _subject, false, true);
+            var wrappedWriter = _wrapped.BeginWrite();
+            return new DisposableDictionaryDecorator<TKey, TValue>(new ObservableDictionaryDecoratorBase<TKey, TValue>(wrappedWriter, _subject), wrappedWriter);
         }
 
         public IDictionaryChangesStrict<TKey, TValue> ToLiveLinq()

@@ -37,12 +37,12 @@ namespace LiveLinq
         
         /// <summary>
         /// Returns a facade on top of the collection that was passed in. This facade intercepts all
-        /// calls that change the collection and fires out LiveLinq change events.
+        /// calls that change the collection and fires out LiveLinq change events to the specified IObserver.
         /// </summary>
-        public static IObservableDictionary<TKey, TValue> WithLiveLinq<TKey, TValue>(
-            this IComposableDictionary<TKey, TValue> source, Subject<IDictionaryChangeStrict<TKey, TValue>> subject)
+        public static IComposableDictionary<TKey, TValue> WithLiveLinq<TKey, TValue>(
+            this IComposableDictionary<TKey, TValue> source, IObserver<IDictionaryChangeStrict<TKey, TValue>> observer)
         {
-            return new ObservableDictionaryDecorator<TKey, TValue>(source, subject);
+            return new ObservableDictionaryDecoratorBase<TKey, TValue>(source, observer);
         }
 
         /// <summary>
