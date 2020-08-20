@@ -33,7 +33,7 @@ namespace LiveLinq
         /// event if there's nothing at that index (i.e., if the index is out of bounds).
         /// </summary>
         /// <param name="index">The index to watch.</param>
-        internal static IObservable<IMaybe<TValue>> GetAtKey<TKey, TValue>(IDictionaryChanges<TKey, TValue> source, TKey key)
+        public static IObservable<IMaybe<TValue>> GetAtKey<TKey, TValue>(IDictionaryChanges<TKey, TValue> source, TKey key)
         {
             return Observable.Return(Nothing<TValue>()).Concat(source.AsObservable().Where(change => change.ContainsKey(key))
                 .Select(change =>
@@ -50,7 +50,7 @@ namespace LiveLinq
         /// event if there's nothing at that index (i.e., if the index is out of bounds).
         /// </summary>
         /// <param name="index">The observable event stream where each event represents a new index to watch.</param>
-        internal static IObservable<IMaybe<TValue>> GetAtKey<TKey, TValue>(IDictionaryChanges<TKey, TValue> source, IObservable<TKey> keys)
+        public static IObservable<IMaybe<TValue>> GetAtKey<TKey, TValue>(IDictionaryChanges<TKey, TValue> source, IObservable<TKey> keys)
         {
             return Observable.Return(Nothing<TValue>()).Concat(source.ToObservableEnumerable()
                 .CombineLatest(keys, (state, key) => state.ContainsKey(key) ? Something(state[key]) : Nothing<TValue>()));
@@ -62,7 +62,7 @@ namespace LiveLinq
         /// event if there's nothing at that index (i.e., if the index is out of bounds).
         /// </summary>
         /// <param name="index">The observable event stream where each event represents a new index to watch.</param>
-        internal static IObservable<IMaybe<TValue>> GetAtKey<TKey, TValue>(IDictionaryChanges<TKey, TValue> source, IObservable<IMaybe<TKey>> keys)
+        public static IObservable<IMaybe<TValue>> GetAtKey<TKey, TValue>(IDictionaryChanges<TKey, TValue> source, IObservable<IMaybe<TKey>> keys)
         {
             return source.ToObservableEnumerable()
                 .CombineLatest(keys, (state, maybeKey) => maybeKey.SelectMany(key => state.ContainsKey(key) ? Something(state[key]) : Nothing<TValue>()));
