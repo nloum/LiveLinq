@@ -14,24 +14,24 @@ namespace LiveLinq.Dictionary
     /// </summary>
     public class ObservableDictionaryDecoratorBase<TKey, TValue> : IComposableDictionary<TKey, TValue>
     {
-        private IObserver<IDictionaryChangeStrict<TKey, TValue>> _observer;
+        private Action<IDictionaryChangeStrict<TKey, TValue>> _onChange;
         private IComposableDictionary<TKey, TValue> _state;
         public DisposableCollector DisposableCollector { get; } = new DisposableCollector();
 
-        public ObservableDictionaryDecoratorBase(IComposableDictionary<TKey, TValue> state, IObserver<IDictionaryChangeStrict<TKey, TValue>> observer)
+        public ObservableDictionaryDecoratorBase(IComposableDictionary<TKey, TValue> state, Action<IDictionaryChangeStrict<TKey, TValue>> onChange)
         {
             _state = state;
-            _observer = observer;
+            _onChange = onChange;
         }
 
         protected ObservableDictionaryDecoratorBase()
         {
         }
 
-        protected void Initialize(IComposableDictionary<TKey, TValue> state, IObserver<IDictionaryChangeStrict<TKey, TValue>> observer)
+        protected void Initialize(IComposableDictionary<TKey, TValue> state, Action<IDictionaryChangeStrict<TKey, TValue>> onChange)
         {
             _state = state;
-            _observer = observer;
+            _onChange = onChange;
         }
 
         public void Mutate(IEnumerable<DictionaryMutation<TKey, TValue>> mutations, out IReadOnlyList<DictionaryMutationResult<TKey, TValue>> results)
@@ -42,31 +42,31 @@ namespace LiveLinq.Dictionary
             {
                 if (result.Add.HasValue && result.Add.Value.Added)
                 {
-                    _observer.OnNext(Utility.DictionaryAdd(new KeyValue<TKey, TValue>(result.Key, result.Add.Value.NewValue.Value)));
+                    OnNext(Utility.DictionaryAdd(new KeyValue<TKey, TValue>(result.Key, result.Add.Value.NewValue.Value)));
                 }
                 else if (result.Update.HasValue && result.Update.Value.Updated)
                 {
-                    _observer.OnNext(Utility.DictionaryRemove(new KeyValue<TKey, TValue>(result.Key, result.Update.Value.ExistingValue.Value)));
-                    _observer.OnNext(Utility.DictionaryAdd(new KeyValue<TKey, TValue>(result.Key, result.Update.Value.NewValue.Value)));
+                    OnNext(Utility.DictionaryRemove(new KeyValue<TKey, TValue>(result.Key, result.Update.Value.ExistingValue.Value)));
+                    OnNext(Utility.DictionaryAdd(new KeyValue<TKey, TValue>(result.Key, result.Update.Value.NewValue.Value)));
                 }
                 else if (result.Remove.HasValue && result.Remove.Value.HasValue)
                 {
-                    _observer.OnNext(Utility.DictionaryRemove(new KeyValue<TKey, TValue>(result.Key, result.Remove.Value.Value)));
+                    OnNext(Utility.DictionaryRemove(new KeyValue<TKey, TValue>(result.Key, result.Remove.Value.Value)));
                 }
                 else if (result.AddOrUpdate.HasValue)
                 {
                     if (result.AddOrUpdate.Value.Result == DictionaryItemAddOrUpdateResult.Update)
                     {
-                        _observer.OnNext(Utility.DictionaryRemove(new KeyValue<TKey, TValue>(result.Key, result.AddOrUpdate.Value.ExistingValue.Value)));
+                        OnNext(Utility.DictionaryRemove(new KeyValue<TKey, TValue>(result.Key, result.AddOrUpdate.Value.ExistingValue.Value)));
                     }
-                    _observer.OnNext(Utility.DictionaryAdd(new KeyValue<TKey, TValue>(result.Key, result.AddOrUpdate.Value.NewValue)));
+                    OnNext(Utility.DictionaryAdd(new KeyValue<TKey, TValue>(result.Key, result.AddOrUpdate.Value.NewValue)));
                 }
             }
         }
 
         private void OnNext(IDictionaryChangeStrict<TKey, TValue> change)
         {
-            _observer.OnNext(change);
+            _onChange(change);
         }
 
         IEnumerator IEnumerable.GetEnumerator()

@@ -42,7 +42,7 @@ namespace LiveLinq
         public static IComposableDictionary<TKey, TValue> WithLiveLinq<TKey, TValue>(
             this IComposableDictionary<TKey, TValue> source, IObserver<IDictionaryChangeStrict<TKey, TValue>> observer)
         {
-            return new ObservableDictionaryDecoratorBase<TKey, TValue>(source, observer);
+            return new ObservableDictionaryDecoratorBase<TKey, TValue>(source, observer.OnNext);
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace LiveLinq
         public static IObservableDictionary<TKey, TValue> WithLiveLinq<TKey, TValue>(
             this IComposableDictionary<TKey, TValue> source, ISubject<IDictionaryChangeStrict<TKey, TValue>> subject)
         {
-            return new ObservableDictionaryDecorator<TKey, TValue>(source, subject);
+            return new ObservableDictionaryDecorator<TKey, TValue>(source, subject, subject.OnNext);
         }
 
         /// <summary>

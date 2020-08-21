@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Immutable;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
@@ -17,22 +18,27 @@ namespace LiveLinq.Dictionary
     public class ObservableDictionaryDecorator<TKey, TValue> : ObservableDictionaryDecoratorBase<TKey, TValue>,
         IObservableDictionary<TKey, TValue>
     {
-        private ISubject<IDictionaryChangeStrict<TKey, TValue>> _subject;
+        private readonly IObservable<IDictionaryChangeStrict<TKey, TValue>> _observable;
         
         public ObservableDictionaryDecorator(IComposableDictionary<TKey, TValue> state) : this(state, new Subject<IDictionaryChangeStrict<TKey, TValue>>())
         {
         }
 
-        public ObservableDictionaryDecorator(IComposableDictionary<TKey, TValue> state, ISubject<IDictionaryChangeStrict<TKey, TValue>> subject) : base(state, subject)
+        public ObservableDictionaryDecorator(IComposableDictionary<TKey, TValue> state, Subject<IDictionaryChangeStrict<TKey, TValue>> subject) : this(state, subject, subject.OnNext)
         {
-            _subject = subject;
+            DisposableCollector.Disposes(subject);
+        }
+        
+        public ObservableDictionaryDecorator(IComposableDictionary<TKey, TValue> state, IObservable<IDictionaryChangeStrict<TKey, TValue>> observable, Action<IDictionaryChangeStrict<TKey, TValue>> onChange) : base(state, onChange)
+        {
+            _observable = observable;
         }
 
         protected ObservableDictionaryDecorator()
         {
             var subject = new Subject<IDictionaryChangeStrict<TKey, TValue>>();
-            this.DisposableCollector.Disposes(subject);
-            _subject = subject;
+            DisposableCollector.Disposes(subject);
+            _observable = subject;
         }
 
         public IDictionaryChangesStrict<TKey, TValue> ToLiveLinq()
@@ -44,7 +50,7 @@ namespace LiveLinq.Dictionary
                 {
                     observer.OnNext(Utility.DictionaryAdd(items));
                 }
-                var result = _subject.Where(x => x.Values.Count > 0).Subscribe(observer);
+                var result = _observable.Where(x => x.Values.Count > 0).Subscribe(observer);
                 return result;
             }).ToLiveLinq();
         }
