@@ -56,6 +56,17 @@ namespace LiveLinq
         }
 
         /// <summary>
+        /// Returns a facade on top of the collection that was passed in. This facade exposes the events fired on the
+        /// subject as changes to this collection. In addition, changes to this dictionary will also fire events.
+        /// This is an easy way to share change events across multiple dictionary instances of the same type.
+        /// </summary>
+        public static IObservableDictionary<TKey, TValue> WithLiveLinq<TKey, TValue>(
+            this IComposableDictionary<TKey, TValue> source, ISubject<IDictionaryChangeStrict<TKey, TValue>> subject)
+        {
+            return new ObservableDictionaryDecorator<TKey, TValue>(source, subject);
+        }
+
+        /// <summary>
         /// Returns a facade on top of the collection that was passed in. This facade intercepts all
         /// calls that change the collection and fires out LiveLinq change events.
         /// </summary>

@@ -17,13 +17,13 @@ namespace LiveLinq.Dictionary
     public class ObservableDictionaryDecorator<TKey, TValue> : ObservableDictionaryDecoratorBase<TKey, TValue>,
         IObservableDictionary<TKey, TValue>
     {
-        private Subject<IDictionaryChangeStrict<TKey, TValue>> _subject;
+        private ISubject<IDictionaryChangeStrict<TKey, TValue>> _subject;
         
         public ObservableDictionaryDecorator(IComposableDictionary<TKey, TValue> state) : this(state, new Subject<IDictionaryChangeStrict<TKey, TValue>>())
         {
         }
 
-        private ObservableDictionaryDecorator(IComposableDictionary<TKey, TValue> state, Subject<IDictionaryChangeStrict<TKey, TValue>> subject)
+        public ObservableDictionaryDecorator(IComposableDictionary<TKey, TValue> state, ISubject<IDictionaryChangeStrict<TKey, TValue>> subject)
         {
             _subject = subject;
         }
