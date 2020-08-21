@@ -30,7 +30,9 @@ namespace LiveLinq.Dictionary
 
         protected ObservableDictionaryDecorator()
         {
-            _subject = new Subject<IDictionaryChangeStrict<TKey, TValue>>();
+            var subject = new Subject<IDictionaryChangeStrict<TKey, TValue>>();
+            this.DisposableCollector.Disposes(subject);
+            _subject = subject;
         }
 
         public IDictionaryChangesStrict<TKey, TValue> ToLiveLinq()
