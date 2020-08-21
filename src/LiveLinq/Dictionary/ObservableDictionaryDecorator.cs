@@ -23,7 +23,7 @@ namespace LiveLinq.Dictionary
         {
         }
 
-        public ObservableDictionaryDecorator(IComposableDictionary<TKey, TValue> state, ISubject<IDictionaryChangeStrict<TKey, TValue>> subject)
+        public ObservableDictionaryDecorator(IComposableDictionary<TKey, TValue> state, ISubject<IDictionaryChangeStrict<TKey, TValue>> subject) : base(state, subject)
         {
             _subject = subject;
         }
