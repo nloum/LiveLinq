@@ -9,7 +9,7 @@ namespace LiveLinq.List
     {
         public ReadOnlyObservableList(IListChanges<T> source)
         {
-            Disposes(source.AsObservable().Subscribe(Mutate));
+            Disposes(source.AsObservable().Subscribe(Write));
         }
     }
 }

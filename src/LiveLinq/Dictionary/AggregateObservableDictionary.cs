@@ -5,6 +5,8 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Reactive.Linq;
 using ComposableCollections.Dictionary;
+using ComposableCollections.Dictionary.Interfaces;
+using ComposableCollections.Dictionary.Write;
 using SimpleMonads;
 
 namespace LiveLinq.Dictionary
@@ -75,9 +77,9 @@ namespace LiveLinq.Dictionary
             return false;
         }
 
-        public void Mutate(IEnumerable<DictionaryMutation<TKey, TValue>> mutations, out IReadOnlyList<DictionaryMutationResult<TKey, TValue>> results)
+        public void Write(IEnumerable<DictionaryWrite<TKey, TValue>> mutations, out IReadOnlyList<DictionaryWriteResult<TKey, TValue>> results)
         {
-            _mutationsGoHere.Mutate(mutations, out results);
+            _mutationsGoHere.Write(mutations, out results);
         }
 
         public bool TryAdd(TKey key, TValue value)

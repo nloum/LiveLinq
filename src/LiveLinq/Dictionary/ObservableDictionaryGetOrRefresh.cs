@@ -1,5 +1,7 @@
 ﻿using System;
 using ComposableCollections.Dictionary;
+using ComposableCollections.Dictionary.Decorators;
+using ComposableCollections.Dictionary.Sources;
 using UtilityDisposables;
 
 namespace LiveLinq.Dictionary

@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using ComposableCollections.Dictionary;
+using ComposableCollections.Dictionary.Decorators;
+using ComposableCollections.Dictionary.Sources;
 using SimpleMonads;
 using UtilityDisposables;
 

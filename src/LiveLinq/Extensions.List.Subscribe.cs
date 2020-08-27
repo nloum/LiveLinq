@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
+using ComposableCollections;
 using ComposableCollections.Dictionary;
 using GenericNumbers;
 using LiveLinq.Core;
@@ -228,7 +229,7 @@ namespace LiveLinq
 
                             newChange = Utility.ListChangeStrict(CollectionChangeType.Add, change.Range,
                                 onAdd(change.Values, change.Range));
-                            newState = mostRecentState.State.Mutate(newChange);
+                            newState = mostRecentState.State.Write(newChange);
 
                             if (onMove != null && !moveBeforeAdd)
                             {
@@ -251,7 +252,7 @@ namespace LiveLinq
                             newChange = Utility.ListChangeStrict(CollectionChangeType.Remove, change.Range,
                                 mostRecentState.State.Skip(change.Range.LowerBound.ChangeStrictness(false).Value)
                                     .Take(change.Range.Size));
-                            newState = mostRecentState.State.Mutate(newChange);
+                            newState = mostRecentState.State.Write(newChange);
 
                             if (onMove != null && !moveBeforeRemove)
                             {

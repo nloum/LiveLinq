@@ -32,7 +32,7 @@ namespace LiveLinq
         /// </summary>
         public static IObservable<SetStateAndChange<T>> ToObservableStateAndChange<T>(this ISetChanges<T> source)
         {
-            return source.AsObservable().Scan(new SetStateAndChange<T>(), (state, change) => state.Mutate(change));
+            return source.AsObservable().Scan(new SetStateAndChange<T>(), (state, change) => state.Write(change));
         }
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace LiveLinq
         /// <summary>
         /// Applies the Set change to the specified <see cref="ImmutableSet{T}"/>.
         /// </summary>
-        public static SetStateAndChange<T> Mutate<T>(this SetStateAndChange<T> subject, ISetChange<T> change)
+        public static SetStateAndChange<T> Write<T>(this SetStateAndChange<T> subject, ISetChange<T> change)
         {
             switch (change.Type)
             {

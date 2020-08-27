@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using ComposableCollections.Dictionary;
+using ComposableCollections.Dictionary.Interfaces;
+using ComposableCollections.Dictionary.Write;
 using SimpleMonads;
 using UtilityDisposables;
 
@@ -34,9 +36,9 @@ namespace LiveLinq.Dictionary
             _onChange = onChange;
         }
 
-        public void Mutate(IEnumerable<DictionaryMutation<TKey, TValue>> mutations, out IReadOnlyList<DictionaryMutationResult<TKey, TValue>> results)
+        public void Write(IEnumerable<DictionaryWrite<TKey, TValue>> mutations, out IReadOnlyList<DictionaryWriteResult<TKey, TValue>> results)
         {
-            _state.Mutate(mutations, out results);
+            _state.Write(mutations, out results);
             
             foreach (var result in results)
             {

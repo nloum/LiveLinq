@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Reactive.Linq;
 using ComposableCollections.Dictionary;
+using ComposableCollections.Dictionary.Interfaces;
 using SimpleMonads;
 using UtilityDisposables;
 

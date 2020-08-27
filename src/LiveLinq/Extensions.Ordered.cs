@@ -267,7 +267,7 @@ namespace LiveLinq
         {
             return new OrderedListChanges<TSource>(source.AsObservable().Scan(
                 new OrderedStateAndChange<TSource>(),
-                (state, change) => state.SortedMutate(change, comparer))
+                (state, change) => state.SortedWrite(change, comparer))
                 .Select(sac => sac.MostRecentChanges.ToObservable()).Concat(),
                 comparer);
         }
@@ -297,7 +297,7 @@ namespace LiveLinq
             }
         }
 
-        private static OrderedStateAndChange<TSource> SortedMutate<TSource>(this OrderedStateAndChange<TSource> subject, IListChangeStrict<TSource> change, Func<TSource, TSource, int> comparer)
+        private static OrderedStateAndChange<TSource> SortedWrite<TSource>(this OrderedStateAndChange<TSource> subject, IListChangeStrict<TSource> change, Func<TSource, TSource, int> comparer)
         {
             switch (change.Type)
             {

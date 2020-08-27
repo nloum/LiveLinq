@@ -7,13 +7,13 @@ namespace LiveLinq.Set
     {
         public ReadOnlyObservableSet(ISetChanges<T> source)
         {
-            Disposes(source.AsObservable().Subscribe(Mutate));
+            Disposes(source.AsObservable().Subscribe(Write));
         }
         
         /// <summary>
         /// Applies the set change to this set.
         /// </summary>
-        private void Mutate(ISetChange<T> change)
+        private void Write(ISetChange<T> change)
         {
             switch (change.Type)
             {

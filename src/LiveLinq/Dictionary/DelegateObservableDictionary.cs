@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using ComposableCollections.Dictionary;
+using ComposableCollections.Dictionary.Interfaces;
+using ComposableCollections.Dictionary.Write;
 using SimpleMonads;
 
 namespace LiveLinq.Dictionary
@@ -30,9 +32,9 @@ namespace LiveLinq.Dictionary
             _wrapped = wrapped;
         }
 
-        public void Mutate(IEnumerable<DictionaryMutation<TKey, TValue>> mutations, out IReadOnlyList<DictionaryMutationResult<TKey, TValue>> results)
+        public void Write(IEnumerable<DictionaryWrite<TKey, TValue>> mutations, out IReadOnlyList<DictionaryWriteResult<TKey, TValue>> results)
         {
-            _wrapped.Mutate(mutations, out results);
+            _wrapped.Write(mutations, out results);
         }
 
         IEnumerator IEnumerable.GetEnumerator()

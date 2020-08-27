@@ -364,8 +364,8 @@ namespace LiveLinq
             IList<T> target, bool avoidInitialDuplicates)
         {
             if (avoidInitialDuplicates)
-                return source.AsObservable().Skip(1).Subscribe(target.Mutate);
-            return source.AsObservable().Subscribe(target.Mutate);
+                return source.AsObservable().Skip(1).Subscribe(target.Write);
+            return source.AsObservable().Subscribe(target.Write);
         }
         
         #endregion

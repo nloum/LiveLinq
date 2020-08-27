@@ -52,7 +52,7 @@ namespace LiveLinq
         /// </summary>
         public static IObservable<ListStateAndChange<T>> ToObservableStateAndChange<T>(this IListChanges<T> source)
         {
-            return source.AsObservable().Scan(new ListStateAndChange<T>(), (state, change) => state.Mutate(change));
+            return source.AsObservable().Scan(new ListStateAndChange<T>(), (state, change) => state.Write(change));
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace LiveLinq
         /// <summary>
         /// Applies the list change to the specified <see cref="ImmutableList{T}"/>.
         /// </summary>
-        public static ListStateAndChange<T> Mutate<T>(this ListStateAndChange<T> subject, IListChange<T> change)
+        public static ListStateAndChange<T> Write<T>(this ListStateAndChange<T> subject, IListChange<T> change)
         {
             switch (change.Type)
             {
@@ -225,13 +225,13 @@ namespace LiveLinq
                     });
 
             return result
-                .Scan(new LiveLinqFromCollectionStateAndChange<TElement>(), Mutate)
+                .Scan(new LiveLinqFromCollectionStateAndChange<TElement>(), Write)
                 .Select(state => state.MostRecentChanges.ToObservable())
                 .Concat()
                 .ToLiveLinq();
         }
 
-        private static LiveLinqFromCollectionStateAndChange<TElement> Mutate<TElement>(
+        private static LiveLinqFromCollectionStateAndChange<TElement> Write<TElement>(
             LiveLinqFromCollectionStateAndChange<TElement> liveLinqFromCollectionState, NotifyCollectionChangedEventArgs change)
         {
             switch (change.Action)

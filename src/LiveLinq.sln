@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiveLinq.Tests", "LiveLinq.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_build", "..\build\_build.csproj", "{836152F1-AB05-493F-A80D-00C28E67B111}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiveLinq.CodeGenerator", "LiveLinq.CodeGenerator\LiveLinq.CodeGenerator.csproj", "{63DBE569-E49D-4249-9AB3-FFB39E360A73}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -22,5 +24,9 @@ Global
 		{079DFE14-FF43-4879-B9E7-DC025BD8E4BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{079DFE14-FF43-4879-B9E7-DC025BD8E4BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{079DFE14-FF43-4879-B9E7-DC025BD8E4BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63DBE569-E49D-4249-9AB3-FFB39E360A73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63DBE569-E49D-4249-9AB3-FFB39E360A73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63DBE569-E49D-4249-9AB3-FFB39E360A73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63DBE569-E49D-4249-9AB3-FFB39E360A73}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -13,7 +13,7 @@ namespace LiveLinq
         /// <summary>
         ///     Applies the list change to the specified <see cref="ImmutableList{T}" />.
         /// </summary>
-        public static ImmutableList<T> Mutate<T>(this ImmutableList<T> subject, IListChange<T> change)
+        public static ImmutableList<T> Write<T>(this ImmutableList<T> subject, IListChange<T> change)
         {
             var range = change.Range.ChangeStrictness(false, true);
             switch (change.Type)
@@ -36,7 +36,7 @@ namespace LiveLinq
         /// <summary>
         ///     Applies the list change to the specified <see cref="ImmutableList{T}" />.
         /// </summary>
-        public static void Mutate<T>(this IList<T> subject, IListChange<T> change)
+        public static void Write<T>(this IList<T> subject, IListChange<T> change)
         {
             var range = change.Range.ChangeStrictness(false, true);
             switch (change.Type)

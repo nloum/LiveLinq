@@ -11,7 +11,10 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Reflection;
 using ComposableCollections;
+using ComposableCollections.Common;
 using ComposableCollections.Dictionary;
+using ComposableCollections.Dictionary.Interfaces;
+using ComposableCollections.Dictionary.Sources;
 using SimpleMonads;
 using LiveLinq.Ordered;
 
@@ -429,7 +432,7 @@ namespace LiveLinq
         /// <summary>
         /// Applies the dictionary change to the specified <see cref="ImmutableDictionary{T}"/>.
         /// </summary>
-        public static ImmutableDictionary<TKey, TValue> Mutate<TKey, TValue>(this ImmutableDictionary<TKey, TValue> subject, IDictionaryChange<TKey, TValue> change)
+        public static ImmutableDictionary<TKey, TValue> Write<TKey, TValue>(this ImmutableDictionary<TKey, TValue> subject, IDictionaryChange<TKey, TValue> change)
         {
             switch (change.Type)
             {
@@ -451,7 +454,7 @@ namespace LiveLinq
         /// <summary>
         /// Applies the dictionary change to the specified <see cref="ImmutableDictionary{T}"/>.
         /// </summary>
-        public static void Mutate<TKey, TValue>(this IDictionary<TKey, TValue> subject, IDictionaryChange<TKey, TValue> change)
+        public static void Write<TKey, TValue>(this IDictionary<TKey, TValue> subject, IDictionaryChange<TKey, TValue> change)
         {
             switch (change.Type)
             {

@@ -1,4 +1,6 @@
 using ComposableCollections.Dictionary;
+using ComposableCollections.Dictionary.Interfaces;
+using ComposableCollections.Dictionary.WithBuiltInKey;
 
 namespace LiveLinq.Dictionary
 {
@@ -19,6 +21,16 @@ namespace LiveLinq.Dictionary
         {
             _wrapped = wrapped;
             base.Initialize(wrapped);
+        }
+
+        public IDisposableReadOnlyDictionary<TKey, TValue> AsDisposableReadOnlyDictionary()
+        {
+            return _wrapped.AsDisposableReadOnlyDictionary();
+        }
+
+        public IDisposableDictionary<TKey, TValue> AsDisposableDictionary()
+        {
+            return _wrapped.AsDisposableDictionary();
         }
 
         public IDictionaryChangesStrict<TKey, TValue> ToLiveLinq()

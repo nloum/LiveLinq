@@ -305,7 +305,7 @@ namespace LiveLinq.List
         /// <summary>
         /// Applies the list change to this list.
         /// </summary>
-        public void Mutate(IListChange<T> change)
+        public void Write(IListChange<T> change)
         {
             var range = change.Range.ChangeStrictness(false, true);
             switch (change.Type)
