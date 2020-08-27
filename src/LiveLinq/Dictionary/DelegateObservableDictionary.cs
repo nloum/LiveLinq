@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using ComposableCollections.Dictionary;
 using ComposableCollections.Dictionary.Interfaces;
 using ComposableCollections.Dictionary.Write;
+using LiveLinq.Dictionary.Interfaces;
 using SimpleMonads;
 
 namespace LiveLinq.Dictionary

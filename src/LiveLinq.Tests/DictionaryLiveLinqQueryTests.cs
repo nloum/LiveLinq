@@ -5,6 +5,7 @@ using FluentAssertions;
 
 using LiveLinq.List;
 using LiveLinq.Dictionary;
+using LiveLinq.Dictionary.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MoreCollections;
 

@@ -5,4 +5,8 @@
         <TargetFramework>net5.0</TargetFramework>
     </PropertyGroup>
 
+    <ItemGroup>
+      <PackageReference Include="IoFluently" Version="1.2.0-alpha0140" />
+    </ItemGroup>
+
 </Project>

@@ -12,11 +12,11 @@ namespace LiveLinq.Tests.Dictionary
         public void ShouldReturnDefaultValue()
         {
             var uut = new ObservableDictionaryGetOrDefault<int, string>(
-                (int key, out IMaybe<string> value, out bool persist) =>
+                ((int key, out string value) =>
                 {
-                    persist = true;
-                    value = "Hi".ToMaybe();
-                });
+                    value = "Hi";
+                    return true;
+                }));
 
             uut[4].Should().Be("Hi");
         }

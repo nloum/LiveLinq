@@ -15,12 +15,16 @@ using ComposableCollections.Common;
 using ComposableCollections.Dictionary;
 using ComposableCollections.Dictionary.Interfaces;
 using ComposableCollections.Dictionary.Sources;
+using ComposableCollections.Dictionary.WithBuiltInKey;
+using ComposableCollections.Dictionary.WithBuiltInKey.Interfaces;
 using SimpleMonads;
 using LiveLinq.Ordered;
 
 using MoreCollections;
 using LiveLinq.Dictionary;
 using LiveLinq.Core;
+using LiveLinq.Dictionary.Adapters;
+using LiveLinq.Dictionary.Interfaces;
 using LiveLinq.List;
 using LiveLinq.Set;
 
@@ -28,201 +32,65 @@ namespace LiveLinq
 {
     public static partial class Extensions
     {
-        /// <summary>
-        /// Returns a facade on top of the collection that was passed in. This facade intercepts all
-        /// calls that change the collection and fires out LiveLinq change events.
-        /// </summary>
-        public static IObservableDictionary<TKey, TValue> WithLiveLinq<TKey, TValue>(
-            this IComposableDictionary<TKey, TValue> source)
+        #region WithBuiltInKey
+        
+        public static IObservableCachedDictionaryWithBuiltInKey<TKey, TValue> WithBuiltInKey<TKey, TValue>(this IObservableCachedDictionary<TKey, TValue> source, Func<TValue, TKey> getKey) {
+            return new ObservableCachedDictionaryWithBuiltInKeyAdapter<TKey, TValue>(source, getKey);
+        }
+        public static IObservableDictionaryWithBuiltInKey<TKey, TValue> WithBuiltInKey<TKey, TValue>(this IObservableDictionary<TKey, TValue> source, Func<TValue, TKey> getKey) {
+            return new ObservableDictionaryWithBuiltInKeyAdapter<TKey, TValue>(source, getKey, source.ToLiveLinq);
+        }
+        public static IObservableQueryableReadOnlyDictionaryWithBuiltInKey<TKey, TValue> WithBuiltInKey<TKey, TValue>(this IObservableQueryableReadOnlyDictionary<TKey, TValue> source, Func<TValue, TKey> getKey) {
+            return new ObservableQueryableReadOnlyDictionaryWithBuiltInKeyAdapter<TKey, TValue>(source, getKey);
+        }
+        public static IObservableQueryableDictionaryWithBuiltInKey<TKey, TValue> WithBuiltInKey<TKey, TValue>(this IObservableQueryableDictionary<TKey, TValue> source, Func<TValue, TKey> getKey) {
+            return new ObservableQueryableDictionaryWithBuiltInKeyAdapter<TKey, TValue>(source, getKey);
+        }
+        public static IObservableCachedQueryableDictionaryWithBuiltInKey<TKey, TValue> WithBuiltInKey<TKey, TValue>(this IObservableCachedQueryableDictionary<TKey, TValue> source, Func<TValue, TKey> getKey) {
+            return new ObservableCachedQueryableDictionaryWithBuiltInKeyAdapter<TKey, TValue>(source, getKey);
+        }
+        public static IObservableReadOnlyDictionaryWithBuiltInKey<TKey, TValue> WithBuiltInKey<TKey, TValue>(this IObservableReadOnlyDictionary<TKey, TValue> source, Func<TValue, TKey> getKey) {
+            return new ObservableReadOnlyDictionaryWithBuiltInKeyAdapter<TKey, TValue>(source, getKey);
+        }
+
+        public static ITransactionalCollection<IObservableQueryableReadOnlyDictionaryWithBuiltInKey<TKey, TValue>, IObservableCachedQueryableDictionaryWithBuiltInKey<TKey, TValue>> WithBuiltInKey<TKey, TValue>(
+            this ITransactionalCollection<IObservableQueryableReadOnlyDictionary<TKey, TValue>, IObservableCachedQueryableDictionary<TKey, TValue>> source, Func<TValue, TKey> getKey)
         {
-            return new ObservableDictionaryDecorator<TKey, TValue>(source);
+            return source.Select(readOnly => readOnly.WithBuiltInKey(getKey),
+                readWrite => readWrite.WithBuiltInKey(getKey));
+        }
+        public static ITransactionalCollection<IObservableQueryableReadOnlyDictionaryWithBuiltInKey<TKey, TValue>, IObservableQueryableDictionaryWithBuiltInKey<TKey, TValue>> WithBuiltInKey<TKey, TValue>(
+            this ITransactionalCollection<IObservableQueryableReadOnlyDictionary<TKey, TValue>, IObservableQueryableDictionary<TKey, TValue>> source, Func<TValue, TKey> getKey) {
+            return source.Select(readOnly => readOnly.WithBuiltInKey(getKey),
+                readWrite => readWrite.WithBuiltInKey(getKey));
+        }
+        public static ITransactionalCollection<IObservableReadOnlyDictionaryWithBuiltInKey<TKey, TValue>, IObservableCachedDictionaryWithBuiltInKey<TKey, TValue>> WithBuiltInKey<TKey, TValue>(
+            this ITransactionalCollection<IObservableReadOnlyDictionary<TKey, TValue>, IObservableCachedDictionary<TKey, TValue>> source, Func<TValue, TKey> getKey) {
+            return source.Select(readOnly => readOnly.WithBuiltInKey(getKey),
+                readWrite => readWrite.WithBuiltInKey(getKey));
+        }
+        public static ITransactionalCollection<IObservableReadOnlyDictionaryWithBuiltInKey<TKey, TValue>, IObservableDictionaryWithBuiltInKey<TKey, TValue>> WithBuiltInKey<TKey, TValue>(
+            this ITransactionalCollection<IObservableReadOnlyDictionary<TKey, TValue>, IObservableDictionary<TKey, TValue>> source, Func<TValue, TKey> getKey) {
+            return source.Select(readOnly => readOnly.WithBuiltInKey(getKey),
+                readWrite => readWrite.WithBuiltInKey(getKey));
         }
         
-        /// <summary>
-        /// Returns a facade on top of the collection that was passed in. This facade intercepts all
-        /// calls that change the collection and fires out LiveLinq change events to the specified IObserver.
-        /// </summary>
-        public static IComposableDictionary<TKey, TValue> WithLiveLinq<TKey, TValue>(
-            this IComposableDictionary<TKey, TValue> source, IObserver<IDictionaryChangeStrict<TKey, TValue>> observer)
-        {
-            return new ObservableDictionaryDecoratorBase<TKey, TValue>(source, observer.OnNext);
-        }
-
-        /// <summary>
-        /// Returns a facade on top of the collection that was passed in. This facade exposes the events fired on the
-        /// IObserver as changes to this collection.
-        /// </summary>
-        public static IReadOnlyObservableDictionary<TKey, TValue> WithLiveLinq<TKey, TValue>(
-            this IComposableReadOnlyDictionary<TKey, TValue> source, IObservable<IDictionaryChangeStrict<TKey, TValue>> observer)
-        {
-            return new ReadOnlyObservableDictionaryDecorator<TKey, TValue>(source, observer);
-        }
-
-        /// <summary>
-        /// Returns a facade on top of the collection that was passed in. This facade exposes the events fired on the
-        /// subject as changes to this collection. In addition, changes to this dictionary will also fire events.
-        /// This is an easy way to share change events across multiple dictionary instances of the same type.
-        /// </summary>
-        public static IObservableDictionary<TKey, TValue> WithLiveLinq<TKey, TValue>(
-            this IComposableDictionary<TKey, TValue> source, ISubject<IDictionaryChangeStrict<TKey, TValue>> subject)
-        {
-            return new ObservableDictionaryDecorator<TKey, TValue>(source, subject, subject.OnNext);
-        }
-
-        /// <summary>
-        /// Returns a facade on top of the collection that was passed in. This facade exposes the events fired on the
-        /// subject as changes to this collection. In addition, changes to this dictionary will also fire events.
-        /// This is an easy way to share change events across multiple dictionary instances of the same type.
-        /// </summary>
-        public static IObservableDictionary<TKey, TValue> WithLiveLinq<TKey, TValue>(
-            this IComposableDictionary<TKey, TValue> source, IObservable<IDictionaryChangeStrict<TKey, TValue>> observable, Action<IDictionaryChangeStrict<TKey, TValue>> onChange)
-        {
-            return new ObservableDictionaryDecorator<TKey, TValue>(source, observable, onChange);
-        }
-
-        /// <summary>
-        /// Returns a facade on top of the collection that was passed in. This facade intercepts all
-        /// calls that change the collection and fires out LiveLinq change events.
-        /// </summary>
-        public static IObservableTransactionalDictionary<TKey, TValue> WithLiveLinq<TKey, TValue>(
-            this ITransactionalCollection<IDisposableReadOnlyDictionary<TKey, TValue>, IDisposableDictionary<TKey, TValue>> source, bool fireInitialState = true)
-        {
-            return new ObservableTransactionalDictionaryDecorator<TKey, TValue>(source, fireInitialState);
-        }
-
-        /// <summary>
-        /// Creates a facade on top of the specified IObservableDictionary that has a built-in key, which means you're telling
-        /// the object how to get the key from a value. That means any API where you pass in a TValue, you
-        /// won't have to tell the API what the key is.
-        /// </summary>
-        public static IObservableDictionaryWithBuiltInKey<TKey, TValue> WithBuiltInKey<TKey, TValue>(this IObservableDictionary<TKey, TValue> source, Func<TValue, TKey> key)
-        {
-            return new AnonymousObservableDictionaryWithBuiltInKeyAdapter<TKey, TValue>(source, key);
-        }
+        #endregion
         
-        /// <summary>
-        /// Creates a facade on top of the specified IObservableDictionary that has a built-in key, which means you're telling
-        /// the object how to get the key from a value. That means any API where you pass in a TValue, you
-        /// won't have to tell the API what the key is.
-        /// </summary>
-        public static IReadOnlyObservableDictionaryWithBuiltInKey<TKey, TValue> WithBuiltInKey<TKey, TValue>(this IReadOnlyObservableDictionary<TKey, TValue> source, Func<TValue, TKey> key)
-        {
-            return new AnonymousReadOnlyObservableDictionaryWithBuiltInKeyAdapter<TKey, TValue>(source, key);
-        }
-
-        /// <summary>
-        /// Creates a facade on top of the specified IObservableDictionary that has a built-in key, which means you're telling
-        /// the object how to get the key from a value. That means any API where you pass in a TValue, you
-        /// won't have to tell the API what the key is.
-        /// </summary>
-        public static IReadOnlyObservableTransactionalDictionaryWithBuiltInKey<TKey, TValue> WithBuiltInKey<TKey, TValue>(this IReadOnlyObservableTransactionalDictionary<TKey, TValue> source, Func<TValue, TKey> key)
-        {
-            var withBuiltInKey = source.WithBuiltInKey(key);
-            return new AnonymousReadOnlyObservableTransactionalDictionaryWithBuiltInKey<TKey, TValue>(withBuiltInKey.BeginRead, source.ToLiveLinq);
-        }
-
-        /// <summary>
-        /// Creates a facade on top of the specified IObservableDictionary that lets you optionally create values when
-        /// they're accessed, on demand.
-        /// </summary>
-        public static IObservableDictionary<TKey, TValue> WithDefaultValue<TKey, TValue>(this IObservableDictionary<TKey, TValue> source, GetDefaultValue<TKey, TValue> getDefaultValue)
-        {
-            return new ObservableDictionaryGetOrDefaultDecorator<TKey, TValue>(source, getDefaultValue);
-        }
-
-        /// <summary>
-        /// Creates a facade on top of the specified IObservableDictionary that lets you optionally create values when
-        /// they're accessed, on demand.
-        /// </summary>
-        public static IObservableTransactionalDictionary<TKey, TValue> WithDefaultValue<TKey, TValue>(this IObservableTransactionalDictionary<TKey, TValue> source, GetDefaultValue<TKey, TValue> getDefaultValue)
-        {
-            return new AnonymousObservableTransactionalDictionary<TKey, TValue>(() =>
-            {
-                var result = source.BeginWrite();
-                return new DisposableDictionaryDecorator<TKey, TValue>(result.WithDefaultValue(getDefaultValue),
-                    result);
-            }, () =>
-            {
-                var result = source.BeginWrite();
-                return new DisposableDictionaryDecorator<TKey, TValue>(result.WithDefaultValue(getDefaultValue),
-                    result);
-            }, source.ToLiveLinq);
-        }
-
-        /// <summary>
-        /// Creates a facade on top of the specified IObservableDictionary that lets you optionally create values when
-        /// they're accessed, on demand.
-        /// </summary>
-        public static IObservableDictionary<TKey, TValue> WithDefaultValue<TKey, TValue>(this IObservableDictionary<TKey, TValue> source, Func<TKey, TValue> getDefaultValue, bool persist = true)
-        {
-            return new ObservableDictionaryGetOrDefaultDecorator<TKey, TValue>(source,
-                (TKey key, out IMaybe<TValue> value, out bool b) =>
-                {
-                    value = getDefaultValue(key).ToMaybe();
-                    b = persist;
-                });
-        }
-
-        /// <summary>
-        /// Creates a facade on top of the specified IObservableDictionary that lets you optionally create values when
-        /// they're accessed, on demand.
-        /// </summary>
-        public static IObservableTransactionalDictionary<TKey, TValue> WithDefaultValue<TKey, TValue>(this IObservableTransactionalDictionary<TKey, TValue> source, Func<TKey, TValue> getDefaultValue)
-        {
-            return new AnonymousObservableTransactionalDictionary<TKey, TValue>(() =>
-            {
-                var result = source.BeginWrite();
-                return new DisposableDictionaryDecorator<TKey, TValue>(result.WithDefaultValue(getDefaultValue),
-                    result);
-            }, () =>
-            {
-                var result = source.BeginWrite();
-                return new DisposableDictionaryDecorator<TKey, TValue>(result.WithDefaultValue(getDefaultValue),
-                    result);
-            }, source.ToLiveLinq);
-        }
-
-        /// <summary>
-        /// Creates a facade on top of the specified IObservableDictionary that lets you optionally update values when
-        /// they're accessed, on demand.
-        /// </summary>
-        public static IObservableDictionary<TKey, TValue> WithRefreshing<TKey, TValue>(this IObservableDictionary<TKey, TValue> source, RefreshValue<TKey, TValue> refreshValue)
-        {
-            return new ObservableDictionaryGetOrRefreshDecorator<TKey, TValue>(source, refreshValue);
-        }
-        
-        /// <summary>
-        /// Creates a facade on top of the specified IObservableDictionary that lets you optionally create values when
-        /// they're accessed, on demand.
-        /// </summary>
-        public static IObservableTransactionalDictionary<TKey, TValue> WithRefreshing<TKey, TValue>(this IObservableTransactionalDictionary<TKey, TValue> source, RefreshValue<TKey, TValue> refreshValue)
-        {
-            return new AnonymousObservableTransactionalDictionary<TKey, TValue>(() =>
-            {
-                var result = source.BeginWrite();
-                return new DisposableDictionaryDecorator<TKey, TValue>(result.WithRefreshing(refreshValue),
-                    result);
-            }, () =>
-            {
-                var result = source.BeginWrite();
-                return new DisposableDictionaryDecorator<TKey, TValue>(result.WithRefreshing(refreshValue),
-                    result);
-            }, source.ToLiveLinq);
-        }
-
         /// <summary>
         /// A special ToReadOnlyObservableDictionary that works well for IDictionaryChanges{TKey, ISetChanges{TValue}}
         /// so that you can read the set results in each group easily. This works well for results from the .GroupBy
         /// LiveLinq method.
         /// </summary>
-        public static IReadOnlyObservableDictionary<TKey, IReadOnlyObservableSet<TValue>> ToReadOnlyObservableDictionary<TKey, TValue>(
+        public static IObservableReadOnlyDictionary<TKey, IReadOnlyObservableSet<TValue>> ToReadOnlyObservableDictionary<TKey, TValue>(
             this IDictionaryChanges<TKey, ISetChanges<TValue>> changes)
         {
             var result = new ObservableDictionaryGetOrDefault<TKey, ObservableSet<TValue>>(
-                (TKey key, out IMaybe<ObservableSet<TValue>> maybeValue, out bool persist) =>
+                (TKey key, out ObservableSet<TValue> value, out bool persist) =>
                 {
                     persist = true;
-                    maybeValue = new ObservableSet<TValue>().ToMaybe();
+                    value = new ObservableSet<TValue>();
+                    return true;
                 });
 
             var disposable = changes.Subscribe((key, setChanges) =>
@@ -252,7 +120,7 @@ namespace LiveLinq
             return maybe.Otherwise(() => Utility.EmptyDictionaryChanges<TKey, TValue>());
         }
         
-        public static IReadOnlyObservableDictionary<TKey, TValue> ToReadOnlyObservableDictionary<TKey, TValue>(
+        public static IObservableReadOnlyDictionary<TKey, TValue> ToReadOnlyObservableDictionary<TKey, TValue>(
             this IDictionaryChanges<TKey, TValue> changes)
         {
             var result = new ObservableDictionary<TKey, TValue>();

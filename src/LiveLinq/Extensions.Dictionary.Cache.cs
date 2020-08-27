@@ -1,4 +1,5 @@
 using LiveLinq.Dictionary;
+using LiveLinq.Dictionary.Interfaces;
 
 namespace LiveLinq
 {

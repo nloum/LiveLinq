@@ -23,6 +23,11 @@ namespace LiveLinq.Dictionary
             Initialize(new ObservableDictionaryDecorator<TKey, TValue>(new DictionaryGetOrRefreshDecorator<TKey, TValue>(new ConcurrentDictionary<TKey, TValue>(), refreshValue)));
         }
 
+        public ObservableDictionaryGetOrRefresh(RefreshValueWithOptionalPersistence<TKey, TValue> refreshValue)
+        {
+            Initialize(new ObservableDictionaryDecorator<TKey, TValue>(new DictionaryGetOrRefreshDecorator<TKey, TValue>(new ConcurrentDictionary<TKey, TValue>(), refreshValue)));
+        }
+
         public void Dispose()
         {
             AssociatedSubscriptions.Dispose();

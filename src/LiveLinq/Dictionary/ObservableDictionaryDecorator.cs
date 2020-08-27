@@ -5,6 +5,7 @@ using System.Reactive.Subjects;
 using LiveLinq.Core;
 using ComposableCollections.Dictionary;
 using ComposableCollections.Dictionary.Interfaces;
+using LiveLinq.Dictionary.Interfaces;
 
 namespace LiveLinq.Dictionary
 {

@@ -7,6 +7,7 @@ using System.Reactive.Linq;
 using ComposableCollections.Dictionary;
 using ComposableCollections.Dictionary.Interfaces;
 using ComposableCollections.Dictionary.Write;
+using LiveLinq.Dictionary.Interfaces;
 using SimpleMonads;
 
 namespace LiveLinq.Dictionary
@@ -14,12 +15,12 @@ namespace LiveLinq.Dictionary
     public class AggregateObservableDictionary<TKey, TValue> : IObservableDictionary<TKey, TValue>
     {
         private readonly IObservableDictionary<TKey, TValue> _mutationsGoHere;
-        private readonly ImmutableList<IReadOnlyObservableDictionary<TKey, TValue>> _wrapped;
+        private readonly ImmutableList<IObservableReadOnlyDictionary<TKey, TValue>> _wrapped;
 
-        public AggregateObservableDictionary(IObservableDictionary<TKey, TValue> mutationsGoHere, IEnumerable<IReadOnlyObservableDictionary<TKey, TValue>> wrapped)
+        public AggregateObservableDictionary(IObservableDictionary<TKey, TValue> mutationsGoHere, IEnumerable<IObservableReadOnlyDictionary<TKey, TValue>> wrapped)
         {
             _mutationsGoHere = mutationsGoHere;
-            _wrapped = wrapped.Concat(new IReadOnlyObservableDictionary<TKey, TValue>[]{mutationsGoHere}).ToImmutableList();
+            _wrapped = wrapped.Concat(new IObservableReadOnlyDictionary<TKey, TValue>[]{mutationsGoHere}).ToImmutableList();
         }
 
         public void Dispose()

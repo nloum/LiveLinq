@@ -25,6 +25,11 @@ namespace LiveLinq.Dictionary
         {
             Initialize(new ObservableDictionaryDecorator<TKey, TValue>(new DictionaryGetOrDefaultDecorator<TKey, TValue>(new ConcurrentDictionary<TKey, TValue>(), getDefaultValue)));
         }
+        
+        public ObservableDictionaryGetOrDefault(GetDefaultValueWithOptionalPersistence<TKey, TValue> getDefaultValue)
+        {
+            Initialize(new ObservableDictionaryDecorator<TKey, TValue>(new DictionaryGetOrDefaultDecorator<TKey, TValue>(new ConcurrentDictionary<TKey, TValue>(), getDefaultValue)));
+        }
 
         public void Dispose()
         {
