@@ -21,9 +21,9 @@ namespace LiveLinq
 {
     public static partial class DictionaryExtensions
     {
-        #region WithLiveLinq
+        #region WithChangeNotifications
 
-        public static IObservableCachedDictionary<TKey, TValue> WithLiveLinq<TKey, TValue>(
+        public static IObservableCachedDictionary<TKey, TValue> WithChangeNotifications<TKey, TValue>(
             this ICachedDictionary<TKey, TValue> source)
         {
             var decorated = new ObservableDictionaryDecorator<TKey, TValue>(source);
@@ -31,7 +31,7 @@ namespace LiveLinq
                 source.AsNeverFlush, source.FlushCache, source.GetWrites, Disposable.Empty, decorated.ToLiveLinq);
         }
 
-        public static IObservableCachedDictionary<TKey, TValue> WithLiveLinq<TKey, TValue>(
+        public static IObservableCachedDictionary<TKey, TValue> WithChangeNotifications<TKey, TValue>(
             this ICachedDisposableDictionary<TKey, TValue> source)
         {
             var decorated = new ObservableDictionaryDecorator<TKey, TValue>(source);
@@ -39,7 +39,7 @@ namespace LiveLinq
                 source.AsNeverFlush, source.FlushCache, source.GetWrites, source, decorated.ToLiveLinq);
         }
 
-        public static IObservableCachedQueryableDictionary<TKey, TValue> WithLiveLinq<TKey, TValue>(
+        public static IObservableCachedQueryableDictionary<TKey, TValue> WithChangeNotifications<TKey, TValue>(
             this ICachedDisposableQueryableDictionary<TKey, TValue> source)
         {
             var decorated = new ObservableDictionaryDecorator<TKey, TValue>(source);
@@ -47,7 +47,7 @@ namespace LiveLinq
                 source.AsNeverFlush, source.FlushCache, source.GetWrites, source, source.Values, decorated.ToLiveLinq);
         }
 
-        public static IObservableCachedQueryableDictionary<TKey, TValue> WithLiveLinq<TKey, TValue>(
+        public static IObservableCachedQueryableDictionary<TKey, TValue> WithChangeNotifications<TKey, TValue>(
             this ICachedQueryableDictionary<TKey, TValue> source)
         {
             var decorated = new ObservableDictionaryDecorator<TKey, TValue>(source);
@@ -56,21 +56,21 @@ namespace LiveLinq
                 decorated.ToLiveLinq);
         }
 
-        public static IObservableDictionary<TKey, TValue> WithLiveLinq<TKey, TValue>(
+        public static IObservableDictionary<TKey, TValue> WithChangeNotifications<TKey, TValue>(
             this IComposableDictionary<TKey, TValue> source)
         {
             var decorated = new ObservableDictionaryDecorator<TKey, TValue>(source);
             return new ObservableDictionaryAdapter<TKey, TValue>(decorated, Disposable.Empty, decorated.ToLiveLinq);
         }
 
-        public static IObservableDictionary<TKey, TValue> WithLiveLinq<TKey, TValue>(
+        public static IObservableDictionary<TKey, TValue> WithChangeNotifications<TKey, TValue>(
             this IDisposableDictionary<TKey, TValue> source)
         {
             var decorated = new ObservableDictionaryDecorator<TKey, TValue>(source);
             return new ObservableDictionaryAdapter<TKey, TValue>(decorated, source, decorated.ToLiveLinq);
         }
 
-        public static IObservableQueryableDictionary<TKey, TValue> WithLiveLinq<TKey, TValue>(
+        public static IObservableQueryableDictionary<TKey, TValue> WithChangeNotifications<TKey, TValue>(
             this IDisposableQueryableDictionary<TKey, TValue> source)
         {
             var decorated = new ObservableDictionaryDecorator<TKey, TValue>(source);
@@ -78,7 +78,7 @@ namespace LiveLinq
                 decorated.ToLiveLinq);
         }
 
-        public static IObservableQueryableDictionary<TKey, TValue> WithLiveLinq<TKey, TValue>(
+        public static IObservableQueryableDictionary<TKey, TValue> WithChangeNotifications<TKey, TValue>(
             this IQueryableDictionary<TKey, TValue> source)
         {
             var decorated = new ObservableDictionaryDecorator<TKey, TValue>(source);
@@ -88,9 +88,9 @@ namespace LiveLinq
 
         #endregion
 
-        #region WithLiveLinq with separate observable and observer for sharing changes across dictionaries
+        #region WithChangeNotifications with separate observable and observer for sharing changes across dictionaries
 
-        public static IObservableCachedDictionary<TKey, TValue> WithLiveLinq<TKey, TValue>(
+        public static IObservableCachedDictionary<TKey, TValue> WithChangeNotifications<TKey, TValue>(
             this ICachedDictionary<TKey, TValue> source, IObservable<IDictionaryChangeStrict<TKey, TValue>> observable,
             Action<IDictionaryChangeStrict<TKey, TValue>> onChange)
         {
@@ -99,7 +99,7 @@ namespace LiveLinq
                 source.AsNeverFlush, source.FlushCache, source.GetWrites, Disposable.Empty, decorated.ToLiveLinq);
         }
 
-        public static IObservableCachedDictionary<TKey, TValue> WithLiveLinq<TKey, TValue>(
+        public static IObservableCachedDictionary<TKey, TValue> WithChangeNotifications<TKey, TValue>(
             this ICachedDisposableDictionary<TKey, TValue> source,
             IObservable<IDictionaryChangeStrict<TKey, TValue>> observable,
             Action<IDictionaryChangeStrict<TKey, TValue>> onChange)
@@ -109,7 +109,7 @@ namespace LiveLinq
                 source.AsNeverFlush, source.FlushCache, source.GetWrites, source, decorated.ToLiveLinq);
         }
 
-        public static IObservableCachedQueryableDictionary<TKey, TValue> WithLiveLinq<TKey, TValue>(
+        public static IObservableCachedQueryableDictionary<TKey, TValue> WithChangeNotifications<TKey, TValue>(
             this ICachedDisposableQueryableDictionary<TKey, TValue> source,
             IObservable<IDictionaryChangeStrict<TKey, TValue>> observable,
             Action<IDictionaryChangeStrict<TKey, TValue>> onChange)
@@ -119,7 +119,7 @@ namespace LiveLinq
                 source.AsNeverFlush, source.FlushCache, source.GetWrites, source, source.Values, decorated.ToLiveLinq);
         }
 
-        public static IObservableCachedQueryableDictionary<TKey, TValue> WithLiveLinq<TKey, TValue>(
+        public static IObservableCachedQueryableDictionary<TKey, TValue> WithChangeNotifications<TKey, TValue>(
             this ICachedQueryableDictionary<TKey, TValue> source,
             IObservable<IDictionaryChangeStrict<TKey, TValue>> observable,
             Action<IDictionaryChangeStrict<TKey, TValue>> onChange)
@@ -130,7 +130,7 @@ namespace LiveLinq
                 decorated.ToLiveLinq);
         }
 
-        public static IObservableDictionary<TKey, TValue> WithLiveLinq<TKey, TValue>(
+        public static IObservableDictionary<TKey, TValue> WithChangeNotifications<TKey, TValue>(
             this IComposableDictionary<TKey, TValue> source,
             IObservable<IDictionaryChangeStrict<TKey, TValue>> observable,
             Action<IDictionaryChangeStrict<TKey, TValue>> onChange)
@@ -139,7 +139,7 @@ namespace LiveLinq
             return new ObservableDictionaryAdapter<TKey, TValue>(decorated, Disposable.Empty, decorated.ToLiveLinq);
         }
 
-        public static IObservableDictionary<TKey, TValue> WithLiveLinq<TKey, TValue>(
+        public static IObservableDictionary<TKey, TValue> WithChangeNotifications<TKey, TValue>(
             this IDisposableDictionary<TKey, TValue> source,
             IObservable<IDictionaryChangeStrict<TKey, TValue>> observable,
             Action<IDictionaryChangeStrict<TKey, TValue>> onChange)
@@ -148,7 +148,7 @@ namespace LiveLinq
             return new ObservableDictionaryAdapter<TKey, TValue>(decorated, source, decorated.ToLiveLinq);
         }
 
-        public static IObservableQueryableDictionary<TKey, TValue> WithLiveLinq<TKey, TValue>(
+        public static IObservableQueryableDictionary<TKey, TValue> WithChangeNotifications<TKey, TValue>(
             this IDisposableQueryableDictionary<TKey, TValue> source,
             IObservable<IDictionaryChangeStrict<TKey, TValue>> observable,
             Action<IDictionaryChangeStrict<TKey, TValue>> onChange)
@@ -158,7 +158,7 @@ namespace LiveLinq
                 decorated.ToLiveLinq);
         }
 
-        public static IObservableQueryableDictionary<TKey, TValue> WithLiveLinq<TKey, TValue>(
+        public static IObservableQueryableDictionary<TKey, TValue> WithChangeNotifications<TKey, TValue>(
             this IQueryableDictionary<TKey, TValue> source,
             IObservable<IDictionaryChangeStrict<TKey, TValue>> observable,
             Action<IDictionaryChangeStrict<TKey, TValue>> onChange)
@@ -170,9 +170,9 @@ namespace LiveLinq
 
         #endregion
 
-        #region WithLiveLinq for read-only observables
+        #region WithChangeNotifications for read-only observables
 
-        public static IObservableReadOnlyDictionary<TKey, TValue> WithLiveLinq<TKey, TValue>(
+        public static IObservableReadOnlyDictionary<TKey, TValue> WithChangeNotifications<TKey, TValue>(
             this IComposableReadOnlyDictionary<TKey, TValue> source,
             IObservable<IDictionaryChangeStrict<TKey, TValue>> changes)
         {
@@ -180,7 +180,7 @@ namespace LiveLinq
                 () => changes.ToLiveLinq());
         }
 
-        public static IObservableQueryableReadOnlyDictionary<TKey, TValue> WithLiveLinq<TKey, TValue>(
+        public static IObservableQueryableReadOnlyDictionary<TKey, TValue> WithChangeNotifications<TKey, TValue>(
             this IDisposableQueryableReadOnlyDictionary<TKey, TValue> source,
             IObservable<IDictionaryChangeStrict<TKey, TValue>> changes)
         {
@@ -188,14 +188,14 @@ namespace LiveLinq
                 () => changes.ToLiveLinq());
         }
 
-        public static IObservableReadOnlyDictionary<TKey, TValue> WithLiveLinq<TKey, TValue>(
+        public static IObservableReadOnlyDictionary<TKey, TValue> WithChangeNotifications<TKey, TValue>(
             this IDisposableReadOnlyDictionary<TKey, TValue> source,
             IObservable<IDictionaryChangeStrict<TKey, TValue>> changes)
         {
             return new ObservableReadOnlyDictionaryAdapter<TKey, TValue>(source, source, () => changes.ToLiveLinq());
         }
 
-        public static IObservableQueryableReadOnlyDictionary<TKey, TValue> WithLiveLinq<TKey, TValue>(
+        public static IObservableQueryableReadOnlyDictionary<TKey, TValue> WithChangeNotifications<TKey, TValue>(
             this IQueryableReadOnlyDictionary<TKey, TValue> source,
             IObservable<IDictionaryChangeStrict<TKey, TValue>> changes)
         {
@@ -205,11 +205,11 @@ namespace LiveLinq
 
         #endregion
 
-        #region WithLiveLinq - transactional
+        #region WithChangeNotifications - transactional
 
         public static
             ITransactionalCollection<IObservableReadOnlyDictionary<TKey, TValue>,
-                IObservableCachedDictionary<TKey, TValue>> WithLiveLinq<TKey, TValue>(
+                IObservableCachedDictionary<TKey, TValue>> WithChangeNotifications<TKey, TValue>(
                 this ITransactionalCollection<IDisposableReadOnlyDictionary<TKey, TValue>,
                     ICachedDisposableDictionary<TKey, TValue>> source,
                 IObservable<IDictionaryChangeStrict<TKey, TValue>> observable,
@@ -217,13 +217,13 @@ namespace LiveLinq
         {
             return new AnonymousTransactionalCollection<IObservableReadOnlyDictionary<TKey, TValue>,
                 IObservableCachedDictionary<TKey, TValue>>(
-                () => source.BeginRead().WithLiveLinq(observable),
-                () => source.BeginWrite().WithLiveLinq(observable, onChange));
+                () => source.BeginRead().WithChangeNotifications(observable),
+                () => source.BeginWrite().WithChangeNotifications(observable, onChange));
         }
 
         public static
             ITransactionalCollection<IObservableQueryableReadOnlyDictionary<TKey, TValue>,
-                IObservableCachedQueryableDictionary<TKey, TValue>> WithLiveLinq<TKey, TValue>(
+                IObservableCachedQueryableDictionary<TKey, TValue>> WithChangeNotifications<TKey, TValue>(
                 this ITransactionalCollection<IDisposableQueryableReadOnlyDictionary<TKey, TValue>,
                     ICachedDisposableQueryableDictionary<TKey, TValue>> source,
                 IObservable<IDictionaryChangeStrict<TKey, TValue>> observable,
@@ -231,13 +231,13 @@ namespace LiveLinq
         {
             return new AnonymousTransactionalCollection<IObservableQueryableReadOnlyDictionary<TKey, TValue>,
                 IObservableCachedQueryableDictionary<TKey, TValue>>(
-                () => source.BeginRead().WithLiveLinq(observable),
-                () => source.BeginWrite().WithLiveLinq(observable, onChange));
+                () => source.BeginRead().WithChangeNotifications(observable),
+                () => source.BeginWrite().WithChangeNotifications(observable, onChange));
         }
 
         public static
             ITransactionalCollection<IObservableReadOnlyDictionary<TKey, TValue>, IObservableDictionary<TKey, TValue>>
-            WithLiveLinq<TKey, TValue>(
+            WithChangeNotifications<TKey, TValue>(
                 this ITransactionalCollection<IDisposableReadOnlyDictionary<TKey, TValue>,
                     IDisposableDictionary<TKey, TValue>> source,
                 IObservable<IDictionaryChangeStrict<TKey, TValue>> observable,
@@ -245,13 +245,13 @@ namespace LiveLinq
         {
             return new AnonymousTransactionalCollection<IObservableReadOnlyDictionary<TKey, TValue>,
                 IObservableDictionary<TKey, TValue>>(
-                () => source.BeginRead().WithLiveLinq(observable),
-                () => source.BeginWrite().WithLiveLinq(observable, onChange));
+                () => source.BeginRead().WithChangeNotifications(observable),
+                () => source.BeginWrite().WithChangeNotifications(observable, onChange));
         }
 
         public static
             ITransactionalCollection<IObservableQueryableReadOnlyDictionary<TKey, TValue>,
-                IObservableQueryableDictionary<TKey, TValue>> WithLiveLinq<TKey, TValue>(
+                IObservableQueryableDictionary<TKey, TValue>> WithChangeNotifications<TKey, TValue>(
                 this ITransactionalCollection<IDisposableQueryableReadOnlyDictionary<TKey, TValue>,
                     IDisposableQueryableDictionary<TKey, TValue>> source,
                 IObservable<IDictionaryChangeStrict<TKey, TValue>> observable,
@@ -259,8 +259,8 @@ namespace LiveLinq
         {
             return new AnonymousTransactionalCollection<IObservableQueryableReadOnlyDictionary<TKey, TValue>,
                 IObservableQueryableDictionary<TKey, TValue>>(
-                () => source.BeginRead().WithLiveLinq(observable),
-                () => source.BeginWrite().WithLiveLinq(observable, onChange));
+                () => source.BeginRead().WithChangeNotifications(observable),
+                () => source.BeginWrite().WithChangeNotifications(observable, onChange));
         }
 
         #endregion
