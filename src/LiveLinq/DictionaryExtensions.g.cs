@@ -208,59 +208,58 @@ namespace LiveLinq
         #region WithChangeNotifications - transactional
 
         public static
-            ITransactionalCollection<IObservableReadOnlyDictionary<TKey, TValue>,
-                IObservableCachedDictionary<TKey, TValue>> WithChangeNotifications<TKey, TValue>(
-                this ITransactionalCollection<IDisposableReadOnlyDictionary<TKey, TValue>,
+            IReadWriteFactory<IObservableReadOnlyDictionary<TKey, TValue>, IObservableCachedDictionary<TKey, TValue>>
+            WithChangeNotifications<TKey, TValue>(
+                this IReadWriteFactory<IDisposableReadOnlyDictionary<TKey, TValue>,
                     ICachedDisposableDictionary<TKey, TValue>> source,
                 IObservable<IDictionaryChangeStrict<TKey, TValue>> observable,
                 Action<IDictionaryChangeStrict<TKey, TValue>> onChange)
         {
-            return new AnonymousTransactionalCollection<IObservableReadOnlyDictionary<TKey, TValue>,
+            return new AnonymousReadWriteFactory<IObservableReadOnlyDictionary<TKey, TValue>,
                 IObservableCachedDictionary<TKey, TValue>>(
-                () => source.BeginRead().WithChangeNotifications(observable),
-                () => source.BeginWrite().WithChangeNotifications(observable, onChange));
+                () => source.CreateReader().WithChangeNotifications(observable),
+                () => source.CreateWriter().WithChangeNotifications(observable, onChange));
         }
 
         public static
-            ITransactionalCollection<IObservableQueryableReadOnlyDictionary<TKey, TValue>,
+            IReadWriteFactory<IObservableQueryableReadOnlyDictionary<TKey, TValue>,
                 IObservableCachedQueryableDictionary<TKey, TValue>> WithChangeNotifications<TKey, TValue>(
-                this ITransactionalCollection<IDisposableQueryableReadOnlyDictionary<TKey, TValue>,
+                this IReadWriteFactory<IDisposableQueryableReadOnlyDictionary<TKey, TValue>,
                     ICachedDisposableQueryableDictionary<TKey, TValue>> source,
                 IObservable<IDictionaryChangeStrict<TKey, TValue>> observable,
                 Action<IDictionaryChangeStrict<TKey, TValue>> onChange)
         {
-            return new AnonymousTransactionalCollection<IObservableQueryableReadOnlyDictionary<TKey, TValue>,
+            return new AnonymousReadWriteFactory<IObservableQueryableReadOnlyDictionary<TKey, TValue>,
                 IObservableCachedQueryableDictionary<TKey, TValue>>(
-                () => source.BeginRead().WithChangeNotifications(observable),
-                () => source.BeginWrite().WithChangeNotifications(observable, onChange));
+                () => source.CreateReader().WithChangeNotifications(observable),
+                () => source.CreateWriter().WithChangeNotifications(observable, onChange));
         }
 
         public static
-            ITransactionalCollection<IObservableReadOnlyDictionary<TKey, TValue>, IObservableDictionary<TKey, TValue>>
+            IReadWriteFactory<IObservableReadOnlyDictionary<TKey, TValue>, IObservableDictionary<TKey, TValue>>
             WithChangeNotifications<TKey, TValue>(
-                this ITransactionalCollection<IDisposableReadOnlyDictionary<TKey, TValue>,
-                    IDisposableDictionary<TKey, TValue>> source,
-                IObservable<IDictionaryChangeStrict<TKey, TValue>> observable,
+                this IReadWriteFactory<IDisposableReadOnlyDictionary<TKey, TValue>, IDisposableDictionary<TKey, TValue>>
+                    source, IObservable<IDictionaryChangeStrict<TKey, TValue>> observable,
                 Action<IDictionaryChangeStrict<TKey, TValue>> onChange)
         {
-            return new AnonymousTransactionalCollection<IObservableReadOnlyDictionary<TKey, TValue>,
+            return new AnonymousReadWriteFactory<IObservableReadOnlyDictionary<TKey, TValue>,
                 IObservableDictionary<TKey, TValue>>(
-                () => source.BeginRead().WithChangeNotifications(observable),
-                () => source.BeginWrite().WithChangeNotifications(observable, onChange));
+                () => source.CreateReader().WithChangeNotifications(observable),
+                () => source.CreateWriter().WithChangeNotifications(observable, onChange));
         }
 
         public static
-            ITransactionalCollection<IObservableQueryableReadOnlyDictionary<TKey, TValue>,
+            IReadWriteFactory<IObservableQueryableReadOnlyDictionary<TKey, TValue>,
                 IObservableQueryableDictionary<TKey, TValue>> WithChangeNotifications<TKey, TValue>(
-                this ITransactionalCollection<IDisposableQueryableReadOnlyDictionary<TKey, TValue>,
+                this IReadWriteFactory<IDisposableQueryableReadOnlyDictionary<TKey, TValue>,
                     IDisposableQueryableDictionary<TKey, TValue>> source,
                 IObservable<IDictionaryChangeStrict<TKey, TValue>> observable,
                 Action<IDictionaryChangeStrict<TKey, TValue>> onChange)
         {
-            return new AnonymousTransactionalCollection<IObservableQueryableReadOnlyDictionary<TKey, TValue>,
+            return new AnonymousReadWriteFactory<IObservableQueryableReadOnlyDictionary<TKey, TValue>,
                 IObservableQueryableDictionary<TKey, TValue>>(
-                () => source.BeginRead().WithChangeNotifications(observable),
-                () => source.BeginWrite().WithChangeNotifications(observable, onChange));
+                () => source.CreateReader().WithChangeNotifications(observable),
+                () => source.CreateWriter().WithChangeNotifications(observable, onChange));
         }
 
         #endregion

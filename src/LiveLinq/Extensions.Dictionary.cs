@@ -53,24 +53,24 @@ namespace LiveLinq
             return new ObservableReadOnlyDictionaryWithBuiltInKeyAdapter<TKey, TValue>(source, getKey);
         }
 
-        public static ITransactionalCollection<IObservableQueryableReadOnlyDictionaryWithBuiltInKey<TKey, TValue>, IObservableCachedQueryableDictionaryWithBuiltInKey<TKey, TValue>> WithBuiltInKey<TKey, TValue>(
-            this ITransactionalCollection<IObservableQueryableReadOnlyDictionary<TKey, TValue>, IObservableCachedQueryableDictionary<TKey, TValue>> source, Func<TValue, TKey> getKey)
+        public static IReadWriteFactory<IObservableQueryableReadOnlyDictionaryWithBuiltInKey<TKey, TValue>, IObservableCachedQueryableDictionaryWithBuiltInKey<TKey, TValue>> WithBuiltInKey<TKey, TValue>(
+            this IReadWriteFactory<IObservableQueryableReadOnlyDictionary<TKey, TValue>, IObservableCachedQueryableDictionary<TKey, TValue>> source, Func<TValue, TKey> getKey)
         {
             return source.Select(readOnly => readOnly.WithBuiltInKey(getKey),
                 readWrite => readWrite.WithBuiltInKey(getKey));
         }
-        public static ITransactionalCollection<IObservableQueryableReadOnlyDictionaryWithBuiltInKey<TKey, TValue>, IObservableQueryableDictionaryWithBuiltInKey<TKey, TValue>> WithBuiltInKey<TKey, TValue>(
-            this ITransactionalCollection<IObservableQueryableReadOnlyDictionary<TKey, TValue>, IObservableQueryableDictionary<TKey, TValue>> source, Func<TValue, TKey> getKey) {
+        public static IReadWriteFactory<IObservableQueryableReadOnlyDictionaryWithBuiltInKey<TKey, TValue>, IObservableQueryableDictionaryWithBuiltInKey<TKey, TValue>> WithBuiltInKey<TKey, TValue>(
+            this IReadWriteFactory<IObservableQueryableReadOnlyDictionary<TKey, TValue>, IObservableQueryableDictionary<TKey, TValue>> source, Func<TValue, TKey> getKey) {
             return source.Select(readOnly => readOnly.WithBuiltInKey(getKey),
                 readWrite => readWrite.WithBuiltInKey(getKey));
         }
-        public static ITransactionalCollection<IObservableReadOnlyDictionaryWithBuiltInKey<TKey, TValue>, IObservableCachedDictionaryWithBuiltInKey<TKey, TValue>> WithBuiltInKey<TKey, TValue>(
-            this ITransactionalCollection<IObservableReadOnlyDictionary<TKey, TValue>, IObservableCachedDictionary<TKey, TValue>> source, Func<TValue, TKey> getKey) {
+        public static IReadWriteFactory<IObservableReadOnlyDictionaryWithBuiltInKey<TKey, TValue>, IObservableCachedDictionaryWithBuiltInKey<TKey, TValue>> WithBuiltInKey<TKey, TValue>(
+            this IReadWriteFactory<IObservableReadOnlyDictionary<TKey, TValue>, IObservableCachedDictionary<TKey, TValue>> source, Func<TValue, TKey> getKey) {
             return source.Select(readOnly => readOnly.WithBuiltInKey(getKey),
                 readWrite => readWrite.WithBuiltInKey(getKey));
         }
-        public static ITransactionalCollection<IObservableReadOnlyDictionaryWithBuiltInKey<TKey, TValue>, IObservableDictionaryWithBuiltInKey<TKey, TValue>> WithBuiltInKey<TKey, TValue>(
-            this ITransactionalCollection<IObservableReadOnlyDictionary<TKey, TValue>, IObservableDictionary<TKey, TValue>> source, Func<TValue, TKey> getKey) {
+        public static IReadWriteFactory<IObservableReadOnlyDictionaryWithBuiltInKey<TKey, TValue>, IObservableDictionaryWithBuiltInKey<TKey, TValue>> WithBuiltInKey<TKey, TValue>(
+            this IReadWriteFactory<IObservableReadOnlyDictionary<TKey, TValue>, IObservableDictionary<TKey, TValue>> source, Func<TValue, TKey> getKey) {
             return source.Select(readOnly => readOnly.WithBuiltInKey(getKey),
                 readWrite => readWrite.WithBuiltInKey(getKey));
         }

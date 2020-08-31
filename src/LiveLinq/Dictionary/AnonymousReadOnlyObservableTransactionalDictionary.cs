@@ -16,7 +16,7 @@ namespace LiveLinq.Dictionary
             _toLiveLinq = toLiveLinq;
         }
 
-        public IDisposableReadOnlyDictionary<TKey, TValue> BeginRead()
+        public IDisposableReadOnlyDictionary<TKey, TValue> CreateReader()
         {
             return _beginRead();
         }

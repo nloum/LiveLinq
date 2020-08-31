@@ -203,14 +203,14 @@ namespace LiveLinq.CodeGenerator
 	            var readWriteObservableInterface = $"IObservable{iface.Substring(1)}"
 		            .Replace("Disposable", "");	            
 	            textWriter.WriteLine(
-		            $"public static ITransactionalCollection<{readOnlyObservableInterface}<TKey, TValue>, {readWriteObservableInterface}<TKey, TValue>> WithChangeNotifications<TKey, TValue>(this ITransactionalCollection<{readOnlyInterface}<TKey, TValue>, {iface}<TKey, TValue>> source, {string.Join(", ", parameters)}) {{");
+		            $"public static IReadWriteFactory<{readOnlyObservableInterface}<TKey, TValue>, {readWriteObservableInterface}<TKey, TValue>> WithChangeNotifications<TKey, TValue>(this IReadWriteFactory<{readOnlyInterface}<TKey, TValue>, {iface}<TKey, TValue>> source, {string.Join(", ", parameters)}) {{");
 
 	            textWriter.WriteLine(
-		            $"return new AnonymousTransactionalCollection<{readOnlyObservableInterface}<TKey, TValue>, {readWriteObservableInterface}<TKey, TValue>>(");
+		            $"return new AnonymousReadWriteFactory<{readOnlyObservableInterface}<TKey, TValue>, {readWriteObservableInterface}<TKey, TValue>>(");
 	            textWriter.WriteLine(
-		            $"() => source.BeginRead().WithChangeNotifications({string.Join(", ", readOnlyArguments)}),");
+		            $"() => source.CreateReader().WithChangeNotifications({string.Join(", ", readOnlyArguments)}),");
 	            textWriter.WriteLine(
-		            $"() => source.BeginWrite().WithChangeNotifications({string.Join(", ", readWriteArguments)}));");
+		            $"() => source.CreateWriter().WithChangeNotifications({string.Join(", ", readWriteArguments)}));");
 			    
 	            textWriter.WriteLine("}");
             }

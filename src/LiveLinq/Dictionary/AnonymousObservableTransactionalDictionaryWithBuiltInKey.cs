@@ -19,12 +19,12 @@ namespace LiveLinq.Dictionary
             _toLiveLinq = toLiveLinq;
         }
 
-        public IDisposableReadOnlyDictionaryWithBuiltInKey<TKey, TValue> BeginRead()
+        public IDisposableReadOnlyDictionaryWithBuiltInKey<TKey, TValue> CreateReader()
         {
             return _beginRead();
         }
 
-        public IDisposableDictionaryWithBuiltInKey<TKey, TValue> BeginWrite()
+        public IDisposableDictionaryWithBuiltInKey<TKey, TValue> CreateWriter()
         {
             return _beginWrite();
         }
