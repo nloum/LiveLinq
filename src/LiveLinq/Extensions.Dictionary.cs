@@ -82,7 +82,7 @@ namespace LiveLinq
         /// so that you can read the set results in each group easily. This works well for results from the .GroupBy
         /// LiveLinq method.
         /// </summary>
-        public static IObservableReadOnlyDictionary<TKey, IReadOnlyObservableSet<TValue>> ToReadOnlyObservableDictionary<TKey, TValue>(
+        public static IObservableReadOnlyDictionary<TKey, IObservableReadOnlySet<TValue>> ToReadOnlyObservableDictionary<TKey, TValue>(
             this IDictionaryChanges<TKey, ISetChanges<TValue>> changes)
         {
             var result = new ObservableDictionaryGetOrDefault<TKey, ObservableSet<TValue>>(

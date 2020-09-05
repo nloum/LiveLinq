@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace LiveLinq.Set
 {
-    public interface IReadOnlyObservableSet<out T> : IReadOnlyCollection<T>, IDisposable
+    public interface IObservableReadOnlySet<out T> : IReadOnlyCollection<T>, IDisposable
     {
         ISetChanges<T> ToLiveLinq();
     }

@@ -90,7 +90,7 @@ namespace LiveLinq
                 .ToLiveLinq();
         }
         
-        public static IReadOnlyObservableSet<T> ToReadOnlyObservableSet<T>(this ISetChanges<T> source)
+        public static IObservableReadOnlySet<T> ToReadOnlyObservableSet<T>(this ISetChanges<T> source)
         {
             var result = new ReadOnlyObservableSet<T>(source);
             return result;

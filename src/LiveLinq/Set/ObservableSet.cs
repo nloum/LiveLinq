@@ -13,7 +13,7 @@ using UtilityDisposables;
 
 namespace LiveLinq.Set
 {
-    public class ObservableSet<T> : ProtectedDisposableCollector, IReadOnlyObservableSet<T>
+    public class ObservableSet<T> : ProtectedDisposableCollector, IObservableReadOnlySet<T>
     {
         private readonly object _lock = new object();
         private ImmutableHashSet<T> _source = ImmutableHashSet<T>.Empty;
