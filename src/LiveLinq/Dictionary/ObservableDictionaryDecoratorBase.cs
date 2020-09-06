@@ -88,6 +88,16 @@ namespace LiveLinq.Dictionary
             return _state.ContainsKey(key);
         }
 
+        public TValue GetValue(TKey key)
+        {
+            return this[key];
+        }
+
+        public void SetValue(TKey key, TValue value)
+        {
+            this[key] = value;
+        }
+
         public IMaybe<TValue> TryGetValue(TKey key)
         {
             return _state.TryGetValue(key);

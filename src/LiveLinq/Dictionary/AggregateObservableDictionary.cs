@@ -15,12 +15,12 @@ namespace LiveLinq.Dictionary
     public class AggregateObservableDictionary<TKey, TValue> : IObservableDictionary<TKey, TValue>
     {
         private readonly IObservableDictionary<TKey, TValue> _mutationsGoHere;
-        private readonly ImmutableList<IObservableReadOnlyDictionary<TKey, TValue>> _wrapped;
+        private readonly ImmutableList<IObservableReadOnlyDictionary<TKey, TValue>> _sources;
 
-        public AggregateObservableDictionary(IObservableDictionary<TKey, TValue> mutationsGoHere, IEnumerable<IObservableReadOnlyDictionary<TKey, TValue>> wrapped)
+        public AggregateObservableDictionary(IObservableDictionary<TKey, TValue> mutationsGoHere, IEnumerable<IObservableReadOnlyDictionary<TKey, TValue>> sources)
         {
             _mutationsGoHere = mutationsGoHere;
-            _wrapped = wrapped.Concat(new IObservableReadOnlyDictionary<TKey, TValue>[]{mutationsGoHere}).ToImmutableList();
+            _sources = sources.Concat(new IObservableReadOnlyDictionary<TKey, TValue>[]{mutationsGoHere}).ToImmutableList();
         }
 
         public void Dispose()
@@ -35,19 +35,29 @@ namespace LiveLinq.Dictionary
 
         public IEnumerator<IKeyValue<TKey, TValue>> GetEnumerator()
         {
-            return _wrapped.SelectMany(x => x).GetEnumerator();
+            return _sources.SelectMany(x => x).GetEnumerator();
         }
 
-        public int Count => _wrapped.Select(x => x.Count).Sum();
+        public int Count => _sources.Select(x => x.Count).Sum();
 
         public bool ContainsKey(TKey key)
         {
-            return _wrapped.Any(x => x.ContainsKey(key));
+            return _sources.Any(x => x.ContainsKey(key));
+        }
+
+        public TValue GetValue(TKey key)
+        {
+            return this[key];
+        }
+
+        public void SetValue(TKey key, TValue value)
+        {
+            this[key] = value;
         }
 
         public IMaybe<TValue> TryGetValue(TKey key)
         {
-            foreach (var wrapped in _wrapped)
+            foreach (var wrapped in _sources)
             {
                 var result = wrapped.TryGetValue(key);
                 if (result.HasValue)
@@ -61,9 +71,9 @@ namespace LiveLinq.Dictionary
 
         public IEqualityComparer<TKey> Comparer => _mutationsGoHere.Comparer;
 
-        public IEnumerable<TKey> Keys => _wrapped.SelectMany(x => x.Keys);
+        public IEnumerable<TKey> Keys => _sources.SelectMany(x => x.Keys);
 
-        public IEnumerable<TValue> Values => _wrapped.SelectMany(x => x.Values);
+        public IEnumerable<TValue> Values => _sources.SelectMany(x => x.Values);
 
         public bool TryGetValue(TKey key, out TValue value)
         {
@@ -410,7 +420,7 @@ namespace LiveLinq.Dictionary
 
         public IDictionaryChangesStrict<TKey, TValue> ToLiveLinq()
         {
-            return _wrapped.Select(x => x.ToLiveLinq().AsObservable()).Merge().ToLiveLinq();
+            return _sources.Select(x => x.ToLiveLinq().AsObservable()).Merge().ToLiveLinq();
         }
     }
 }
