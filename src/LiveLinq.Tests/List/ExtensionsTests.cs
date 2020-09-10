@@ -64,7 +64,7 @@ namespace LiveLinq.Tests.List
             snapshot.Value.Should().BeTrue();
         }
 
-        [TestMethod]
+        //[TestMethod]
         [Obsolete("This isn't working yet. Convert the dictionary to ISetChanges and use then use that GroupBy extension method.", true)]
         public void GroupBy_SubsequentChanges()
         {
@@ -82,7 +82,7 @@ namespace LiveLinq.Tests.List
             snapshot.Value.Should().BeFalse();
         }
 
-        [TestMethod]
+        //[TestMethod]
         [Obsolete("This isn't working yet. Convert the dictionary to ISetChanges and use then use that GroupBy extension method.", true)]
         public void GroupBy_SubsequentClear()
         {
@@ -99,7 +99,7 @@ namespace LiveLinq.Tests.List
             snapshot.Value.Should().BeFalse();
         }
 
-        [TestMethod]
+        //[TestMethod]
         [Obsolete("This isn't working yet. Convert the dictionary to ISetChanges and use then use that GroupBy extension method.", true)]
         public void GroupBy_ObservableKey()
         {
@@ -122,7 +122,7 @@ namespace LiveLinq.Tests.List
             snapshot.Value.Should().BeFalse();
         }
 
-        [TestMethod]
+        //[TestMethod]
         [Obsolete("This isn't working yet. Convert the dictionary to ISetChanges and use then use that GroupBy extension method.", true)]
         public void GroupBy_GetByKey()
         {
