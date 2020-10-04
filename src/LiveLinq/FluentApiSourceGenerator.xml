@@ -1,0 +1,344 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<FluentApiSourceGenerator>
+  <CodeGenerators>
+    <CombinationInterfaces Namespace="LiveLinq.Dictionary.Interfaces"
+                           IncludeSubInterfaces="True"
+                           Folder="Dictionary/Interfaces">
+      <PreExistingInterfaces>
+        <PreExistingInterface>ComposableCollections.Dictionary.Interfaces.IComposableDictionary[TKey, TValue]</PreExistingInterface>
+        <PreExistingInterface>ComposableCollections.Dictionary.Interfaces.IComposableReadOnlyDictionary[TKey, TValue]</PreExistingInterface>
+        <PreExistingInterface>ComposableCollections.Dictionary.Interfaces.IDisposableDictionary[TKey, TValue]</PreExistingInterface>
+        <PreExistingInterface>ComposableCollections.Dictionary.Interfaces.IDisposableQueryableDictionary[TKey, TValue]</PreExistingInterface>
+        <PreExistingInterface>ComposableCollections.Dictionary.Interfaces.IDisposableQueryableReadOnlyDictionary[TKey, TValue]</PreExistingInterface>
+        <PreExistingInterface>ComposableCollections.Dictionary.Interfaces.IDisposableReadOnlyDictionary[TKey, TValue]</PreExistingInterface>
+        <PreExistingInterface>ComposableCollections.Dictionary.Interfaces.IQueryableDictionary[TKey, TValue]</PreExistingInterface>
+        <PreExistingInterface>ComposableCollections.Dictionary.Interfaces.IQueryableReadOnlyDictionary[TKey, TValue]</PreExistingInterface>
+        <PreExistingInterface>ComposableCollections.Dictionary.Interfaces.IReadCachedDictionary[TKey, TValue]</PreExistingInterface>
+        <PreExistingInterface>ComposableCollections.Dictionary.Interfaces.IReadCachedDisposableDictionary[TKey, TValue]</PreExistingInterface>
+        <PreExistingInterface>ComposableCollections.Dictionary.Interfaces.IReadCachedDisposableQueryableDictionary[TKey, TValue]</PreExistingInterface>
+        <PreExistingInterface>ComposableCollections.Dictionary.Interfaces.IReadCachedDisposableQueryableReadOnlyDictionary[TKey, TValue]</PreExistingInterface>
+        <PreExistingInterface>ComposableCollections.Dictionary.Interfaces.IReadCachedDisposableReadOnlyDictionary[TKey, TValue]</PreExistingInterface>
+        <PreExistingInterface>ComposableCollections.Dictionary.Interfaces.IReadCachedQueryableDictionary[TKey, TValue]</PreExistingInterface>
+        <PreExistingInterface>ComposableCollections.Dictionary.Interfaces.IReadCachedQueryableReadOnlyDictionary[TKey, TValue]</PreExistingInterface>
+        <PreExistingInterface>ComposableCollections.Dictionary.Interfaces.IReadCachedReadOnlyDictionary[TKey, TValue]</PreExistingInterface>
+        <PreExistingInterface>ComposableCollections.Dictionary.Interfaces.IReadWriteCachedDictionary[TKey, TValue]</PreExistingInterface>
+        <PreExistingInterface>ComposableCollections.Dictionary.Interfaces.IReadWriteCachedDisposableDictionary[TKey, TValue]</PreExistingInterface>
+        <PreExistingInterface>ComposableCollections.Dictionary.Interfaces.IReadWriteCachedDisposableQueryableDictionary[TKey, TValue]</PreExistingInterface>
+        <PreExistingInterface>ComposableCollections.Dictionary.Interfaces.IReadWriteCachedQueryableDictionary[TKey, TValue]</PreExistingInterface>
+        <PreExistingInterface>ComposableCollections.Dictionary.Interfaces.IWriteCachedDictionary[TKey, TValue]</PreExistingInterface>
+        <PreExistingInterface>ComposableCollections.Dictionary.Interfaces.IWriteCachedDisposableDictionary[TKey, TValue]</PreExistingInterface>
+        <PreExistingInterface>ComposableCollections.Dictionary.Interfaces.IWriteCachedDisposableQueryableDictionary[TKey, TValue]</PreExistingInterface>
+        <PreExistingInterface>ComposableCollections.Dictionary.Interfaces.IWriteCachedQueryableDictionary[TKey, TValue]</PreExistingInterface>
+        <PreExistingInterface>ComposableCollections.Dictionary.Interfaces.IWriteCachedDictionary[TKey, TValue]</PreExistingInterface>
+        <PreExistingInterface>ComposableCollections.Dictionary.Interfaces.IObservableReadOnlyDictionary[TKey, TValue]</PreExistingInterface>
+      </PreExistingInterfaces>
+      <InterfaceNameBlacklist>
+        <Regex>ReadOnly.*Write</Regex>
+        <Regex>Write.*ReadOnly</Regex>
+        <Regex>Cached.*Cached</Regex>
+      </InterfaceNameBlacklist>
+      <InterfaceNameBuilders>
+        <InterfaceNameBuilder Search="^ReadOnly$" Replace="IComposableReadOnlyDictionary" />
+        <InterfaceNameBuilder Search="^$" Replace="IComposableDictionary" />
+        <InterfaceNameBuilder Search="(.+)" Replace="I$1Dictionary" />
+      </InterfaceNameBuilders>
+      <InterfaceNameModifiers>
+        <InterfaceNameModifier>
+          <OneOf>
+            <Part></Part>
+            <Part>Observable</Part>
+          </OneOf>
+        </InterfaceNameModifier>
+        <InterfaceNameModifier>
+          <OneOf>
+            <Part></Part>
+            <Part>ReadCached</Part>
+          </OneOf>
+        </InterfaceNameModifier>
+        <InterfaceNameModifier>
+          <OneOf>
+            <Part></Part>
+            <Part>WriteCached</Part>
+          </OneOf>
+        </InterfaceNameModifier>
+        <InterfaceNameModifier>
+          <OneOf>
+            <Part></Part>
+            <Part>ReadWriteCached</Part>
+          </OneOf>
+        </InterfaceNameModifier>
+        <InterfaceNameModifier>
+          <OneOf>
+            <Part></Part>
+            <Part>Disposable</Part>
+          </OneOf>
+        </InterfaceNameModifier>
+        <InterfaceNameModifier>
+          <OneOf>
+            <Part></Part>
+            <Part>Queryable</Part>
+          </OneOf>
+        </InterfaceNameModifier>
+        <InterfaceNameModifier>
+          <OneOf>
+            <Part>ReadOnly</Part>
+            <Part></Part>
+          </OneOf>
+        </InterfaceNameModifier>
+      </InterfaceNameModifiers>
+    </CombinationInterfaces>
+    <!--<AnonymousImplementations Namespace="ComposableCollections.Dictionary.Anonymous" Folder="Dictionary/Anonymous">
+      <AllowedArguments>
+        <AllowedArgument>IComposableReadOnlyDictionary</AllowedArgument>
+        <AllowedArgument>IComposableDictionary</AllowedArgument>
+      </AllowedArguments>
+      <InterfacesToImplement>
+        <Interface>IDisposableDictionary</Interface>
+        <Interface>IDisposableQueryableDictionary</Interface>
+        <Interface>IDisposableQueryableReadOnlyDictionary</Interface>
+        <Interface>IDisposableReadOnlyDictionary</Interface>
+        <Interface>IQueryableDictionary</Interface>
+        <Interface>IQueryableReadOnlyDictionary</Interface>
+        <Interface>IReadCachedDisposableDictionary</Interface>
+        <Interface>IReadCachedDisposableQueryableDictionary</Interface>
+        <Interface>IReadCachedDisposableQueryableReadOnlyDictionary</Interface>
+        <Interface>IReadCachedDisposableReadOnlyDictionary</Interface>
+        <Interface>IReadCachedQueryableDictionary</Interface>
+        <Interface>IReadCachedQueryableReadOnlyDictionary</Interface>
+        <Interface>IReadWriteCachedDisposableDictionary</Interface>
+        <Interface>IReadWriteCachedDisposableQueryableDictionary</Interface>
+        <Interface>IReadWriteCachedQueryableDictionary</Interface>
+        <Interface>IWriteCachedDisposableDictionary</Interface>
+        <Interface>IWriteCachedDisposableQueryableDictionary</Interface>
+        <Interface>IWriteCachedQueryableDictionary</Interface>
+      </InterfacesToImplement>
+    </AnonymousImplementations>
+    <DecoratorBaseClasses Namespace="ComposableCollections.Dictionary.Decorators" Folder="Dictionary/Decorators">
+      <InterfacesToImplement>
+        <Interface>IDisposableQueryableDictionary</Interface>
+        <Interface>IDisposableQueryableReadOnlyDictionary</Interface>
+        <Interface>IReadCachedDisposableDictionary</Interface>
+        <Interface>IReadCachedDisposableQueryableDictionary</Interface>
+        <Interface>IReadCachedDisposableQueryableReadOnlyDictionary</Interface>
+        <Interface>IReadCachedDisposableReadOnlyDictionary</Interface>
+        <Interface>IReadCachedQueryableDictionary</Interface>
+        <Interface>IReadCachedQueryableReadOnlyDictionary</Interface>
+        <Interface>IReadWriteCachedDisposableDictionary</Interface>
+        <Interface>IReadWriteCachedDisposableQueryableDictionary</Interface>
+        <Interface>IReadWriteCachedQueryableDictionary</Interface>
+        <Interface>IWriteCachedDisposableDictionary</Interface>
+        <Interface>IWriteCachedDisposableQueryableDictionary</Interface>
+        <Interface>IWriteCachedQueryableDictionary</Interface>
+      </InterfacesToImplement>
+    </DecoratorBaseClasses>
+
+    <SubclassCombinationImplementations Namespace="ComposableCollections.Dictionary.Adapters" BaseClass="ConcurrentWriteCachedDictionaryAdapter"
+                                        Folder="Dictionary/Adapters">
+      <ClassNameModifiers>
+        <ClassNameModifier Search="WriteCached" Replace="ConcurrentWriteCached" />
+        <ClassNameModifier Search="Dictionary" Replace="DictionaryAdapter" />
+      </ClassNameModifiers>
+    </SubclassCombinationImplementations>
+    <ConstructorExtensionMethods Namespace="ComposableCollections" ExtensionMethodName="WithWriteCaching">
+      <BaseClasses>
+        <BaseClass>ConcurrentWriteCachedDictionaryAdapter</BaseClass>
+      </BaseClasses>
+    </ConstructorExtensionMethods>
+    
+    <SubclassCombinationImplementations Namespace="ComposableCollections.Dictionary.Decorators" BaseClass="DictionaryGetOrDefaultDecorator"
+                                        Folder="Dictionary/Decorators">
+      <ClassNameModifiers>
+        <ClassNameModifier Search="Dictionary" Replace="GetOrDefaultDictionaryDecorator" />
+      </ClassNameModifiers>
+    </SubclassCombinationImplementations>
+    <ConstructorExtensionMethods Namespace="ComposableCollections" ExtensionMethodName="WithDefaultValue">
+      <BaseClasses>
+        <BaseClass>DictionaryGetOrDefaultDecorator</BaseClass>
+      </BaseClasses>
+    </ConstructorExtensionMethods>
+
+    <SubclassCombinationImplementations Namespace="ComposableCollections.Dictionary.Decorators" BaseClass="DictionaryGetOrRefreshDecorator"
+                                        Folder="Dictionary/Decorators">
+      <ClassNameModifiers>
+        <ClassNameModifier Search="Dictionary" Replace="GetOrRefreshDictionaryDecorator" />
+      </ClassNameModifiers>
+    </SubclassCombinationImplementations>
+    <ConstructorExtensionMethods Namespace="ComposableCollections" ExtensionMethodName="WithRefreshing">
+      <BaseClasses>
+        <BaseClass>DictionaryGetOrRefreshDecorator</BaseClass>
+      </BaseClasses>
+    </ConstructorExtensionMethods>
+
+    <SubclassCombinationImplementations Namespace="ComposableCollections.Dictionary.Decorators" BaseClass="ReadWriteLockDictionaryDecorator"
+                                        Folder="Dictionary/Decorators">
+      <ClassNameBlacklist>
+        <ClassName>Queryable</ClassName>
+      </ClassNameBlacklist>
+      <ClassNameModifiers>
+        <ClassNameModifier Search="Dictionary" Replace="ReadWriteLockDictionaryDecorator" />
+      </ClassNameModifiers>
+    </SubclassCombinationImplementations>
+    <SubclassCombinationImplementations Namespace="ComposableCollections.Dictionary.Decorators" BaseClass="ReadWriteLockQueryableDictionaryDecorator"
+                                        Folder="Dictionary/Decorators">
+      <ClassNameModifiers>
+        <ClassNameModifier Search="Dictionary" Replace="ReadWriteLockDictionaryDecorator" />
+      </ClassNameModifiers>
+    </SubclassCombinationImplementations>
+    <ConstructorExtensionMethods Namespace="ComposableCollections" ExtensionMethodName="WithReadWriteLock">
+      <BaseClasses>
+        <BaseClass>ReadWriteLockDictionaryDecorator</BaseClass>
+      </BaseClasses>
+    </ConstructorExtensionMethods>
+    
+    <SubclassCombinationImplementations Namespace="ComposableCollections.Dictionary.Adapters" BaseClass="MappingKeysAndValuesDictionaryAdapter"
+                                        AllowDifferentTypeParameters="true" Folder="Dictionary/Adapters">
+      <ClassNameBlacklist>
+        <ClassName>Queryable</ClassName>
+        <ClassName>ReadCached</ClassName>
+        <ClassName>ReadWriteCached</ClassName>
+      </ClassNameBlacklist>
+      <ClassNameModifiers>
+        <ClassNameModifier Search="Dictionary" Replace="MappingKeysAndValuesDictionaryAdapter" />
+      </ClassNameModifiers>
+    </SubclassCombinationImplementations>
+    <SubclassCombinationImplementations Namespace="ComposableCollections.Dictionary.Adapters" BaseClass="MappingKeysAndValuesReadOnlyDictionaryAdapter"
+                                        AllowDifferentTypeParameters="true" Folder="Dictionary/Adapters">
+      <ClassNameBlacklist>
+        <ClassName>Queryable</ClassName>
+        <ClassName>ReadCached</ClassName>
+        <ClassName>ReadWriteCached</ClassName>
+      </ClassNameBlacklist>
+      <ClassNameWhitelist>
+        <ClassName>ReadOnly</ClassName>
+      </ClassNameWhitelist>
+      <ClassNameModifiers>
+        <ClassNameModifier Search="Dictionary" Replace="MappingKeysAndValuesDictionaryAdapter" />
+      </ClassNameModifiers>
+    </SubclassCombinationImplementations>
+    <SubclassCombinationImplementations Namespace="ComposableCollections.Dictionary.Adapters" BaseClass="MappingValuesDictionaryAdapter"
+                                        AllowDifferentTypeParameters="true" Folder="Dictionary/Adapters">
+      <ClassNameBlacklist>
+        <ClassName>Queryable</ClassName>
+      </ClassNameBlacklist>
+      <ClassNameModifiers>
+        <ClassNameModifier Search="Dictionary" Replace="MappingValuesDictionaryAdapter" />
+      </ClassNameModifiers>
+    </SubclassCombinationImplementations>
+    <SubclassCombinationImplementations Namespace="ComposableCollections.Dictionary.Adapters" BaseClass="MappingValuesReadOnlyDictionaryAdapter"
+                                        AllowDifferentTypeParameters="true" Folder="Dictionary/Adapters">
+      <ClassNameBlacklist>
+        <ClassName>Queryable</ClassName>
+      </ClassNameBlacklist>
+      <ClassNameWhitelist>
+        <ClassName>ReadOnly</ClassName>
+      </ClassNameWhitelist>
+      <ClassNameModifiers>
+        <ClassNameModifier Search="Dictionary" Replace="MappingValuesDictionaryAdapter" />
+      </ClassNameModifiers>
+    </SubclassCombinationImplementations>
+
+
+
+    <SubclassCombinationImplementations Namespace="ComposableCollections.Dictionary.Adapters" BaseClass="QueryableMappingKeysAndValuesDictionaryAdapter"
+                                        AllowDifferentTypeParameters="true" Folder="Dictionary/Adapters">
+      <ClassNameBlacklist>
+        <ClassName>ReadCached</ClassName>
+        <ClassName>ReadWriteCached</ClassName>
+      </ClassNameBlacklist>
+      <ClassNameWhitelist>
+        <ClassName>Queryable</ClassName>
+      </ClassNameWhitelist>
+      <ClassNameModifiers>
+        <ClassNameModifier Search="Dictionary" Replace="MappingKeysAndValuesDictionaryAdapter" />
+      </ClassNameModifiers>
+    </SubclassCombinationImplementations>
+    <SubclassCombinationImplementations Namespace="ComposableCollections.Dictionary.Adapters" BaseClass="QueryableMappingKeysAndValuesReadOnlyDictionaryAdapter"
+                                        AllowDifferentTypeParameters="true" Folder="Dictionary/Adapters">
+      <ClassNameBlacklist>
+        <ClassName>ReadCached</ClassName>
+        <ClassName>ReadWriteCached</ClassName>
+      </ClassNameBlacklist>
+      <ClassNameWhitelist>
+        <ClassName>ReadOnly</ClassName>
+        <ClassName>Queryable</ClassName>
+      </ClassNameWhitelist>
+      <ClassNameModifiers>
+        <ClassNameModifier Search="Dictionary" Replace="MappingKeysAndValuesDictionaryAdapter" />
+      </ClassNameModifiers>
+    </SubclassCombinationImplementations>
+    <SubclassCombinationImplementations Namespace="ComposableCollections.Dictionary.Adapters" BaseClass="QueryableMappingValuesDictionaryAdapter"
+                                        AllowDifferentTypeParameters="true" Folder="Dictionary/Adapters">
+      <ClassNameWhitelist>
+        <ClassName>Queryable</ClassName>
+      </ClassNameWhitelist>
+      <ClassNameModifiers>
+        <ClassNameModifier Search="Dictionary" Replace="MappingValuesDictionaryAdapter" />
+      </ClassNameModifiers>
+    </SubclassCombinationImplementations>
+    <SubclassCombinationImplementations Namespace="ComposableCollections.Dictionary.Adapters" BaseClass="QueryableMappingValuesReadOnlyDictionaryAdapter"
+                                        AllowDifferentTypeParameters="true" Folder="Dictionary/Adapters">
+      <ClassNameWhitelist>
+        <ClassName>ReadOnly</ClassName>
+        <ClassName>Queryable</ClassName>
+      </ClassNameWhitelist>
+      <ClassNameModifiers>
+        <ClassNameModifier Search="Dictionary" Replace="MappingValuesDictionaryAdapter" />
+      </ClassNameModifiers>
+    </SubclassCombinationImplementations>
+
+
+
+    <SubclassCombinationImplementations Namespace="ComposableCollections.Dictionary.Adapters" BaseClass="ReadCachedQueryableMappingKeysAndValuesDictionaryAdapter"
+                                        AllowDifferentTypeParameters="true" Folder="Dictionary/Adapters">
+      <ClassNameWhitelist>
+        <ClassName>Queryable</ClassName>
+      </ClassNameWhitelist>
+      <ClassNameModifiers>
+        <ClassNameModifier Search="Dictionary" Replace="MappingKeysAndValuesDictionaryAdapter" />
+      </ClassNameModifiers>
+    </SubclassCombinationImplementations>
+    <SubclassCombinationImplementations Namespace="ComposableCollections.Dictionary.Adapters" BaseClass="ReadCachedQueryableMappingKeysAndValuesReadOnlyDictionaryAdapter"
+                                        AllowDifferentTypeParameters="true" Folder="Dictionary/Adapters">
+      <ClassNameWhitelist>
+        <ClassName>ReadOnly</ClassName>
+        <ClassName>Queryable</ClassName>
+      </ClassNameWhitelist>
+      <ClassNameModifiers>
+        <ClassNameModifier Search="Dictionary" Replace="MappingKeysAndValuesDictionaryAdapter" />
+      </ClassNameModifiers>
+    </SubclassCombinationImplementations>
+    <SubclassCombinationImplementations Namespace="ComposableCollections.Dictionary.Adapters" BaseClass="ReadCachedMappingKeysAndValuesDictionaryAdapter"
+                                        AllowDifferentTypeParameters="true" Folder="Dictionary/Adapters">
+      <ClassNameBlacklist>
+        <ClassName>Queryable</ClassName>
+      </ClassNameBlacklist>
+      <ClassNameModifiers>
+        <ClassNameModifier Search="Dictionary" Replace="MappingKeysAndValuesDictionaryAdapter" />
+      </ClassNameModifiers>
+    </SubclassCombinationImplementations>
+    <SubclassCombinationImplementations Namespace="ComposableCollections.Dictionary.Adapters" BaseClass="ReadCachedMappingKeysAndValuesReadOnlyDictionaryAdapter"
+                                        AllowDifferentTypeParameters="true" Folder="Dictionary/Adapters">
+      <ClassNameBlacklist>
+        <ClassName>Queryable</ClassName>
+      </ClassNameBlacklist>
+      <ClassNameWhitelist>
+        <ClassName>ReadOnly</ClassName>
+      </ClassNameWhitelist>
+      <ClassNameModifiers>
+        <ClassNameModifier Search="Dictionary" Replace="MappingKeysAndValuesDictionaryAdapter" />
+      </ClassNameModifiers>
+    </SubclassCombinationImplementations>
+
+
+
+
+    <ConstructorExtensionMethods Namespace="ComposableCollections" ExtensionMethodName="WithMapping">
+      <BaseClasses>
+        <BaseClass>MappingKeysAndValuesDictionaryAdapter</BaseClass>
+        <BaseClass>MappingKeysAndValuesReadOnlyDictionaryAdapter</BaseClass>
+        <BaseClass>MappingValuesDictionaryAdapter</BaseClass>
+        <BaseClass>MappingValuesReadOnlyDictionaryAdapter</BaseClass>
+      </BaseClasses>
+    </ConstructorExtensionMethods>-->
+  </CodeGenerators>
+</FluentApiSourceGenerator>
