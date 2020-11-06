@@ -5,12 +5,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ComposableCollections" Version="1.0.0-alpha0090" />
+    <PackageReference Include="ComposableCollections" Version="1.0.0-alpha0119" />
     <PackageReference Include="GenericNumbers" Version="1.1.0-alpha0031" />
     <PackageReference Include="MoreCollections" Version="1.1.0-alpha0091" />
     <PackageReference Include="System.Reactive" Version="4.4.1" />
     <PackageReference Include="System.Runtime.Serialization.Primitives" Version="4.3.0" />
     <PackageReference Include="UtilityDisposables" Version="1.1.0-alpha0006" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Dictionary\Adapters" />
+    <Folder Include="Dictionary\Anonymous" />
+    <Folder Include="Dictionary\Decorators" />
   </ItemGroup>
 
 </Project>

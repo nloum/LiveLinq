@@ -30,7 +30,7 @@
         <PreExistingInterface>ComposableCollections.Dictionary.Interfaces.IWriteCachedDisposableQueryableDictionary[TKey, TValue]</PreExistingInterface>
         <PreExistingInterface>ComposableCollections.Dictionary.Interfaces.IWriteCachedQueryableDictionary[TKey, TValue]</PreExistingInterface>
         <PreExistingInterface>ComposableCollections.Dictionary.Interfaces.IWriteCachedDictionary[TKey, TValue]</PreExistingInterface>
-        <PreExistingInterface>ComposableCollections.Dictionary.Interfaces.IObservableReadOnlyDictionary[TKey, TValue]</PreExistingInterface>
+        <PreExistingInterface>LiveLinq.Dictionary.Interfaces.IObservableReadOnlyDictionary[TKey, TValue]</PreExistingInterface>
       </PreExistingInterfaces>
       <InterfaceNameBlacklist>
         <Regex>ReadOnly.*Write</Regex>
@@ -38,8 +38,9 @@
         <Regex>Cached.*Cached</Regex>
       </InterfaceNameBlacklist>
       <InterfaceNameBuilders>
-        <InterfaceNameBuilder Search="^ReadOnly$" Replace="IComposableReadOnlyDictionary" />
-        <InterfaceNameBuilder Search="^$" Replace="IComposableDictionary" />
+        <InterfaceNameBuilder Search="ReadCachedWriteCached" Replace="ReadWriteCached" />
+        <InterfaceNameBuilder Search="^ReadOnly$" Replace="ComposableReadOnly" />
+        <InterfaceNameBuilder Search="^$" Replace="Composable" />
         <InterfaceNameBuilder Search="(.+)" Replace="I$1Dictionary" />
       </InterfaceNameBuilders>
       <InterfaceNameModifiers>
@@ -87,52 +88,68 @@
         </InterfaceNameModifier>
       </InterfaceNameModifiers>
     </CombinationInterfaces>
-    <!--<AnonymousImplementations Namespace="ComposableCollections.Dictionary.Anonymous" Folder="Dictionary/Anonymous">
+    <AnonymousImplementations Namespace="LiveLinq.Dictionary.Anonymous" Folder="Dictionary/Anonymous">
       <AllowedArguments>
         <AllowedArgument>IComposableReadOnlyDictionary</AllowedArgument>
         <AllowedArgument>IComposableDictionary</AllowedArgument>
       </AllowedArguments>
       <InterfacesToImplement>
-        <Interface>IDisposableDictionary</Interface>
-        <Interface>IDisposableQueryableDictionary</Interface>
-        <Interface>IDisposableQueryableReadOnlyDictionary</Interface>
-        <Interface>IDisposableReadOnlyDictionary</Interface>
-        <Interface>IQueryableDictionary</Interface>
-        <Interface>IQueryableReadOnlyDictionary</Interface>
-        <Interface>IReadCachedDisposableDictionary</Interface>
-        <Interface>IReadCachedDisposableQueryableDictionary</Interface>
-        <Interface>IReadCachedDisposableQueryableReadOnlyDictionary</Interface>
-        <Interface>IReadCachedDisposableReadOnlyDictionary</Interface>
-        <Interface>IReadCachedQueryableDictionary</Interface>
-        <Interface>IReadCachedQueryableReadOnlyDictionary</Interface>
-        <Interface>IReadWriteCachedDisposableDictionary</Interface>
-        <Interface>IReadWriteCachedDisposableQueryableDictionary</Interface>
-        <Interface>IReadWriteCachedQueryableDictionary</Interface>
-        <Interface>IWriteCachedDisposableDictionary</Interface>
-        <Interface>IWriteCachedDisposableQueryableDictionary</Interface>
-        <Interface>IWriteCachedQueryableDictionary</Interface>
+        <Interface>IObservableDictionary</Interface>
+        <Interface>IObservableDisposableDictionary</Interface>
+        <Interface>IObservableDisposableQueryableDictionary</Interface>
+        <Interface>IObservableDisposableQueryableReadOnlyDictionary</Interface>
+        <Interface>IObservableDisposableReadOnlyDictionary</Interface>
+        <Interface>IObservableQueryableDictionary</Interface>
+        <Interface>IObservableQueryableReadOnlyDictionary</Interface>
+        <Interface>IObservableReadCachedDictionary</Interface>
+        <Interface>IObservableReadCachedDisposableDictionary</Interface>
+        <Interface>IObservableReadCachedDisposableQueryableDictionary</Interface>
+        <Interface>IObservableReadCachedDisposableQueryableReadOnlyDictionary</Interface>
+        <Interface>IObservableReadCachedDisposableReadOnlyDictionary</Interface>
+        <Interface>IObservableReadCachedQueryableDictionary</Interface>
+        <Interface>IObservableReadCachedQueryableReadOnlyDictionary</Interface>
+        <Interface>IObservableReadCachedReadOnlyDictionary</Interface>
+        <Interface>IObservableReadOnlyDictionary</Interface>
+        <Interface>IObservableReadWriteCachedDictionary</Interface>
+        <Interface>IObservableReadWriteCachedDisposableDictionary</Interface>
+        <Interface>IObservableReadWriteCachedDisposableQueryableDictionary</Interface>
+        <Interface>IObservableReadWriteCachedQueryableDictionary</Interface>
+        <Interface>IObservableWriteCachedDictionary</Interface>
+        <Interface>IObservableWriteCachedDisposableDictionary</Interface>
+        <Interface>IObservableWriteCachedDisposableQueryableDictionary</Interface>
+        <Interface>IObservableWriteCachedQueryableDictionary</Interface>
       </InterfacesToImplement>
     </AnonymousImplementations>
-    <DecoratorBaseClasses Namespace="ComposableCollections.Dictionary.Decorators" Folder="Dictionary/Decorators">
+    <DecoratorBaseClasses Namespace="LiveLinq.Dictionary.Decorators" Folder="Dictionary/Decorators">
       <InterfacesToImplement>
-        <Interface>IDisposableQueryableDictionary</Interface>
-        <Interface>IDisposableQueryableReadOnlyDictionary</Interface>
-        <Interface>IReadCachedDisposableDictionary</Interface>
-        <Interface>IReadCachedDisposableQueryableDictionary</Interface>
-        <Interface>IReadCachedDisposableQueryableReadOnlyDictionary</Interface>
-        <Interface>IReadCachedDisposableReadOnlyDictionary</Interface>
-        <Interface>IReadCachedQueryableDictionary</Interface>
-        <Interface>IReadCachedQueryableReadOnlyDictionary</Interface>
-        <Interface>IReadWriteCachedDisposableDictionary</Interface>
-        <Interface>IReadWriteCachedDisposableQueryableDictionary</Interface>
-        <Interface>IReadWriteCachedQueryableDictionary</Interface>
-        <Interface>IWriteCachedDisposableDictionary</Interface>
-        <Interface>IWriteCachedDisposableQueryableDictionary</Interface>
-        <Interface>IWriteCachedQueryableDictionary</Interface>
+        <Interface>IObservableDictionary</Interface>
+        <Interface>IObservableDisposableDictionary</Interface>
+        <Interface>IObservableDisposableQueryableDictionary</Interface>
+        <Interface>IObservableDisposableQueryableReadOnlyDictionary</Interface>
+        <Interface>IObservableDisposableReadOnlyDictionary</Interface>
+        <Interface>IObservableQueryableDictionary</Interface>
+        <Interface>IObservableQueryableReadOnlyDictionary</Interface>
+        <Interface>IObservableReadCachedDictionary</Interface>
+        <Interface>IObservableReadCachedDisposableDictionary</Interface>
+        <Interface>IObservableReadCachedDisposableQueryableDictionary</Interface>
+        <Interface>IObservableReadCachedDisposableQueryableReadOnlyDictionary</Interface>
+        <Interface>IObservableReadCachedDisposableReadOnlyDictionary</Interface>
+        <Interface>IObservableReadCachedQueryableDictionary</Interface>
+        <Interface>IObservableReadCachedQueryableReadOnlyDictionary</Interface>
+        <Interface>IObservableReadCachedReadOnlyDictionary</Interface>
+        <Interface>IObservableReadOnlyDictionary</Interface>
+        <Interface>IObservableReadWriteCachedDictionary</Interface>
+        <Interface>IObservableReadWriteCachedDisposableDictionary</Interface>
+        <Interface>IObservableReadWriteCachedDisposableQueryableDictionary</Interface>
+        <Interface>IObservableReadWriteCachedQueryableDictionary</Interface>
+        <Interface>IObservableWriteCachedDictionary</Interface>
+        <Interface>IObservableWriteCachedDisposableDictionary</Interface>
+        <Interface>IObservableWriteCachedDisposableQueryableDictionary</Interface>
+        <Interface>IObservableWriteCachedQueryableDictionary</Interface>
       </InterfacesToImplement>
     </DecoratorBaseClasses>
 
-    <SubclassCombinationImplementations Namespace="ComposableCollections.Dictionary.Adapters" BaseClass="ConcurrentWriteCachedDictionaryAdapter"
+    <!--<SubclassCombinationImplementations Namespace="ComposableCollections.Dictionary.Adapters" BaseClass="ConcurrentWriteCachedDictionaryAdapter"
                                         Folder="Dictionary/Adapters">
       <ClassNameModifiers>
         <ClassNameModifier Search="WriteCached" Replace="ConcurrentWriteCached" />

@@ -23,7 +23,6 @@ using LiveLinq.Ordered;
 using MoreCollections;
 using LiveLinq.Dictionary;
 using LiveLinq.Core;
-using LiveLinq.Dictionary.Adapters;
 using LiveLinq.Dictionary.Interfaces;
 using LiveLinq.List;
 using LiveLinq.Set;
@@ -32,51 +31,6 @@ namespace LiveLinq
 {
     public static partial class Extensions
     {
-        #region WithBuiltInKey
-        
-        public static IObservableCachedDictionaryWithBuiltInKey<TKey, TValue> WithBuiltInKey<TKey, TValue>(this IObservableCachedDictionary<TKey, TValue> source, Func<TValue, TKey> getKey) {
-            return new ObservableCachedDictionaryWithBuiltInKeyAdapter<TKey, TValue>(source, getKey);
-        }
-        public static IObservableDictionaryWithBuiltInKey<TKey, TValue> WithBuiltInKey<TKey, TValue>(this IObservableDictionary<TKey, TValue> source, Func<TValue, TKey> getKey) {
-            return new ObservableDictionaryWithBuiltInKeyAdapter<TKey, TValue>(source, getKey, source.ToLiveLinq);
-        }
-        public static IObservableQueryableReadOnlyDictionaryWithBuiltInKey<TKey, TValue> WithBuiltInKey<TKey, TValue>(this IObservableQueryableReadOnlyDictionary<TKey, TValue> source, Func<TValue, TKey> getKey) {
-            return new ObservableQueryableReadOnlyDictionaryWithBuiltInKeyAdapter<TKey, TValue>(source, getKey);
-        }
-        public static IObservableQueryableDictionaryWithBuiltInKey<TKey, TValue> WithBuiltInKey<TKey, TValue>(this IObservableQueryableDictionary<TKey, TValue> source, Func<TValue, TKey> getKey) {
-            return new ObservableQueryableDictionaryWithBuiltInKeyAdapter<TKey, TValue>(source, getKey);
-        }
-        public static IObservableCachedQueryableDictionaryWithBuiltInKey<TKey, TValue> WithBuiltInKey<TKey, TValue>(this IObservableCachedQueryableDictionary<TKey, TValue> source, Func<TValue, TKey> getKey) {
-            return new ObservableCachedQueryableDictionaryWithBuiltInKeyAdapter<TKey, TValue>(source, getKey);
-        }
-        public static IObservableReadOnlyDictionaryWithBuiltInKey<TKey, TValue> WithBuiltInKey<TKey, TValue>(this IObservableReadOnlyDictionary<TKey, TValue> source, Func<TValue, TKey> getKey) {
-            return new ObservableReadOnlyDictionaryWithBuiltInKeyAdapter<TKey, TValue>(source, getKey);
-        }
-
-        public static IReadWriteFactory<IObservableQueryableReadOnlyDictionaryWithBuiltInKey<TKey, TValue>, IObservableCachedQueryableDictionaryWithBuiltInKey<TKey, TValue>> WithBuiltInKey<TKey, TValue>(
-            this IReadWriteFactory<IObservableQueryableReadOnlyDictionary<TKey, TValue>, IObservableCachedQueryableDictionary<TKey, TValue>> source, Func<TValue, TKey> getKey)
-        {
-            return source.Select(readOnly => readOnly.WithBuiltInKey(getKey),
-                readWrite => readWrite.WithBuiltInKey(getKey));
-        }
-        public static IReadWriteFactory<IObservableQueryableReadOnlyDictionaryWithBuiltInKey<TKey, TValue>, IObservableQueryableDictionaryWithBuiltInKey<TKey, TValue>> WithBuiltInKey<TKey, TValue>(
-            this IReadWriteFactory<IObservableQueryableReadOnlyDictionary<TKey, TValue>, IObservableQueryableDictionary<TKey, TValue>> source, Func<TValue, TKey> getKey) {
-            return source.Select(readOnly => readOnly.WithBuiltInKey(getKey),
-                readWrite => readWrite.WithBuiltInKey(getKey));
-        }
-        public static IReadWriteFactory<IObservableReadOnlyDictionaryWithBuiltInKey<TKey, TValue>, IObservableCachedDictionaryWithBuiltInKey<TKey, TValue>> WithBuiltInKey<TKey, TValue>(
-            this IReadWriteFactory<IObservableReadOnlyDictionary<TKey, TValue>, IObservableCachedDictionary<TKey, TValue>> source, Func<TValue, TKey> getKey) {
-            return source.Select(readOnly => readOnly.WithBuiltInKey(getKey),
-                readWrite => readWrite.WithBuiltInKey(getKey));
-        }
-        public static IReadWriteFactory<IObservableReadOnlyDictionaryWithBuiltInKey<TKey, TValue>, IObservableDictionaryWithBuiltInKey<TKey, TValue>> WithBuiltInKey<TKey, TValue>(
-            this IReadWriteFactory<IObservableReadOnlyDictionary<TKey, TValue>, IObservableDictionary<TKey, TValue>> source, Func<TValue, TKey> getKey) {
-            return source.Select(readOnly => readOnly.WithBuiltInKey(getKey),
-                readWrite => readWrite.WithBuiltInKey(getKey));
-        }
-        
-        #endregion
-        
         /// <summary>
         /// A special ToReadOnlyObservableDictionary that works well for IDictionaryChanges{TKey, ISetChanges{TValue}}
         /// so that you can read the set results in each group easily. This works well for results from the .GroupBy
