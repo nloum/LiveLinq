@@ -4,14 +4,14 @@ using System.Collections.Generic;
 using ComposableCollections.Dictionary;
 using ComposableCollections.Dictionary.Interfaces;
 using ComposableCollections.Dictionary.Write;
-using LiveLinq.Dictionary.Interfaces;
 using SimpleMonads;
+using LiveLinq.Dictionary.Interfaces;
 
 namespace LiveLinq.Dictionary
 {
     public class DelegateObservableDictionary<TKey, TValue> : IObservableDictionary<TKey, TValue>
     {
-        private IObservableDictionary<TKey, TValue> _source;
+        private readonly IObservableDictionary<TKey, TValue> _source;
         
         public DelegateObservableDictionary(IObservableDictionary<TKey, TValue> source)
         {
@@ -21,16 +21,6 @@ namespace LiveLinq.Dictionary
         public void Dispose()
         {
             _source.Dispose();
-        }
-
-        protected DelegateObservableDictionary()
-        {
-            _source = null;
-        }
-
-        protected void Initialize(IObservableDictionary<TKey, TValue> wrapped)
-        {
-            _source = wrapped;
         }
 
         public void Write(IEnumerable<DictionaryWrite<TKey, TValue>> mutations, out IReadOnlyList<DictionaryWriteResult<TKey, TValue>> results)

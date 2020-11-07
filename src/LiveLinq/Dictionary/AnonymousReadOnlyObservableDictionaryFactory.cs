@@ -4,13 +4,13 @@ using ComposableCollections.Dictionary.Interfaces;
 namespace LiveLinq.Dictionary
 {
     public class
-        AnonymousReadOnlyObservableTransactionalDictionary<TKey, TValue> :
+        AnonymousReadOnlyObservableDictionaryFactory<TKey, TValue> :
             IReadOnlyObservableTransactionalDictionary<TKey, TValue>
     {
         private Func<IDisposableReadOnlyDictionary<TKey, TValue>> _beginRead;
         private Func<IDictionaryChangesStrict<TKey, TValue>> _toLiveLinq;
 
-        public AnonymousReadOnlyObservableTransactionalDictionary(Func<IDisposableReadOnlyDictionary<TKey, TValue>> beginRead, Func<IDictionaryChangesStrict<TKey, TValue>> toLiveLinq)
+        public AnonymousReadOnlyObservableDictionaryFactory(Func<IDisposableReadOnlyDictionary<TKey, TValue>> beginRead, Func<IDictionaryChangesStrict<TKey, TValue>> toLiveLinq)
         {
             _beginRead = beginRead;
             _toLiveLinq = toLiveLinq;

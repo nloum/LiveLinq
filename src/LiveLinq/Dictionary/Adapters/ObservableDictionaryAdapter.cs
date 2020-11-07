@@ -17,26 +17,26 @@ namespace LiveLinq.Dictionary
     /// </summary>
     /// <typeparam name="TKey">The dictionary key type</typeparam>
     /// <typeparam name="TValue">The dictionary value type</typeparam>
-    public class ObservableDictionaryDecorator<TKey, TValue> : ObservableDictionaryDecoratorBase<TKey, TValue>,
+    public class ObservableDictionaryAdapter<TKey, TValue> : ObservableDictionaryAdapterBase<TKey, TValue>,
         IObservableDictionary<TKey, TValue>
     {
         private readonly IObservable<IDictionaryChangeStrict<TKey, TValue>> _observable;
         
-        public ObservableDictionaryDecorator(IComposableDictionary<TKey, TValue> state) : this(state, new Subject<IDictionaryChangeStrict<TKey, TValue>>())
+        public ObservableDictionaryAdapter(IComposableDictionary<TKey, TValue> state) : this(state, new Subject<IDictionaryChangeStrict<TKey, TValue>>())
         {
         }
 
-        public ObservableDictionaryDecorator(IComposableDictionary<TKey, TValue> state, Subject<IDictionaryChangeStrict<TKey, TValue>> subject) : this(state, subject, subject.OnNext)
+        public ObservableDictionaryAdapter(IComposableDictionary<TKey, TValue> state, Subject<IDictionaryChangeStrict<TKey, TValue>> subject) : this(state, subject, subject.OnNext)
         {
             DisposableCollector.Disposes(subject);
         }
         
-        public ObservableDictionaryDecorator(IComposableDictionary<TKey, TValue> state, IObservable<IDictionaryChangeStrict<TKey, TValue>> observable, Action<IDictionaryChangeStrict<TKey, TValue>> onChange) : base(state, onChange)
+        public ObservableDictionaryAdapter(IComposableDictionary<TKey, TValue> state, IObservable<IDictionaryChangeStrict<TKey, TValue>> observable, Action<IDictionaryChangeStrict<TKey, TValue>> onChange) : base(state, onChange)
         {
             _observable = observable;
         }
 
-        protected ObservableDictionaryDecorator()
+        protected ObservableDictionaryAdapter()
         {
             var subject = new Subject<IDictionaryChangeStrict<TKey, TValue>>();
             DisposableCollector.Disposes(subject);

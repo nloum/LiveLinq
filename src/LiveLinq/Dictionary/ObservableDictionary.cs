@@ -20,11 +20,15 @@ namespace LiveLinq.Dictionary
     {
         internal DisposableCollector AssociatedSubscriptions { get; } = new DisposableCollector();
 
-        private readonly ObservableDictionaryDecorator<TKey, TValue> _wrapped = new ObservableDictionaryDecorator<TKey, TValue>(new ConcurrentDictionary<TKey, TValue>());
+        private readonly ObservableDictionaryAdapter<TKey, TValue> _wrapped;
 
-        public ObservableDictionary()
+        public ObservableDictionary() : this(new ObservableDictionaryAdapter<TKey, TValue>(new ConcurrentDictionary<TKey, TValue>()))
         {
-            Initialize(_wrapped);
+        }
+
+        private ObservableDictionary(ObservableDictionaryAdapter<TKey, TValue> wrapped) : base(wrapped)
+        {
+            _wrapped = wrapped;
         }
 
         public void Dispose()

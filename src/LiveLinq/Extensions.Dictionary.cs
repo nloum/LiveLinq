@@ -15,8 +15,6 @@ using ComposableCollections.Common;
 using ComposableCollections.Dictionary;
 using ComposableCollections.Dictionary.Interfaces;
 using ComposableCollections.Dictionary.Sources;
-using ComposableCollections.Dictionary.WithBuiltInKey;
-using ComposableCollections.Dictionary.WithBuiltInKey.Interfaces;
 using SimpleMonads;
 using LiveLinq.Ordered;
 
@@ -31,36 +29,36 @@ namespace LiveLinq
 {
     public static partial class Extensions
     {
-        /// <summary>
-        /// A special ToReadOnlyObservableDictionary that works well for IDictionaryChanges{TKey, ISetChanges{TValue}}
-        /// so that you can read the set results in each group easily. This works well for results from the .GroupBy
-        /// LiveLinq method.
-        /// </summary>
-        public static IObservableReadOnlyDictionary<TKey, IObservableReadOnlySet<TValue>> ToReadOnlyObservableDictionary<TKey, TValue>(
-            this IDictionaryChanges<TKey, ISetChanges<TValue>> changes)
-        {
-            var result = new ObservableDictionaryGetOrDefault<TKey, ObservableSet<TValue>>(
-                (TKey key, out ObservableSet<TValue> value, out bool persist) =>
-                {
-                    persist = true;
-                    value = new ObservableSet<TValue>();
-                    return true;
-                });
-
-            var disposable = changes.Subscribe((key, setChanges) =>
-            {
-                return setChanges.Subscribe(value => result[key].Add(value), (value, _) => result[key].Remove(value));
-            }, (key, value, setChangesSubscription) =>
-            {
-                // TODO - remove the key/value pair from result if there are no subscriptions,
-                // so we don't have a memory leak as new groups get added.
-                setChangesSubscription.Dispose();
-            });
-
-            result.AssociatedSubscriptions.Disposes(disposable);
-
-            return result;
-        }
+        // /// <summary>
+        // /// A special ToReadOnlyObservableDictionary that works well for IDictionaryChanges{TKey, ISetChanges{TValue}}
+        // /// so that you can read the set results in each group easily. This works well for results from the .GroupBy
+        // /// LiveLinq method.
+        // /// </summary>
+        // public static IObservableReadOnlyDictionary<TKey, IObservableReadOnlySet<TValue>> ToReadOnlyObservableDictionary<TKey, TValue>(
+        //     this IDictionaryChanges<TKey, ISetChanges<TValue>> changes)
+        // {
+        //     var result = new ObservableDictionaryGetOrDefault<TKey, ObservableSet<TValue>>(
+        //         (TKey key, out ObservableSet<TValue> value, out bool persist) =>
+        //         {
+        //             persist = true;
+        //             value = new ObservableSet<TValue>();
+        //             return true;
+        //         });
+        //
+        //     var disposable = changes.Subscribe((key, setChanges) =>
+        //     {
+        //         return setChanges.Subscribe(value => result[key].Add(value), (value, _) => result[key].Remove(value));
+        //     }, (key, value, setChangesSubscription) =>
+        //     {
+        //         // TODO - remove the key/value pair from result if there are no subscriptions,
+        //         // so we don't have a memory leak as new groups get added.
+        //         setChangesSubscription.Dispose();
+        //     });
+        //
+        //     result.AssociatedSubscriptions.Disposes(disposable);
+        //
+        //     return result;
+        // }
         
         public static IDictionaryChangesStrict<TKey, TValue> OtherwiseEmpty<TKey, TValue>(
             this IMaybe<IDictionaryChangesStrict<TKey, TValue>> maybe)

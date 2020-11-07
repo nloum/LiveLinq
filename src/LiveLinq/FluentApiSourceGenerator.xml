@@ -148,7 +148,12 @@
         <Interface>IObservableWriteCachedQueryableDictionary</Interface>
       </InterfacesToImplement>
     </DecoratorBaseClasses>
-
+    <!--<SubclassCombinationImplementations Namespace="LiveLinq.Dictionary.Adapters" BaseClass="ObservableDictionaryAdapter"
+                                        Folder="Dictionary/Adapters">
+      <ClassNameModifiers>
+        <ClassNameModifier Search="Dictionary" Replace="DictionaryAdapter" />
+      </ClassNameModifiers>
+    </SubclassCombinationImplementations>-->
     <!--<SubclassCombinationImplementations Namespace="ComposableCollections.Dictionary.Adapters" BaseClass="ConcurrentWriteCachedDictionaryAdapter"
                                         Folder="Dictionary/Adapters">
       <ClassNameModifiers>

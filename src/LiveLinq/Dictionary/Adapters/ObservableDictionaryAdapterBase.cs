@@ -14,19 +14,19 @@ namespace LiveLinq.Dictionary
     /// <summary>
     /// This base class sends dictionary change events on the specified IObserver but provides no way to access them otherwise.
     /// </summary>
-    public class ObservableDictionaryDecoratorBase<TKey, TValue> : IComposableDictionary<TKey, TValue>
+    public class ObservableDictionaryAdapterBase<TKey, TValue> : IComposableDictionary<TKey, TValue>
     {
         private Action<IDictionaryChangeStrict<TKey, TValue>> _onChange;
         private IComposableDictionary<TKey, TValue> _state;
         public DisposableCollector DisposableCollector { get; } = new DisposableCollector();
 
-        public ObservableDictionaryDecoratorBase(IComposableDictionary<TKey, TValue> state, Action<IDictionaryChangeStrict<TKey, TValue>> onChange)
+        public ObservableDictionaryAdapterBase(IComposableDictionary<TKey, TValue> state, Action<IDictionaryChangeStrict<TKey, TValue>> onChange)
         {
             _state = state;
             _onChange = onChange;
         }
 
-        protected ObservableDictionaryDecoratorBase()
+        protected ObservableDictionaryAdapterBase()
         {
         }
 

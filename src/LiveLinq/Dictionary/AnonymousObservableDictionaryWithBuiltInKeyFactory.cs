@@ -1,18 +1,17 @@
 using System;
-using ComposableCollections.Dictionary;
-using ComposableCollections.Dictionary.WithBuiltInKey.Interfaces;
+using ComposableCollections.DictionaryWithBuiltInKey.Interfaces;
 
 namespace LiveLinq.Dictionary
 {
     public class
-        AnonymousObservableTransactionalDictionaryWithBuiltInKey<TKey, TValue> :
-            IObservableTransactionalDictionaryWithBuiltInKey<TKey, TValue>
+        AnonymousObservableDictionaryWithBuiltInKeyFactory<TKey, TValue> :
+            IObservableDictionaryWithBuiltInKeyFactory<TKey, TValue>
     {
         private Func<IDisposableReadOnlyDictionaryWithBuiltInKey<TKey, TValue>> _beginRead;
         private Func<IDisposableDictionaryWithBuiltInKey<TKey, TValue>> _beginWrite;
         private Func<IDictionaryChangesStrict<TKey, TValue>> _toLiveLinq;
 
-        public AnonymousObservableTransactionalDictionaryWithBuiltInKey(Func<IDisposableReadOnlyDictionaryWithBuiltInKey<TKey, TValue>> beginRead, Func<IDisposableDictionaryWithBuiltInKey<TKey, TValue>> beginWrite, Func<IDictionaryChangesStrict<TKey, TValue>> toLiveLinq)
+        public AnonymousObservableDictionaryWithBuiltInKeyFactory(Func<IDisposableReadOnlyDictionaryWithBuiltInKey<TKey, TValue>> beginRead, Func<IDisposableDictionaryWithBuiltInKey<TKey, TValue>> beginWrite, Func<IDictionaryChangesStrict<TKey, TValue>> toLiveLinq)
         {
             _beginRead = beginRead;
             _beginWrite = beginWrite;

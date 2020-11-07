@@ -1,6 +1,5 @@
 using ComposableCollections.Common;
-using ComposableCollections.Dictionary;
-using ComposableCollections.Dictionary.WithBuiltInKey.Interfaces;
+using ComposableCollections.DictionaryWithBuiltInKey.Interfaces;
 
 namespace LiveLinq.Dictionary
 {
