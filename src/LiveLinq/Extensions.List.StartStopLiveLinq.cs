@@ -9,12 +9,18 @@ using SimpleMonads;
 using MoreCollections;
 using LiveLinq.Core;
 using LiveLinq.List;
+using LiveLinq.List.Adapters;
 using static LiveLinq.Utility;
 
 namespace LiveLinq
 {
     public static partial class Extensions
     {
+        public static BindableListAdapter<TItem> WithBindability<TItem>(this IReadOnlyObservableList<TItem> source)
+        {
+            return new BindableListAdapter<TItem>(source);
+        }
+        
         /// <summary>
         /// Takes a non-strict LiveLinq query and turns it into a strict one. This tracks all the adds
         /// so that it knows the exact object that is being removed when a remove event comes from the source
