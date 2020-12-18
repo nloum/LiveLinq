@@ -59,6 +59,12 @@ namespace LiveLinq
         //
         //     return result;
         // }
+
+        public static BindableDictionaryAdapter<TKey, TValue> WithBindability<TKey, TValue>(
+            this IObservableReadOnlyDictionary<TKey, TValue> source)
+        {
+            return new BindableDictionaryAdapter<TKey, TValue>(source);
+        }
         
         public static IDictionaryChangesStrict<TKey, TValue> OtherwiseEmpty<TKey, TValue>(
             this IMaybe<IDictionaryChangesStrict<TKey, TValue>> maybe)
