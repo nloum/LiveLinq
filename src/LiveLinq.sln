@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiveLinq.CodeGenerator", "L
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentSourceGenerators", "..\..\FluentSourceGenerators\src\FluentSourceGenerators\FluentSourceGenerators.csproj", "{16A3B261-1F89-45E1-8BAD-2DF5CD56DD64}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DebuggableSourceGenerators", "..\..\FluentSourceGenerators\src\DebuggableSourceGenerators\DebuggableSourceGenerators.csproj", "{5FBD30C0-1AC8-4EB9-9E92-545FC1D1CD1B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,5 +34,9 @@ Global
 		{16A3B261-1F89-45E1-8BAD-2DF5CD56DD64}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{16A3B261-1F89-45E1-8BAD-2DF5CD56DD64}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{16A3B261-1F89-45E1-8BAD-2DF5CD56DD64}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5FBD30C0-1AC8-4EB9-9E92-545FC1D1CD1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5FBD30C0-1AC8-4EB9-9E92-545FC1D1CD1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5FBD30C0-1AC8-4EB9-9E92-545FC1D1CD1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5FBD30C0-1AC8-4EB9-9E92-545FC1D1CD1B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

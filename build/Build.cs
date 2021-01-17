@@ -98,11 +98,13 @@ class Build : NukeBuild
 		.Executes(() => {
 			var compilation = DebuggableSourceGenerators.DebuggableSourceGenerators.CompileProject(Solution, "LiveLinq");
 			
-			FluentSourceGenerator.Execute(SourceDirectory / "LiveLinq" / "FluentApiSourceGenerator.xml", compilation,
-				(fileName, contents) =>
-				{
-					 Console.WriteLine(fileName);
-				});
+			
+			
+			// FluentSourceGenerator.Execute(SourceDirectory / "LiveLinq" / "FluentApiSourceGenerator.xml", compilation,
+			// 	(fileName, contents) =>
+			// 	{
+			// 		 Console.WriteLine(fileName);
+			// 	});
         });
 
 	Target Test => _ => _
