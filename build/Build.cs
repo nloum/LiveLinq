@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using FluentSourceGenerators;
 using Nuke.Common;
 using Nuke.Common.CI;
 using Nuke.Common.CI.GitHubActions;
@@ -17,67 +19,65 @@ using static Nuke.Common.Tools.DotNet.DotNetTasks;
 [UnsetVisualStudioEnvironmentVariables]
 [GitHubActions("dotnetcore",
 	GitHubActionsImage.Ubuntu1804,
-	ImportSecrets = new[]{ "NUGET_API_KEY" },
+	ImportSecrets = new[] {"NUGET_API_KEY"},
 	AutoGenerate = true,
-	On = new [] { GitHubActionsTrigger.Push },
-	InvokedTargets = new [] {"Test", "Push"}
-	)]
+	On = new[] {GitHubActionsTrigger.Push},
+	InvokedTargets = new[] {"Test", "Push"}
+)]
 class Build : NukeBuild
 {
-    /// Support plugins are available for:
-    ///   - JetBrains ReSharper        https://nuke.build/resharper
-    ///   - JetBrains Rider            https://nuke.build/rider
-    ///   - Microsoft VisualStudio     https://nuke.build/visualstudio
-    ///   - Microsoft VSCode           https://nuke.build/vscode
+	/// Support plugins are available for:
+	///   - JetBrains ReSharper        https://nuke.build/resharper
+	///   - JetBrains Rider            https://nuke.build/rider
+	///   - Microsoft VisualStudio     https://nuke.build/visualstudio
+	///   - Microsoft VSCode           https://nuke.build/vscode
 
-    public static int Main() => Execute<Build>(x => x.Compile);
+	public static int Main() => Execute<Build>(x => x.Compile);
 
-    [Parameter("Configuration to build - Default is 'Debug' (local) or 'Release' (server)")]
-    readonly Configuration Configuration = IsLocalBuild ? Configuration.Debug : Configuration.Release;
-    [Parameter("NuGet server URL.")]
-	readonly string NugetSource = "https://api.nuget.org/v3/index.json";
-	[Parameter("API Key for the NuGet server.")]
-	readonly string NugetApiKey;
+	[Parameter("Configuration to build - Default is 'Debug' (local) or 'Release' (server)")]
+	readonly Configuration Configuration = IsLocalBuild ? Configuration.Debug : Configuration.Release;
 
-    [Solution]
-	readonly Solution Solution;
-	
-    AbsolutePath SourceDirectory => RootDirectory / "src";
-    AbsolutePath ArtifactsDirectory => RootDirectory / "artifacts";
-    AbsolutePath TestResultDirectory => ArtifactsDirectory / "test-results";
-    Project PackageProject => Solution.GetProject("LiveLinq");
-    IEnumerable<Project> TestProjects => Solution.GetProjects("*.Tests");
-    
-    Target Clean => _ => _
-        .Before(Restore)
-        .Executes(() =>
-        {
-            SourceDirectory.GlobDirectories("**/bin", "**/obj").ForEach(DeleteDirectory);
-            EnsureCleanDirectory(ArtifactsDirectory);
-        });
+	[Parameter("NuGet server URL.")] readonly string NugetSource = "https://api.nuget.org/v3/index.json";
+	[Parameter("API Key for the NuGet server.")] readonly string NugetApiKey;
 
-    Target Restore => _ => _
-        .Executes(() =>
-        {
-            DotNetRestore(s => s
-                .SetProjectFile(Solution)
+	[Solution] readonly Solution Solution;
+
+	AbsolutePath SourceDirectory => RootDirectory / "src";
+	AbsolutePath ArtifactsDirectory => RootDirectory / "artifacts";
+	AbsolutePath TestResultDirectory => ArtifactsDirectory / "test-results";
+	Project PackageProject => Solution.GetProject("LiveLinq");
+	IEnumerable<Project> TestProjects => Solution.GetProjects("*.Tests");
+
+	Target Clean => _ => _
+		.Before(Restore)
+		.Executes(() =>
+		{
+			SourceDirectory.GlobDirectories("**/bin", "**/obj").ForEach(DeleteDirectory);
+			EnsureCleanDirectory(ArtifactsDirectory);
+		});
+
+	Target Restore => _ => _
+		.Executes(() =>
+		{
+			DotNetRestore(s => s
+				.SetProjectFile(Solution)
 			);
-        });
+		});
 
-    Target Compile => _ => _
-        .DependsOn(Restore)
-        .Executes(() =>
-        {
-            DotNetBuild(s => s
-                .EnableNoRestore()
-                .SetProjectFile(Solution)
-                .SetConfiguration(Configuration)
-                .SetAssemblyVersion(GitVersion.AssemblySemVer)
-                .SetFileVersion(GitVersion.AssemblySemFileVer)
-                .SetInformationalVersion(GitVersion.InformationalVersion)
+	Target Compile => _ => _
+		.DependsOn(Restore)
+		.Executes(() =>
+		{
+			DotNetBuild(s => s
+				.EnableNoRestore()
+				.SetProjectFile(Solution)
+				.SetConfiguration(Configuration)
+				.SetAssemblyVersion(GitVersion.AssemblySemVer)
+				.SetFileVersion(GitVersion.AssemblySemFileVer)
+				.SetInformationalVersion(GitVersion.InformationalVersion)
 			);
 
-            DotNetPublish(s => s
+			DotNetPublish(s => s
 				.EnableNoRestore()
 				.EnableNoBuild()
 				.SetConfiguration(Configuration)
@@ -85,16 +85,27 @@ class Build : NukeBuild
 				.SetFileVersion(GitVersion.AssemblySemFileVer)
 				.SetInformationalVersion(GitVersion.InformationalVersion)
 				.CombineWith(
-					from project in new[] { PackageProject }
+					from project in new[] {PackageProject}
 					from framework in project.GetTargetFrameworks()
-                    select new { project, framework }, (cs, v) => cs
+					select new {project, framework}, (cs, v) => cs
 						.SetProject(v.project)
 						.SetFramework(v.framework)
 				)
 			);
+		});
+
+	Target GenerateCode => _ => _
+		.Executes(() => {
+			var compilation = DebuggableSourceGenerators.DebuggableSourceGenerators.CompileProject(Solution, "LiveLinq");
+			
+			FluentSourceGenerator.Execute(SourceDirectory / "LiveLinq" / "FluentApiSourceGenerator.xml", compilation,
+				(fileName, contents) =>
+				{
+					 Console.WriteLine(fileName);
+				});
         });
-    
-    Target Test => _ => _
+
+	Target Test => _ => _
         .DependsOn(Compile)
         .Produces(TestResultDirectory / "*.trx")
         .Produces(TestResultDirectory / "*.xml")
@@ -132,7 +143,7 @@ class Build : NukeBuild
 				.SetSymbolPackageFormat(DotNetSymbolPackageFormat.snupkg)
             );
         });
-
+    
     Target Push => _ => _
         .DependsOn(Pack)
         .Consumes(Pack)
