@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using _build;
 using FluentSourceGenerators;
 using Nuke.Common;
 using Nuke.Common.CI;
@@ -97,15 +98,18 @@ class Build : NukeBuild
 	Target GenerateCode => _ => _
 		.Executes(() => {
 			var compilation = DebuggableSourceGenerators.DebuggableSourceGenerators.CompileProject(Solution, "LiveLinq");
-			
-			
-			
+
+			var codeIndexingService = new CodeIndexingService();
+			codeIndexingService.Add(compilation);
+
+			var iface = codeIndexingService.GetType("IObservableReadOnlyDictionary", 2).Value;
+
 			// FluentSourceGenerator.Execute(SourceDirectory / "LiveLinq" / "FluentApiSourceGenerator.xml", compilation,
 			// 	(fileName, contents) =>
 			// 	{
 			// 		 Console.WriteLine(fileName);
 			// 	});
-        });
+		});
 
 	Target Test => _ => _
         .DependsOn(Compile)
