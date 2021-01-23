@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using _build;
+using DebuggableSourceGenerators;
 using FluentSourceGenerators;
 using Nuke.Common;
 using Nuke.Common.CI;
@@ -97,12 +98,13 @@ class Build : NukeBuild
 
 	Target GenerateCode => _ => _
 		.Executes(() => {
-			var compilation = DebuggableSourceGenerators.DebuggableSourceGenerators.CompileProject(Solution, "LiveLinq");
+			var codeIndex = new CodeIndex();
 
-			var codeIndexingService = new CodeIndexingService();
-			codeIndexingService.Add(compilation);
+			codeIndex.AddProject(Solution, "LiveLinq");
 
-			var iface = codeIndexingService.GetType("IObservableReadOnlyDictionary", 2).Value;
+			var iface = codeIndex.ResolveType("LiveLinq.Dictionary.Interfaces.IObservableReadOnlyDictionary", 2);
+			
+			var iface2 = codeIndex.ResolveType("ComposableCollections.Dictionary.Interfaces.IDisposableQueryableDictionary", 2);
 
 			// FluentSourceGenerator.Execute(SourceDirectory / "LiveLinq" / "FluentApiSourceGenerator.xml", compilation,
 			// 	(fileName, contents) =>
