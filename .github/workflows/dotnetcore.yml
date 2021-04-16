@@ -24,11 +24,7 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v1
-      - name: Run './build.cmd Test Push'
-        run: ./build.cmd Test Push
+      - name: Run './build.cmd Push'
+        run: ./build.cmd Push
         env:
-            NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
-      - uses: actions/upload-artifact@v1
-        with:
-          name: test-results
-          path: artifacts/test-results
+            NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}\
