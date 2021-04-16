@@ -98,7 +98,7 @@ class Build : NukeBuild
 
 	Target GenerateCode => _ => _
 		.Executes(() => {
-			var codeIndex = new CodeIndex();
+			var codeIndex = new CodeIndexBuilder();
 
 			codeIndex.AddProject(Solution, "LiveLinq");
 

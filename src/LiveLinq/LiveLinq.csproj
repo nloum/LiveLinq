@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="FluentSourceGenerators" Version="1.0.0-alpha0005" />
-    <PackageReference Include="ComposableCollections" Version="1.0.0-alpha0148" />
+    <PackageReference Include="ComposableCollections" Version="1.0.0-alpha0150" />
     <PackageReference Include="GenericNumbers" Version="1.1.0-alpha0031" />
     <PackageReference Include="MoreCollections" Version="1.1.0-alpha0091" />
     <PackageReference Include="System.Reactive" Version="4.4.1" />

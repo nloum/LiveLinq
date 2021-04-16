@@ -2,11 +2,15 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <TargetFramework>net5.0</TargetFramework>
     </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="IoFluently" Version="1.2.0-alpha0140" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\FluentSourceGenerators\src\DebuggableSourceGenerators\DebuggableSourceGenerators.csproj" />
     </ItemGroup>
 
 </Project>
