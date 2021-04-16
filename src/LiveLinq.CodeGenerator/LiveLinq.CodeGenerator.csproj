@@ -9,8 +9,4 @@
       <PackageReference Include="IoFluently" Version="1.2.0-alpha0140" />
     </ItemGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\..\..\FluentSourceGenerators\src\DebuggableSourceGenerators\DebuggableSourceGenerators.csproj" />
-    </ItemGroup>
-
 </Project>
