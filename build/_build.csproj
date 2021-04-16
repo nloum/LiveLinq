@@ -15,9 +15,4 @@
     <PackageDownload Include="dotnet-reportgenerator-globaltool" Version="[4.5.8]" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\FluentSourceGenerators\src\DebuggableSourceGenerators\DebuggableSourceGenerators.csproj" />
-    <ProjectReference Include="..\..\FluentSourceGenerators\src\FluentSourceGenerators\FluentSourceGenerators.csproj" />
-  </ItemGroup>
-
 </Project>

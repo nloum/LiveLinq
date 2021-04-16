@@ -1,9 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using _build;
-using DebuggableSourceGenerators;
-using FluentSourceGenerators;
 using Nuke.Common;
 using Nuke.Common.CI;
 using Nuke.Common.CI.GitHubActions;
@@ -94,23 +91,6 @@ class Build : NukeBuild
 						.SetFramework(v.framework)
 				)
 			);
-		});
-
-	Target GenerateCode => _ => _
-		.Executes(() => {
-			var codeIndex = new CodeIndexBuilder();
-
-			codeIndex.AddProject(Solution, "LiveLinq");
-
-			var iface = codeIndex.ResolveType("LiveLinq.Dictionary.Interfaces.IObservableReadOnlyDictionary", 2);
-			
-			var iface2 = codeIndex.ResolveType("ComposableCollections.Dictionary.Interfaces.IDisposableQueryableDictionary", 2);
-
-			// FluentSourceGenerator.Execute(SourceDirectory / "LiveLinq" / "FluentApiSourceGenerator.xml", compilation,
-			// 	(fileName, contents) =>
-			// 	{
-			// 		 Console.WriteLine(fileName);
-			// 	});
 		});
 
 	Target Test => _ => _
