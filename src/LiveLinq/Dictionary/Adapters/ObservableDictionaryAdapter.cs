@@ -36,13 +36,6 @@ namespace LiveLinq.Dictionary
             _observable = observable;
         }
 
-        protected ObservableDictionaryAdapter()
-        {
-            var subject = new Subject<IDictionaryChangeStrict<TKey, TValue>>();
-            DisposableCollector.Disposes(subject);
-            _observable = subject;
-        }
-
         public IDictionaryChangesStrict<TKey, TValue> ToLiveLinq()
         {
             return Observable.Create<IDictionaryChangeStrict<TKey, TValue>>(observer =>
