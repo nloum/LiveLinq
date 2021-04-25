@@ -41,8 +41,8 @@ using LiveLinq.Dictionary.Interfaces;");
 			    writer.WriteLine();
 
 			    writer.WriteLine();
-			    writer.WriteLine("public static IObservableReadOnlyDictionary<TKey, TValue> WithLiveLinq<TKey, TValue>(this IComposableReadOnlyDictionary<TKey, TValue> source, IObservable<IDictionaryChangeStrict<TKey, TValue>> observable, Action<IDictionaryChangeStrict<TKey, TValue>> onChange) {");
-			    writer.WriteLine("return new ObservableDictionaryAdapter<TKey, TValue>(source, observable, onChange);");
+			    writer.WriteLine("public static IObservableReadOnlyDictionary<TKey, TValue> WithLiveLinq<TKey, TValue>(this IComposableReadOnlyDictionary<TKey, TValue> source, IObservable<IDictionaryChangeStrict<TKey, TValue>> observable) {");
+			    writer.WriteLine("return new ObservableReadOnlyDictionaryAdapter<TKey, TValue>(source, observable);");
 			    writer.WriteLine("}");
 			    writer.WriteLine();
 			    

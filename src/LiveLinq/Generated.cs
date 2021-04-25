@@ -18,8 +18,8 @@ return new ObservableDictionaryAdapter<TKey, TValue>(source, subject);
 }
 
 
-public static IObservableReadOnlyDictionary<TKey, TValue> WithLiveLinq<TKey, TValue>(this IComposableReadOnlyDictionary<TKey, TValue> source, IObservable<IDictionaryChangeStrict<TKey, TValue>> observable, Action<IDictionaryChangeStrict<TKey, TValue>> onChange) {
-return new ObservableDictionaryAdapter<TKey, TValue>(source, observable, onChange);
+public static IObservableReadOnlyDictionary<TKey, TValue> WithLiveLinq<TKey, TValue>(this IComposableReadOnlyDictionary<TKey, TValue> source, IObservable<IDictionaryChangeStrict<TKey, TValue>> observable) {
+return new ObservableReadOnlyDictionaryAdapter<TKey, TValue>(source, observable);
 }
 
 
