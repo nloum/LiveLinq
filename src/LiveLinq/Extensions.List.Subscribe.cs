@@ -224,7 +224,7 @@ namespace LiveLinq
                             {
                                 var oldRange = NumbersUtility.Range( change.Range.LowerBound.ChangeStrictness(false).Value, mostRecentState.State.Count );
                                 var newRange = NumbersUtility.Range(change.Range.UpperBound.ChangeStrictness(true).Value, change.Range.UpperBound.ChangeStrictness(true).Value + oldRange.Size );
-                                onMove(mostRecentState.State.TakeEfficiently(change.Range), oldRange, newRange);
+                                onMove(mostRecentState.State.Take(change.Range), oldRange, newRange);
                             }
 
                             newChange = Utility.ListChangeStrict(CollectionChangeType.Add, change.Range,
@@ -235,7 +235,7 @@ namespace LiveLinq
                             {
                                 var oldRange = NumbersUtility.Range( change.Range.LowerBound.ChangeStrictness(false).Value, mostRecentState.State.Count );
                                 var newRange = NumbersUtility.Range(change.Range.UpperBound.ChangeStrictness(true).Value, change.Range.UpperBound.ChangeStrictness(true).Value + oldRange.Size );
-                                onMove(mostRecentState.State.TakeEfficiently(change.Range), oldRange, newRange);
+                                onMove(mostRecentState.State.Take(change.Range), oldRange, newRange);
                             }
                         }
                         else
@@ -244,10 +244,10 @@ namespace LiveLinq
                             {
                                 var oldRange = NumbersUtility.Range(change.Range.UpperBound.ChangeStrictness(true).Value, mostRecentState.State.Count);
                                 var newRange = NumbersUtility.Range( change.Range.LowerBound.ChangeStrictness(false).Value, change.Range.LowerBound.ChangeStrictness(false).Value + oldRange.Size );
-                                onMove(mostRecentState.State.TakeEfficiently(change.Range), oldRange, newRange);
+                                onMove(mostRecentState.State.Take(change.Range), oldRange, newRange);
                             }
 
-                            onRemove(mostRecentState.State.TakeEfficiently(change.Range), change.Range, ReasonForRemoval.Explicit);
+                            onRemove(mostRecentState.State.Take(change.Range), change.Range, ReasonForRemoval.Explicit);
                             
                             newChange = Utility.ListChangeStrict(CollectionChangeType.Remove, change.Range,
                                 mostRecentState.State.Skip(change.Range.LowerBound.ChangeStrictness(false).Value)
@@ -258,7 +258,7 @@ namespace LiveLinq
                             {
                                 var oldRange = NumbersUtility.Range(change.Range.UpperBound.ChangeStrictness(true).Value, mostRecentState.State.Count);
                                 var newRange = NumbersUtility.Range( change.Range.LowerBound.ChangeStrictness(false).Value, change.Range.LowerBound.ChangeStrictness(false).Value + oldRange.Size );
-                                onMove(mostRecentState.State.TakeEfficiently(change.Range), oldRange, newRange);
+                                onMove(mostRecentState.State.Take(change.Range), oldRange, newRange);
                             }
                         }
 

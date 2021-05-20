@@ -51,7 +51,7 @@ namespace LiveLinq.Dictionary.Adapters
             return _state.ContainsKey(key);
         }
 
-        public IMaybe<TValue> TryGetValue(TKey key)
+        public TValue? TryGetValue(TKey key)
         {
             return _state.TryGetValue(key);
         }

@@ -218,7 +218,7 @@ namespace LiveLinq
         {
             return dictionaryChanges.AsObservable().Select(dictionaryChange =>
             {
-                return Utility.SetChange(dictionaryChange.Type, dictionaryChange.KeyValuePairs.Select(x => x.Key));
+                return Utility.SetChange(dictionaryChange.Type, dictionaryChange.KeyValuePairs.Select(x => x.Key).AsEnumerable());
             }).ToLiveLinq();
         }
 
@@ -238,7 +238,7 @@ namespace LiveLinq
         {
             return dictionaryChanges.AsObservable().Select(dictionaryChange =>
             {
-                return Utility.SetChange(dictionaryChange.Type, dictionaryChange.KeyValuePairs.Select(x => x.Value));
+                return Utility.SetChange(dictionaryChange.Type, dictionaryChange.KeyValuePairs.Select(x => x.Value).AsEnumerable());
             }).ToLiveLinq();
         }
 

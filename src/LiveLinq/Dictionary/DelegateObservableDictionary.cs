@@ -45,7 +45,17 @@ namespace LiveLinq.Dictionary
             return _source.ContainsKey(key);
         }
 
-        public IMaybe<TValue> TryGetValue(TKey key)
+        public TValue GetOrAdd(TKey key, TValue value)
+        {
+            return _source.GetOrAdd(key, value);
+        }
+
+        public TValue GetOrAdd(TKey key, Func<TValue> value)
+        {
+            return _source.GetOrAdd(key, value);
+        }
+
+        public TValue? TryGetValue(TKey key)
         {
             return _source.TryGetValue(key);
         }
@@ -84,6 +94,11 @@ namespace LiveLinq.Dictionary
         public bool TryAdd(TKey key, Func<TValue> value, out TValue existingValue, out TValue newValue)
         {
             return _source.TryAdd(key, value, out existingValue, out newValue);
+        }
+
+        public bool TryAdd(TKey key, TValue value, out TValue previousValue, out TValue result)
+        {
+            return _source.TryAdd(key, value, out previousValue, out result);
         }
 
         public void TryAddRange(IEnumerable<IKeyValue<TKey, TValue>> newItems, out IComposableReadOnlyDictionary<TKey, IDictionaryItemAddAttempt<TValue>> result)

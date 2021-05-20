@@ -45,6 +45,16 @@ namespace LiveLinq.Dictionary
             return _sources.Any(x => x.ContainsKey(key));
         }
 
+        public TValue GetOrAdd(TKey key, TValue value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public TValue GetOrAdd(TKey key, Func<TValue> value)
+        {
+            throw new NotImplementedException();
+        }
+
         public TValue GetValue(TKey key)
         {
             return this[key];
@@ -55,18 +65,18 @@ namespace LiveLinq.Dictionary
             this[key] = value;
         }
 
-        public IMaybe<TValue> TryGetValue(TKey key)
+        public TValue? TryGetValue(TKey key)
         {
             foreach (var wrapped in _sources)
             {
                 var result = wrapped.TryGetValue(key);
-                if (result.HasValue)
+                if (result != null)
                 {
                     return result;
                 }
             }
             
-            return Maybe<TValue>.Nothing();
+            return default;
         }
 
         public IEqualityComparer<TKey> Comparer => _mutationsGoHere.Comparer;
@@ -77,15 +87,8 @@ namespace LiveLinq.Dictionary
 
         public bool TryGetValue(TKey key, out TValue value)
         {
-            var result = TryGetValue(key);
-            if (result.HasValue)
-            {
-                value = result.Value;
-                return true;
-            }
-
-            value = default;
-            return false;
+            value = TryGetValue(key);
+            return value != null;
         }
 
         public void Write(IEnumerable<DictionaryWrite<TKey, TValue>> mutations, out IReadOnlyList<DictionaryWriteResult<TKey, TValue>> results)
@@ -106,6 +109,11 @@ namespace LiveLinq.Dictionary
         public bool TryAdd(TKey key, Func<TValue> value, out TValue existingValue, out TValue newValue)
         {
             return _mutationsGoHere.TryAdd(key, value, out existingValue, out newValue);
+        }
+
+        public bool TryAdd(TKey key, TValue value, out TValue previousValue, out TValue result)
+        {
+            return TryAdd(key, () => value, out previousValue, out result);
         }
 
         public void TryAddRange(IEnumerable<IKeyValue<TKey, TValue>> newItems, out IComposableReadOnlyDictionary<TKey, IDictionaryItemAddAttempt<TValue>> result)
@@ -411,10 +419,7 @@ namespace LiveLinq.Dictionary
 
         public TValue this[TKey key]
         {
-            get
-            {
-                return TryGetValue(key).Value;
-            }
+            get => TryGetValue(key)!;
             set => _mutationsGoHere[key] = value;
         }
 

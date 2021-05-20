@@ -29,27 +29,27 @@ namespace LiveLinq
             return new ReasonForRemoval(new ErrorRemoval(exception));
         }
                 
-        public bool IsExplicit => Item1.HasValue;
-        public bool IsUnsubscribe => Item2.HasValue;
-        public bool IsComplete => Item3.HasValue;
-        public bool IsError => Item4.HasValue;
+        public bool IsExplicit => Item1 != null;
+        public bool IsUnsubscribe => Item2 != null;
+        public bool IsComplete => Item3 != null;
+        public bool IsError => Item4 != null;
 
         public override string ToString()
         {
-            if (Item1.HasValue)
+            if (Item1 != null)
             {
-                return Item1.Value.ToString();
+                return Item1.ToString();
             }
-            if (Item2.HasValue)
+            if (Item2 != null)
             {
-                return Item2.Value.ToString();
+                return Item2.ToString();
             }
-            if (Item3.HasValue)
+            if (Item3 != null)
             {
-                return Item3.Value.ToString();
+                return Item3.ToString();
             }
 
-            return Item4.Value.ToString();
+            return Item4.ToString();
         }
         
         public override bool Equals(object other)
