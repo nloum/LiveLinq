@@ -12,7 +12,7 @@
     <PackageReference Include="FluentSourceGenerators" Version="1.0.0-alpha0005" PrivateAssets="all" />
     <PackageReference Include="GenericNumbers" Version="1.1.0-alpha0035" />
     <PackageReference Include="MoreCollections" Version="1.1.0-alpha0094" />
-    <PackageReference Include="System.Reactive" Version="4.4.1" />
+    <PackageReference Include="System.Reactive" Version="5.0.0" />
     <PackageReference Include="System.Runtime.Serialization.Primitives" Version="4.3.0" />
     <PackageReference Include="UtilityDisposables" Version="1.1.0-alpha0006" />
   </ItemGroup>
